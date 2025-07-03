@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Transaction, MonthlyData, FinanceState, DEBIT_TAX_RATE, CREDIT_TAX_RATE, STUDIO_SHARE, EDU_SHARE, KAM_SHARE } from '@/types/finance';
+import { Transaction, MonthlyData, FinanceState } from '@/types/finance';
 import { useToast } from '@/hooks/use-toast';
-
-const STORAGE_KEY = 'studio_germano_finance';
+import { calculateTransaction } from '@/lib/finance/calculations';
+import { loadFinanceData, saveFinanceData } from '@/lib/finance/storage';
+import { importTransactionsFromCSV, exportTransactionsToCSV } from '@/lib/finance/csv';
+import { generateSampleTransactions } from '@/lib/finance/sampleData';
 
 export const useFinance = () => {
   const { toast } = useToast();
@@ -19,11 +21,10 @@ export const useFinance = () => {
   useEffect(() => {
     console.log('[Financeiro] Loading data from localStorage');
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+      const saved = loadFinanceData();
       if (saved) {
-        const parsedData = JSON.parse(saved);
-        setState(parsedData);
-        console.log('[Financeiro] Data loaded successfully', parsedData);
+        setState(saved);
+        console.log('[Financeiro] Data loaded successfully', saved);
       }
     } catch (error) {
       console.error('[Financeiro] Error loading data:', error);
@@ -38,8 +39,7 @@ export const useFinance = () => {
   // Save to localStorage whenever state changes
   const saveToStorage = (newState: FinanceState) => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
-      console.log('[Financeiro] Data saved to localStorage');
+      saveFinanceData(newState);
     } catch (error) {
       console.error('[Financeiro] Error saving data:', error);
       toast({
@@ -50,27 +50,6 @@ export const useFinance = () => {
     }
   };
 
-  const calculateTransaction = (
-    dinheiro: number,
-    pix: number,
-    debito: number,
-    credito: number
-  ) => {
-    const totalBruto = dinheiro + pix + debito + credito;
-    const taxaDebito = debito * DEBIT_TAX_RATE;
-    const taxaCredito = credito * CREDIT_TAX_RATE;
-    const totalLiquido = totalBruto - taxaDebito - taxaCredito;
-    
-    return {
-      totalBruto,
-      taxaDebito,
-      taxaCredito,
-      totalLiquido,
-      studioShare: totalLiquido * STUDIO_SHARE,
-      eduShare: totalLiquido * EDU_SHARE,
-      kamShare: totalLiquido * KAM_SHARE
-    };
-  };
 
   const addTransaction = (transactionData: {
     date: string;
@@ -237,137 +216,40 @@ export const useFinance = () => {
     };
   };
 
-  const importFromCSV = (file: File) => {
+  const importFromCSV = async (file: File) => {
     setLoading(true);
     
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const text = e.target?.result as string;
-        const lines = text.split('\n').filter(line => line.trim());
-        
-        if (lines.length < 2) {
-          throw new Error('Arquivo CSV vazio ou inválido');
-        }
+    try {
+      const importedTransactions = await importTransactionsFromCSV(file);
+      
+      const newState = {
+        ...state,
+        transactions: [...importedTransactions, ...state.transactions]
+      };
 
-        const importedTransactions: Transaction[] = [];
-        
-        // Skip header line
-        for (let i = 1; i < lines.length; i++) {
-          const values = lines[i].split(',');
-          if (values.length >= 5 && values[0].trim()) {
-            const transactionData = {
-              date: values[0].trim(),
-              dinheiro: parseFloat(values[1]) || 0,
-              pix: parseFloat(values[2]) || 0,
-              debito: parseFloat(values[3]) || 0,
-              credito: parseFloat(values[4]) || 0
-            };
+      setState(newState);
+      saveToStorage(newState);
 
-            const calculations = calculateTransaction(
-              transactionData.dinheiro,
-              transactionData.pix,
-              transactionData.debito,
-              transactionData.credito
-            );
-
-            const transaction: Transaction = {
-              id: `import_${Date.now()}_${i}`,
-              ...transactionData,
-              ...calculations,
-              month: transactionData.date.slice(0, 7),
-              year: new Date(transactionData.date).getFullYear(),
-              createdAt: new Date().toISOString()
-            };
-
-            importedTransactions.push(transaction);
-          }
-        }
-
-        if (importedTransactions.length === 0) {
-          throw new Error('Nenhuma transação válida encontrada no arquivo');
-        }
-
-        const newState = {
-          ...state,
-          transactions: [...importedTransactions, ...state.transactions]
-        };
-
-        setState(newState);
-        saveToStorage(newState);
-
-        console.log('[Financeiro] Imported transactions:', importedTransactions.length);
-        toast({
-          title: "Sucesso",
-          description: `${importedTransactions.length} transações importadas com sucesso`
-        });
-      } catch (error) {
-        console.error('[Financeiro] Error importing CSV:', error);
-        toast({
-          title: "Erro",
-          description: error instanceof Error ? error.message : "Erro ao importar arquivo CSV",
-          variant: "destructive"
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    reader.onerror = () => {
-      setLoading(false);
+      console.log('[Financeiro] Imported transactions:', importedTransactions.length);
+      toast({
+        title: "Sucesso",
+        description: `${importedTransactions.length} transações importadas com sucesso`
+      });
+    } catch (error) {
+      console.error('[Financeiro] Error importing CSV:', error);
       toast({
         title: "Erro",
-        description: "Erro ao ler arquivo",
+        description: error instanceof Error ? error.message : "Erro ao importar arquivo CSV",
         variant: "destructive"
       });
-    };
-
-    reader.readAsText(file);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const exportToCSV = () => {
     try {
-      const headers = [
-        'Data',
-        'Dinheiro',
-        'PIX',
-        'Débito',
-        'Crédito',
-        'Total Bruto',
-        'Taxa Débito',
-        'Taxa Crédito',
-        'Total Líquido',
-        'Studio (60%)',
-        'Edu (40%)',
-        'Kam (10%)'
-      ];
-
-      const csvContent = [
-        headers.join(','),
-        ...state.transactions.map(t => [
-          t.date,
-          t.dinheiro,
-          t.pix,
-          t.debito,
-          t.credito,
-          t.totalBruto,
-          t.taxaDebito,
-          t.taxaCredito,
-          t.totalLiquido,
-          t.studioShare,
-          t.eduShare,
-          t.kamShare
-        ].join(','))
-      ].join('\n');
-
-      const blob = new Blob([csvContent], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `studio_germano_${state.currentMonth}.csv`;
-      link.click();
-      window.URL.revokeObjectURL(url);
-
+      exportTransactionsToCSV(state.transactions, state.currentMonth);
       toast({
         title: "Sucesso",
         description: "Dados exportados com sucesso"
@@ -386,23 +268,7 @@ export const useFinance = () => {
     setLoading(true);
     
     try {
-      const sampleTransactions = [
-        { date: '2024-12-01', dinheiro: 150, pix: 280, debito: 320, credito: 450 },
-        { date: '2024-12-02', dinheiro: 200, pix: 350, debito: 180, credito: 380 },
-        { date: '2024-12-03', dinheiro: 120, pix: 420, debito: 250, credito: 300 },
-        { date: '2024-12-04', dinheiro: 180, pix: 380, debito: 200, credito: 520 },
-        { date: '2024-12-05', dinheiro: 220, pix: 310, debito: 180, credito: 480 }
-      ].map((data, index) => {
-        const calculations = calculateTransaction(data.dinheiro, data.pix, data.debito, data.credito);
-        return {
-          id: `sample_${Date.now()}_${index}`,
-          ...data,
-          ...calculations,
-          month: data.date.slice(0, 7),
-          year: new Date(data.date).getFullYear(),
-          createdAt: new Date().toISOString()
-        };
-      });
+      const sampleTransactions = generateSampleTransactions();
 
       const newState = {
         ...state,
