@@ -125,14 +125,35 @@ export const useFinance = () => {
     }
   };
 
-  const updateTransaction = (id: string, updates: Partial<Transaction>) => {
+  const updateTransaction = (id: string, transactionData: {
+    date: string;
+    dinheiro: number;
+    pix: number;
+    debito: number;
+    credito: number;
+  }) => {
     setLoading(true);
     
     try {
+      const calculations = calculateTransaction(
+        transactionData.dinheiro,
+        transactionData.pix,
+        transactionData.debito,
+        transactionData.credito
+      );
+
+      const updatedTransaction: Transaction = {
+        ...state.transactions.find(t => t.id === id)!,
+        ...transactionData,
+        ...calculations,
+        month: transactionData.date.slice(0, 7),
+        year: new Date(transactionData.date).getFullYear(),
+      };
+
       const newState = {
         ...state,
         transactions: state.transactions.map(t => 
-          t.id === id ? { ...t, ...updates } : t
+          t.id === id ? updatedTransaction : t
         )
       };
 
@@ -216,6 +237,94 @@ export const useFinance = () => {
     };
   };
 
+  const importFromCSV = (file: File) => {
+    setLoading(true);
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target?.result as string;
+        const lines = text.split('\n').filter(line => line.trim());
+        
+        if (lines.length < 2) {
+          throw new Error('Arquivo CSV vazio ou inválido');
+        }
+
+        const importedTransactions: Transaction[] = [];
+        
+        // Skip header line
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(',');
+          if (values.length >= 5 && values[0].trim()) {
+            const transactionData = {
+              date: values[0].trim(),
+              dinheiro: parseFloat(values[1]) || 0,
+              pix: parseFloat(values[2]) || 0,
+              debito: parseFloat(values[3]) || 0,
+              credito: parseFloat(values[4]) || 0
+            };
+
+            const calculations = calculateTransaction(
+              transactionData.dinheiro,
+              transactionData.pix,
+              transactionData.debito,
+              transactionData.credito
+            );
+
+            const transaction: Transaction = {
+              id: `import_${Date.now()}_${i}`,
+              ...transactionData,
+              ...calculations,
+              month: transactionData.date.slice(0, 7),
+              year: new Date(transactionData.date).getFullYear(),
+              createdAt: new Date().toISOString()
+            };
+
+            importedTransactions.push(transaction);
+          }
+        }
+
+        if (importedTransactions.length === 0) {
+          throw new Error('Nenhuma transação válida encontrada no arquivo');
+        }
+
+        const newState = {
+          ...state,
+          transactions: [...importedTransactions, ...state.transactions]
+        };
+
+        setState(newState);
+        saveToStorage(newState);
+
+        console.log('[Financeiro] Imported transactions:', importedTransactions.length);
+        toast({
+          title: "Sucesso",
+          description: `${importedTransactions.length} transações importadas com sucesso`
+        });
+      } catch (error) {
+        console.error('[Financeiro] Error importing CSV:', error);
+        toast({
+          title: "Erro",
+          description: error instanceof Error ? error.message : "Erro ao importar arquivo CSV",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    reader.onerror = () => {
+      setLoading(false);
+      toast({
+        title: "Erro",
+        description: "Erro ao ler arquivo",
+        variant: "destructive"
+      });
+    };
+
+    reader.readAsText(file);
+  };
+
   const exportToCSV = () => {
     try {
       const headers = [
@@ -273,6 +382,53 @@ export const useFinance = () => {
     }
   };
 
+  const loadSampleData = () => {
+    setLoading(true);
+    
+    try {
+      const sampleTransactions = [
+        { date: '2024-12-01', dinheiro: 150, pix: 280, debito: 320, credito: 450 },
+        { date: '2024-12-02', dinheiro: 200, pix: 350, debito: 180, credito: 380 },
+        { date: '2024-12-03', dinheiro: 120, pix: 420, debito: 250, credito: 300 },
+        { date: '2024-12-04', dinheiro: 180, pix: 380, debito: 200, credito: 520 },
+        { date: '2024-12-05', dinheiro: 220, pix: 310, debito: 180, credito: 480 }
+      ].map((data, index) => {
+        const calculations = calculateTransaction(data.dinheiro, data.pix, data.debito, data.credito);
+        return {
+          id: `sample_${Date.now()}_${index}`,
+          ...data,
+          ...calculations,
+          month: data.date.slice(0, 7),
+          year: new Date(data.date).getFullYear(),
+          createdAt: new Date().toISOString()
+        };
+      });
+
+      const newState = {
+        ...state,
+        transactions: [...sampleTransactions, ...state.transactions]
+      };
+
+      setState(newState);
+      saveToStorage(newState);
+
+      console.log('[Financeiro] Sample data loaded');
+      toast({
+        title: "Sucesso",
+        description: "Dados de exemplo carregados com sucesso"
+      });
+    } catch (error) {
+      console.error('[Financeiro] Error loading sample data:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao carregar dados de exemplo",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     ...state,
     loading,
@@ -281,6 +437,8 @@ export const useFinance = () => {
     deleteTransaction,
     getMonthlyData,
     exportToCSV,
+    importFromCSV,
+    loadSampleData,
     setCurrentMonth: (month: string) => setState(prev => ({ ...prev, currentMonth: month })),
     setCurrentYear: (year: number) => setState(prev => ({ ...prev, currentYear: year }))
   };

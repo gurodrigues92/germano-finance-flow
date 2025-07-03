@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useFinance } from '@/hooks/useFinance';
 import { Transaction } from '@/types/finance';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2, Calendar } from 'lucide-react';
+import { Plus, Edit, Trash2, Calendar, Upload, Download, Database } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface TransactionFormData {
@@ -20,8 +20,19 @@ interface TransactionFormData {
 }
 
 export const Transactions = () => {
-  const { transactions, addTransaction, updateTransaction, deleteTransaction, loading, currentMonth } = useFinance();
+  const { 
+    transactions, 
+    addTransaction, 
+    updateTransaction, 
+    deleteTransaction, 
+    loading, 
+    currentMonth,
+    importFromCSV,
+    loadSampleData,
+    exportToCSV
+  } = useFinance();
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [isOpen, setIsOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
@@ -32,6 +43,29 @@ export const Transactions = () => {
     debito: '',
     credito: ''
   });
+
+  // Cálculo em tempo real dos valores
+  const previewCalculation = () => {
+    const dinheiro = parseFloat(formData.dinheiro) || 0;
+    const pix = parseFloat(formData.pix) || 0;
+    const debito = parseFloat(formData.debito) || 0;
+    const credito = parseFloat(formData.credito) || 0;
+    
+    const totalBruto = dinheiro + pix + debito + credito;
+    const taxaDebito = debito * 0.0161;
+    const taxaCredito = credito * 0.0351;
+    const totalLiquido = totalBruto - taxaDebito - taxaCredito;
+    
+    return {
+      totalBruto,
+      taxaDebito,
+      taxaCredito,
+      totalLiquido,
+      studioShare: totalLiquido * 0.6,
+      eduShare: totalLiquido * 0.4,
+      kamShare: totalLiquido * 0.1
+    };
+  };
 
   const resetForm = () => {
     setFormData({
@@ -67,11 +101,9 @@ export const Transactions = () => {
     console.log('[Financeiro] Submitting transaction:', data);
     
     if (editingTransaction) {
-      // TODO: Implement edit functionality
-      toast({
-        title: "Em desenvolvimento",
-        description: "Funcionalidade de edição será implementada em breve"
-      });
+      updateTransaction(editingTransaction.id, data);
+      resetForm();
+      setIsOpen(false);
     } else {
       addTransaction(data);
       resetForm();
@@ -97,6 +129,14 @@ export const Transactions = () => {
     }
   };
 
+  const handleFileImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      importFromCSV(file);
+      event.target.value = ''; // Reset input
+    }
+  };
+
   const currentMonthTransactions = transactions.filter(t => t.month === currentMonth);
 
   const totals = currentMonthTransactions.reduce(
@@ -118,109 +158,197 @@ export const Transactions = () => {
           </p>
         </div>
         
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <DialogTrigger asChild>
-            <Button 
-              onClick={resetForm}
-              className="bg-finance-income hover:bg-finance-income/90 text-finance-income-foreground"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Nova Transação
-            </Button>
-          </DialogTrigger>
-          
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>
-                {editingTransaction ? 'Editar Transação' : 'Nova Transação'}
-              </DialogTitle>
-            </DialogHeader>
+        <div className="flex flex-wrap gap-2">
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+              <Button 
+                onClick={resetForm}
+                className="bg-finance-income hover:bg-finance-income/90 text-finance-income-foreground"
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Nova Transação
+              </Button>
+            </DialogTrigger>
             
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="date">Data</Label>
-                <Input
-                  id="date"
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-                  required
-                />
-              </div>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>
+                  {editingTransaction ? 'Editar Transação' : 'Nova Transação'}
+                </DialogTitle>
+              </DialogHeader>
               
-              <div className="grid grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="dinheiro">Dinheiro (R$)</Label>
+                  <Label htmlFor="date">Data</Label>
                   <Input
-                    id="dinheiro"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    placeholder="0,00"
-                    value={formData.dinheiro}
-                    onChange={(e) => setFormData(prev => ({ ...prev, dinheiro: e.target.value }))}
+                    id="date"
+                    type="date"
+                    value={formData.date}
+                    onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
+                    required
+                    className="text-lg p-3"
                   />
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="pix">PIX (R$)</Label>
-                  <Input
-                    id="pix"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    placeholder="0,00"
-                    value={formData.pix}
-                    onChange={(e) => setFormData(prev => ({ ...prev, pix: e.target.value }))}
-                  />
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="debito">Débito (R$)</Label>
-                  <Input
-                    id="debito"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    placeholder="0,00"
-                    value={formData.debito}
-                    onChange={(e) => setFormData(prev => ({ ...prev, debito: e.target.value }))}
-                  />
-                  <p className="text-xs text-muted-foreground">Taxa: 1,61%</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="dinheiro">Dinheiro (R$)</Label>
+                    <Input
+                      id="dinheiro"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      placeholder="0,00"
+                      value={formData.dinheiro}
+                      onChange={(e) => setFormData(prev => ({ ...prev, dinheiro: e.target.value }))}
+                      className="text-lg p-3"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="pix">PIX (R$)</Label>
+                    <Input
+                      id="pix"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      placeholder="0,00"
+                      value={formData.pix}
+                      onChange={(e) => setFormData(prev => ({ ...prev, pix: e.target.value }))}
+                      className="text-lg p-3"
+                    />
+                  </div>
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="credito">Crédito (R$)</Label>
-                  <Input
-                    id="credito"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    placeholder="0,00"
-                    value={formData.credito}
-                    onChange={(e) => setFormData(prev => ({ ...prev, credito: e.target.value }))}
-                  />
-                  <p className="text-xs text-muted-foreground">Taxa: 3,51%</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="debito">Débito (R$)</Label>
+                    <Input
+                      id="debito"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      placeholder="0,00"
+                      value={formData.debito}
+                      onChange={(e) => setFormData(prev => ({ ...prev, debito: e.target.value }))}
+                      className="text-lg p-3"
+                    />
+                    <p className="text-xs text-muted-foreground">Taxa: 1,61%</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="credito">Crédito (R$)</Label>
+                    <Input
+                      id="credito"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      placeholder="0,00"
+                      value={formData.credito}
+                      onChange={(e) => setFormData(prev => ({ ...prev, credito: e.target.value }))}
+                      className="text-lg p-3"
+                    />
+                    <p className="text-xs text-muted-foreground">Taxa: 3,51%</p>
+                  </div>
                 </div>
-              </div>
-              
-              <div className="flex gap-2 pt-4">
-                <Button type="submit" disabled={loading} className="flex-1">
-                  {editingTransaction ? 'Atualizar' : 'Adicionar'}
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={() => setIsOpen(false)}
-                >
-                  Cancelar
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
+
+                {/* Preview dos cálculos */}
+                {(formData.dinheiro || formData.pix || formData.debito || formData.credito) && (
+                  <div className="bg-muted/30 rounded-lg p-4 space-y-2">
+                    <h4 className="font-medium text-sm">Preview dos Cálculos:</h4>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-muted-foreground">Total Bruto:</span>
+                        <span className="ml-2 font-medium text-finance-income">
+                          {previewCalculation().totalBruto.toLocaleString('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL'
+                          })}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Total Líquido:</span>
+                        <span className="ml-2 font-medium text-finance-net">
+                          {previewCalculation().totalLiquido.toLocaleString('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL'
+                          })}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Studio (60%):</span>
+                        <span className="ml-2 font-medium text-finance-studio">
+                          {previewCalculation().studioShare.toLocaleString('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL'
+                          })}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Edu (40%):</span>
+                        <span className="ml-2 font-medium text-finance-edu">
+                          {previewCalculation().eduShare.toLocaleString('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL'
+                          })}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                <div className="flex gap-2 pt-4">
+                  <Button type="submit" disabled={loading} className="flex-1 text-lg py-3">
+                    {editingTransaction ? 'Atualizar Transação' : 'Adicionar Transação'}
+                  </Button>
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setIsOpen(false)}
+                    className="px-6"
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
+          
+          <Button 
+            variant="outline" 
+            onClick={() => fileInputRef.current?.click()}
+            disabled={loading}
+          >
+            <Upload className="mr-2 h-4 w-4" />
+            Importar CSV
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            onClick={exportToCSV}
+            disabled={loading}
+          >
+            <Download className="mr-2 h-4 w-4" />
+            Exportar CSV
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            onClick={loadSampleData}
+            disabled={loading}
+          >
+            <Database className="mr-2 h-4 w-4" />
+            Dados Exemplo
+          </Button>
+          
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv"
+            onChange={handleFileImport}
+            style={{ display: 'none' }}
+          />
+        </div>
       </div>
 
       {/* Monthly Summary */}
@@ -296,6 +424,9 @@ export const Transactions = () => {
                     <TableHead>Total Bruto</TableHead>
                     <TableHead>Taxas</TableHead>
                     <TableHead>Total Líquido</TableHead>
+                    <TableHead>Studio (60%)</TableHead>
+                    <TableHead>Edu (40%)</TableHead>
+                    <TableHead>Kam (10%)</TableHead>
                     <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -359,6 +490,24 @@ export const Transactions = () => {
                       </TableCell>
                       <TableCell className="font-medium text-finance-net">
                         {transaction.totalLiquido.toLocaleString('pt-BR', {
+                          style: 'currency',
+                          currency: 'BRL'
+                        })}
+                      </TableCell>
+                      <TableCell className="text-finance-studio">
+                        {transaction.studioShare.toLocaleString('pt-BR', {
+                          style: 'currency',
+                          currency: 'BRL'
+                        })}
+                      </TableCell>
+                      <TableCell className="text-finance-edu">
+                        {transaction.eduShare.toLocaleString('pt-BR', {
+                          style: 'currency',
+                          currency: 'BRL'
+                        })}
+                      </TableCell>
+                      <TableCell className="text-finance-kam">
+                        {transaction.kamShare.toLocaleString('pt-BR', {
                           style: 'currency',
                           currency: 'BRL'
                         })}
