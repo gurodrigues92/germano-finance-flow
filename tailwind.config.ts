@@ -61,6 +61,20 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				finance: {
+					income: 'hsl(var(--finance-income))',
+					'income-foreground': 'hsl(var(--finance-income-foreground))',
+					net: 'hsl(var(--finance-net))',
+					'net-foreground': 'hsl(var(--finance-net-foreground))',
+					studio: 'hsl(var(--finance-studio))',
+					'studio-foreground': 'hsl(var(--finance-studio-foreground))',
+					fees: 'hsl(var(--finance-fees))',
+					'fees-foreground': 'hsl(var(--finance-fees-foreground))',
+					edu: 'hsl(var(--finance-edu))',
+					'edu-foreground': 'hsl(var(--finance-edu-foreground))',
+					kam: 'hsl(var(--finance-kam))',
+					'kam-foreground': 'hsl(var(--finance-kam-foreground))'
 				}
 			},
 			borderRadius: {

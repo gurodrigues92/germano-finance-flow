@@ -36,6 +36,20 @@ All colors MUST be HSL.
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
+    /* Studio Germano Financial Colors */
+    --finance-income: 142 76% 36%;
+    --finance-income-foreground: 0 0% 100%;
+    --finance-net: 217 91% 60%;
+    --finance-net-foreground: 0 0% 100%;
+    --finance-studio: 262 83% 58%;
+    --finance-studio-foreground: 0 0% 100%;
+    --finance-fees: 0 84% 60%;
+    --finance-fees-foreground: 0 0% 100%;
+    --finance-edu: 39 98% 56%;
+    --finance-edu-foreground: 0 0% 100%;
+    --finance-kam: 280 87% 47%;
+    --finance-kam-foreground: 0 0% 100%;
+
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
