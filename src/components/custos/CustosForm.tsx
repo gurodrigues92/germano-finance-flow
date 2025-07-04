@@ -20,7 +20,7 @@ export function CustosForm({ onSubmit, initialData, isEdit = false }: CustosForm
   const [valor, setValor] = useState(initialData?.valor?.toString() || "");
   const [observacoes, setObservacoes] = useState(initialData?.observacoes || "");
   const [mesReferencia, setMesReferencia] = useState(
-    initialData?.mes_referencia || format(new Date(), "yyyy-MM-dd")
+    initialData?.mes_referencia || format(new Date(), "yyyy-MM")
   );
   const [loading, setLoading] = useState(false);
 
@@ -44,7 +44,7 @@ export function CustosForm({ onSubmit, initialData, isEdit = false }: CustosForm
         setSubcategoria("");
         setValor("");
         setObservacoes("");
-        setMesReferencia(format(new Date(), "yyyy-MM-dd"));
+        setMesReferencia(format(new Date(), "yyyy-MM"));
       }
     } catch (error) {
       console.error("Erro ao salvar custo:", error);
@@ -73,7 +73,7 @@ export function CustosForm({ onSubmit, initialData, isEdit = false }: CustosForm
                   <SelectValue placeholder="Selecione uma categoria" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.keys(CATEGORIAS_CUSTOS).map((cat) => (
+                  {Object.keys(CATEGORIAS_CUSTOS).filter(cat => cat.trim() !== "").map((cat) => (
                     <SelectItem key={cat} value={cat}>
                       {cat}
                     </SelectItem>
@@ -89,7 +89,7 @@ export function CustosForm({ onSubmit, initialData, isEdit = false }: CustosForm
                   <SelectValue placeholder="Selecione uma subcategoria" />
                 </SelectTrigger>
                 <SelectContent>
-                  {subcategorias.map((subcat) => (
+                  {subcategorias.filter(subcat => subcat.trim() !== "").map((subcat) => (
                     <SelectItem key={subcat} value={subcat}>
                       {subcat}
                     </SelectItem>
@@ -116,7 +116,7 @@ export function CustosForm({ onSubmit, initialData, isEdit = false }: CustosForm
               <Label htmlFor="mes_referencia">Mês de Referência</Label>
               <Input
                 id="mes_referencia"
-                type="date"
+                type="month"
                 value={mesReferencia}
                 onChange={(e) => setMesReferencia(e.target.value)}
                 required
