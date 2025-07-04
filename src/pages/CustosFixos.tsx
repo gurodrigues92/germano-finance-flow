@@ -7,13 +7,14 @@ import { CustoFixo } from "@/types/custos";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-
-import { Plus } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Plus, AlertCircle } from "lucide-react";
 
 export function CustosFixos() {
   const [editingCusto, setEditingCusto] = useState<CustoFixo | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [renderError, setRenderError] = useState<string | null>(null);
 
   const {
     custos,
@@ -27,8 +28,13 @@ export function CustosFixos() {
   } = useCustosFixos();
 
   const handleCreate = async (data: any) => {
-    await createCusto(data);
-    setShowForm(false);
+    try {
+      await createCusto(data);
+      setShowForm(false);
+    } catch (error) {
+      console.error("Erro ao criar custo:", error);
+      setRenderError("Erro ao criar custo fixo");
+    }
   };
 
   const handleEdit = (custo: CustoFixo) => {
@@ -36,16 +42,26 @@ export function CustosFixos() {
   };
 
   const handleUpdate = async (data: any) => {
-    if (editingCusto) {
-      await updateCusto(editingCusto.id, data);
-      setEditingCusto(null);
+    try {
+      if (editingCusto) {
+        await updateCusto(editingCusto.id, data);
+        setEditingCusto(null);
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar custo:", error);
+      setRenderError("Erro ao atualizar custo fixo");
     }
   };
 
   const handleDelete = async () => {
-    if (deletingId) {
-      await deleteCusto(deletingId);
-      setDeletingId(null);
+    try {
+      if (deletingId) {
+        await deleteCusto(deletingId);
+        setDeletingId(null);
+      }
+    } catch (error) {
+      console.error("Erro ao deletar custo:", error);
+      setRenderError("Erro ao deletar custo fixo");
     }
   };
 
@@ -55,6 +71,27 @@ export function CustosFixos() {
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-studio-gold"></div>
         </div>
+      </div>
+    );
+  }
+
+  if (renderError) {
+    return (
+      <div className="p-6">
+        <Card className="border-destructive">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-destructive">
+              <AlertCircle className="h-5 w-5" />
+              Erro ao carregar página
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground mb-4">{renderError}</p>
+            <Button onClick={() => setRenderError(null)} variant="outline">
+              Tentar Novamente
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }

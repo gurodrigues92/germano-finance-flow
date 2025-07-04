@@ -55,6 +55,12 @@ export function CustosForm({ onSubmit, initialData, isEdit = false }: CustosForm
 
   const subcategorias = categoria ? CATEGORIAS_CUSTOS[categoria] : [];
 
+  // Debug logs
+  console.log('CATEGORIAS_CUSTOS:', CATEGORIAS_CUSTOS);
+  console.log('Categoria selecionada:', categoria);
+  console.log('Subcategorias disponíveis:', subcategorias);
+  console.log('Object.keys(CATEGORIAS_CUSTOS):', Object.keys(CATEGORIAS_CUSTOS));
+
   return (
     <Card>
       <CardHeader>
@@ -73,7 +79,7 @@ export function CustosForm({ onSubmit, initialData, isEdit = false }: CustosForm
                   <SelectValue placeholder="Selecione uma categoria" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.keys(CATEGORIAS_CUSTOS).filter(cat => cat.trim() !== "").map((cat) => (
+                  {Object.keys(CATEGORIAS_CUSTOS).map((cat) => (
                     <SelectItem key={cat} value={cat}>
                       {cat}
                     </SelectItem>
@@ -89,7 +95,7 @@ export function CustosForm({ onSubmit, initialData, isEdit = false }: CustosForm
                   <SelectValue placeholder="Selecione uma subcategoria" />
                 </SelectTrigger>
                 <SelectContent>
-                  {subcategorias.filter(subcat => subcat.trim() !== "").map((subcat) => (
+                  {subcategorias.map((subcat) => (
                     <SelectItem key={subcat} value={subcat}>
                       {subcat}
                     </SelectItem>
