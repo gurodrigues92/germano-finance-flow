@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { useFinance } from '@/hooks/useFinance';
 import { MetricCard } from '@/components/dashboard/MetricCard';
+import { HeroCard } from '@/components/dashboard/HeroCard';
+import { CompactCard } from '@/components/dashboard/CompactCard';
 import { GreetingHeader } from '@/components/dashboard/GreetingHeader';
 import { MotivationalSection } from '@/components/dashboard/MotivationalSection';
 import { RecentTransactions } from '@/components/dashboard/RecentTransactions';
@@ -171,7 +173,7 @@ export const Dashboard = () => {
   }, [currentData]);
 
   return (
-    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 pb-24">
       {/* Month Selector */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <h2 className="text-lg sm:text-lg font-semibold text-foreground">Métricas do Mês</h2>
@@ -189,13 +191,13 @@ export const Dashboard = () => {
         </Select>
       </div>
 
-      {/* Main Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
-        <MetricCard
+      {/* Hero Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <HeroCard
           title="Total Bruto"
           value={currentData.totalBruto}
           icon={DollarSign}
-          colorClass="bg-finance-income"
+          gradient="bg-gradient-to-r from-green-500 to-green-600"
           trend={{
             value: trends.bruto,
             isPositive: trends.bruto >= 0
@@ -203,11 +205,11 @@ export const Dashboard = () => {
           subtitle="Receita total"
         />
         
-        <MetricCard
+        <HeroCard
           title="Total Líquido"
           value={currentData.totalLiquido}
           icon={Calculator}
-          colorClass="bg-finance-net"
+          gradient="bg-gradient-to-r from-blue-500 to-blue-600"
           trend={{
             value: trends.liquido,
             isPositive: trends.liquido >= 0
@@ -217,63 +219,67 @@ export const Dashboard = () => {
       </div>
 
       {/* Payment Methods */}
-      <div className="mb-4">
-        <h3 className="text-sm sm:text-md font-medium text-muted-foreground mb-3">Métodos de Pagamento</h3>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
-          <MetricCard
+      <div className="mb-6">
+        <h3 className="text-md font-semibold text-foreground mb-4">Métodos de Pagamento</h3>
+        <div className="grid grid-cols-2 gap-3">
+          <CompactCard
             title="Dinheiro"
             value={currentData.totalDinheiro}
             icon={Banknote}
-            colorClass="bg-finance-income"
+            iconColor="text-green-600"
+            iconBg="bg-green-100"
             trend={{
               value: trends.dinheiro,
               isPositive: trends.dinheiro >= 0
             }}
-            subtitle={`${currentData.totalBruto > 0 ? ((currentData.totalDinheiro / currentData.totalBruto) * 100).toFixed(1) : 0}%`}
+            percentage={`${currentData.totalBruto > 0 ? ((currentData.totalDinheiro / currentData.totalBruto) * 100).toFixed(1) : 0}%`}
           />
           
-          <MetricCard
+          <CompactCard
             title="PIX"
             value={currentData.totalPix}
             icon={Smartphone}
-            colorClass="bg-finance-net"
+            iconColor="text-blue-600"
+            iconBg="bg-blue-100"
             trend={{
               value: trends.pix,
               isPositive: trends.pix >= 0
             }}
-            subtitle={`${currentData.totalBruto > 0 ? ((currentData.totalPix / currentData.totalBruto) * 100).toFixed(1) : 0}%`}
+            percentage={`${currentData.totalBruto > 0 ? ((currentData.totalPix / currentData.totalBruto) * 100).toFixed(1) : 0}%`}
           />
           
-          <MetricCard
+          <CompactCard
             title="Débito"
             value={currentData.totalDebito}
             icon={CreditCard}
-            colorClass="bg-finance-studio"
+            iconColor="text-violet-600"
+            iconBg="bg-violet-100"
             trend={{
               value: trends.debito,
               isPositive: trends.debito >= 0
             }}
-            subtitle={`${currentData.totalBruto > 0 ? ((currentData.totalDebito / currentData.totalBruto) * 100).toFixed(1) : 0}%`}
+            percentage={`${currentData.totalBruto > 0 ? ((currentData.totalDebito / currentData.totalBruto) * 100).toFixed(1) : 0}%`}
           />
           
-          <MetricCard
+          <CompactCard
             title="Crédito"
             value={currentData.totalCredito}
             icon={CreditCard}
-            colorClass="bg-finance-fees"
+            iconColor="text-amber-600"
+            iconBg="bg-amber-100"
             trend={{
               value: trends.credito,
               isPositive: trends.credito >= 0
             }}
-            subtitle={`${currentData.totalBruto > 0 ? ((currentData.totalCredito / currentData.totalBruto) * 100).toFixed(1) : 0}%`}
+            percentage={`${currentData.totalBruto > 0 ? ((currentData.totalCredito / currentData.totalBruto) * 100).toFixed(1) : 0}%`}
           />
         </div>
       </div>
 
       {/* Distribution & Fees */}
-      <div className="mb-4 sm:mb-6">
-        <h3 className="text-sm sm:text-md font-medium text-muted-foreground mb-3">Distribuição e Taxas</h3>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+      <div className="mb-6">
+        <h3 className="text-md font-semibold text-foreground mb-4">Distribuição e Taxas</h3>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <MetricCard
             title="Studio (60%)"
             value={currentData.totalStudio}
@@ -326,9 +332,9 @@ export const Dashboard = () => {
 
       {/* Transaction Count Pie Chart */}
       {transactionCountData.length > 0 && (
-        <Card className="mb-4 sm:mb-6">
+        <Card className="mb-6 hover:shadow-md transition-shadow duration-200">
           <CardHeader>
-            <CardTitle className="text-sm sm:text-base">Distribuição de Transações</CardTitle>
+            <CardTitle className="text-lg font-semibold">Distribuição de Transações</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-64 sm:h-80">
@@ -338,16 +344,25 @@ export const Dashboard = () => {
                     data={transactionCountData}
                     cx="50%"
                     cy="50%"
-                    outerRadius={80}
+                    outerRadius={90}
                     fill="#8884d8"
                     dataKey="value"
-                    label={({ name, value }) => `${name}: ${value}`}
+                    label={({ name, value, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                   >
                     {transactionCountData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip 
+                    formatter={(value, name) => [value, name]}
+                    labelStyle={{ color: '#374151' }}
+                    contentStyle={{ 
+                      backgroundColor: 'white', 
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -357,9 +372,9 @@ export const Dashboard = () => {
 
       {/* Bi-weekly Comparison */}
       {(biWeeklyData.firstHalf.count > 0 || biWeeklyData.secondHalf.count > 0) && (
-        <Card className="mb-4 sm:mb-6">
+        <Card className="mb-6 hover:shadow-md transition-shadow duration-200">
           <CardHeader>
-            <CardTitle className="text-sm sm:text-base">Comparativo Quinzenal</CardTitle>
+            <CardTitle className="text-lg font-semibold">Comparativo Quinzenal</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

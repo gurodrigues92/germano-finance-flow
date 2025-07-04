@@ -1,10 +1,10 @@
 import { LucideIcon } from 'lucide-react';
 
-interface MetricCardProps {
+interface HeroCardProps {
   title: string;
   value: number;
   icon: LucideIcon;
-  colorClass: string;
+  gradient: string;
   trend?: {
     value: number;
     isPositive: boolean;
@@ -12,7 +12,7 @@ interface MetricCardProps {
   subtitle?: string;
 }
 
-export const MetricCard = ({ title, value, icon: Icon, colorClass, trend, subtitle }: MetricCardProps) => {
+export const HeroCard = ({ title, value, icon: Icon, gradient, trend, subtitle }: HeroCardProps) => {
   const formatCurrency = (value: number) => 
     new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -26,29 +26,25 @@ export const MetricCard = ({ title, value, icon: Icon, colorClass, trend, subtit
   };
 
   return (
-    <div className="bg-card rounded-2xl p-4 border border-border hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer active:scale-95">
+    <div className={`${gradient} rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 active:scale-95`}>
       <div className="flex items-center justify-between mb-3">
-        <span className="text-sm text-muted-foreground font-medium">{title}</span>
-        <div className={`p-2 rounded-lg ${colorClass} shadow-sm`}>
-          <Icon className="w-4 h-4 text-white" />
-        </div>
+        <span className="text-white/80 text-sm font-medium">{title}</span>
+        <Icon className="w-6 h-6 text-white/90" />
       </div>
       
-      <div className="space-y-1">
-        <p className="text-2xl font-bold text-foreground">
+      <div className="space-y-2">
+        <p className="text-3xl font-bold">
           {formatCurrency(value)}
         </p>
         
         {trend && (
-          <p className={`text-xs font-medium ${
-            trend.isPositive ? 'text-green-600' : 'text-red-600'
-          }`}>
+          <p className="text-white/90 text-sm font-medium">
             {formatTrend(trend.value)} vs mês anterior
           </p>
         )}
         
         {subtitle && (
-          <p className="text-xs text-muted-foreground">{subtitle}</p>
+          <p className="text-white/70 text-sm">{subtitle}</p>
         )}
       </div>
     </div>
