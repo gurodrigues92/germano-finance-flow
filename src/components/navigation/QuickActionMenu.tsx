@@ -65,16 +65,16 @@ export const QuickActionMenu = () => {
       <DropdownMenuTrigger asChild>
         <Button
           size="lg"
-          className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg bg-finance-studio hover:bg-finance-studio/90 text-finance-studio-foreground z-50"
+          className="fixed bottom-4 right-4 h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg bg-finance-studio hover:bg-finance-studio/90 text-finance-studio-foreground z-50"
         >
-          <Plus className="h-6 w-6" />
+          <Plus className="h-5 w-5 sm:h-6 sm:w-6" />
         </Button>
       </DropdownMenuTrigger>
       
       <DropdownMenuContent 
         align="end" 
         sideOffset={8}
-        className="w-64 bg-background border border-border shadow-xl z-50"
+        className="w-56 sm:w-64 bg-background border border-border shadow-xl z-50"
       >
         <DropdownMenuLabel className="text-finance-studio font-semibold">
           Ações Rápidas

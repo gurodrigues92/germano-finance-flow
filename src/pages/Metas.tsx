@@ -94,13 +94,22 @@ export const Metas = () => {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h2 className="text-2xl font-semibold text-foreground">Metas Financeiras</h2>
-        <p className="text-muted-foreground">Defina e acompanhe suas metas</p>
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-semibold text-foreground">Metas Financeiras</h2>
+          <p className="text-sm text-muted-foreground">Defina e acompanhe suas metas</p>
+        </div>
+        <Button 
+          onClick={() => setShowForm(true)}
+          className="bg-finance-studio hover:bg-finance-studio/90 text-finance-studio-foreground sm:hidden"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Nova Meta
+        </Button>
       </div>
       {/* Cards de Estatísticas */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Metas Ativas</CardTitle>
@@ -171,7 +180,7 @@ export const Metas = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {metas.map((meta) => (
               <MetaCard
                 key={meta.id}

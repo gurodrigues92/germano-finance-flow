@@ -60,10 +60,19 @@ export function CustosFixos() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h2 className="text-2xl font-semibold text-foreground">Custos Fixos</h2>
-        <p className="text-muted-foreground">Gerencie os custos fixos mensais</p>
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-semibold text-foreground">Custos Fixos</h2>
+          <p className="text-sm text-muted-foreground">Gerencie os custos fixos mensais</p>
+        </div>
+        <Button 
+          onClick={() => setShowForm(true)}
+          className="bg-finance-studio hover:bg-finance-studio/90 text-finance-studio-foreground sm:hidden"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Novo Custo
+        </Button>
       </div>
       {/* Summary Cards */}
       <CustosSummary

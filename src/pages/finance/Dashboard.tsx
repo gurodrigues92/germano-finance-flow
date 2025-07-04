@@ -115,12 +115,12 @@ export const Dashboard = () => {
   }, []);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
       {/* Month Selector */}
-      <div className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold text-foreground">Métricas do Mês</h2>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <h2 className="text-lg sm:text-lg font-semibold text-foreground">Métricas do Mês</h2>
         <Select value={currentMonth} onValueChange={setCurrentMonth}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Selecionar mês" />
           </SelectTrigger>
           <SelectContent>
@@ -134,7 +134,7 @@ export const Dashboard = () => {
       </div>
 
       {/* Main Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
         <MetricCard
           title="Total Bruto"
           value={currentData.totalBruto}
@@ -162,8 +162,8 @@ export const Dashboard = () => {
 
       {/* Payment Methods */}
       <div className="mb-4">
-        <h3 className="text-md font-medium text-muted-foreground mb-3">Métodos de Pagamento</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <h3 className="text-sm sm:text-md font-medium text-muted-foreground mb-3">Métodos de Pagamento</h3>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
           <MetricCard
             title="Dinheiro"
             value={currentData.totalDinheiro}
@@ -215,9 +215,9 @@ export const Dashboard = () => {
       </div>
 
       {/* Distribution & Fees */}
-      <div className="mb-6">
-        <h3 className="text-md font-medium text-muted-foreground mb-3">Distribuição e Taxas</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="mb-4 sm:mb-6">
+        <h3 className="text-sm sm:text-md font-medium text-muted-foreground mb-3">Distribuição e Taxas</h3>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
           <MetricCard
             title="Studio (60%)"
             value={currentData.totalStudio}

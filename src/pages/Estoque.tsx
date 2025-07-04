@@ -73,22 +73,32 @@ export function Estoque() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h2 className="text-2xl font-semibold text-foreground">Controle de Estoque</h2>
-        <p className="text-muted-foreground">Gerencie produtos e movimentações</p>
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-semibold text-foreground">Controle de Estoque</h2>
+          <p className="text-sm text-muted-foreground">Gerencie produtos e movimentações</p>
+        </div>
+        <Button 
+          onClick={() => setShowForm(true)}
+          className="bg-finance-studio hover:bg-finance-studio/90 text-finance-studio-foreground sm:hidden"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Novo Produto
+        </Button>
       </div>
+      
       {/* Cards de Resumo */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
               Total de Produtos
             </CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
+            <Package className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">{produtos.length}</div>
+          <CardContent className="py-2">
+            <div className="text-lg sm:text-2xl font-bold text-foreground">{produtos.length}</div>
             <p className="text-xs text-muted-foreground">
               produtos cadastrados
             </p>
@@ -97,13 +107,13 @@ export function Estoque() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
               Valor Total do Estoque
             </CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-finance-income">{formatCurrency(valorTotalEstoque)}</div>
+          <CardContent className="py-2">
+            <div className="text-lg sm:text-2xl font-bold text-finance-income">{formatCurrency(valorTotalEstoque)}</div>
             <p className="text-xs text-muted-foreground">
               valor estimado
             </p>
@@ -112,13 +122,13 @@ export function Estoque() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
+            <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
               Produtos Baixo Estoque
             </CardTitle>
-            <TrendingDown className="h-4 w-4 text-muted-foreground" />
+            <TrendingDown className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-finance-fees">{produtosBaixoEstoque.length}</div>
+          <CardContent className="py-2">
+            <div className="text-lg sm:text-2xl font-bold text-finance-fees">{produtosBaixoEstoque.length}</div>
             <p className="text-xs text-muted-foreground">
               precisam de atenção
             </p>
