@@ -2,7 +2,6 @@ import { ReactNode } from 'react';
 import { BottomNavigation } from '@/components/navigation/BottomNavigation';
 import { FloatingActionButton } from '@/components/navigation/FloatingActionButton';
 import { GreetingHeader } from '@/components/dashboard/GreetingHeader';
-
 interface PageLayoutProps {
   children: ReactNode;
   title: string;
@@ -11,21 +10,19 @@ interface PageLayoutProps {
   onFabClick?: () => void;
   fabIcon?: ReactNode;
 }
-
-export const PageLayout = ({ 
-  children, 
-  title, 
-  subtitle, 
+export const PageLayout = ({
+  children,
+  title,
+  subtitle,
   showGreeting = false,
   onFabClick,
-  fabIcon 
+  fabIcon
 }: PageLayoutProps) => {
-  return (
-    <div className="min-h-screen bg-muted/20 pb-20">
+  return <div className="min-h-screen bg-muted/20 pb-20">
       {/* Header */}
       <header className="bg-card shadow-sm p-4 border-b border-border">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-semibold text-foreground">Studio Germano</h1>
+          <h1 className="text-2xl font-semibold text-foreground">Transações</h1>
           <p className="text-sm text-muted-foreground">{subtitle || 'Sistema de Gestão Profissional'}</p>
         </div>
       </header>
@@ -36,11 +33,9 @@ export const PageLayout = ({
         {showGreeting && <GreetingHeader />}
         
         {/* Page Title */}
-        {title && (
-          <div>
+        {title && <div>
             <h2 className="text-xl font-semibold text-foreground">{title}</h2>
-          </div>
-        )}
+          </div>}
 
         {/* Page Content */}
         {children}
@@ -50,9 +45,6 @@ export const PageLayout = ({
       <BottomNavigation />
 
       {/* Floating Action Button */}
-      {onFabClick && (
-        <FloatingActionButton onClick={onFabClick} />
-      )}
-    </div>
-  );
+      {onFabClick && <FloatingActionButton onClick={onFabClick} />}
+    </div>;
 };
