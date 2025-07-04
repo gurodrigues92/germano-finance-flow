@@ -1,5 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Home, DollarSign, Package, MoreHorizontal } from 'lucide-react';
+import { useState } from 'react';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 interface NavItemProps {
   icon: React.ComponentType<{ className?: string }>;
@@ -30,18 +32,60 @@ const NavItem = ({ icon: Icon, label, href, active }: NavItemProps) => (
 
 export const BottomNavigation = () => {
   const location = useLocation();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   
-  const navItems = [
+  const mainNavItems = [
     { icon: Home, label: 'Home', href: '/' },
     { icon: DollarSign, label: 'Finanças', href: '/transacoes' },
     { icon: Package, label: 'Estoque', href: '/estoque' },
-    { icon: MoreHorizontal, label: 'Mais', href: '/metas' },
   ];
+
+  const menuItems = [
+    { label: 'Metas Financeiras', href: '/metas' },
+    { label: 'Custos Fixos', href: '/custos-fixos' },
+    { label: 'Investimentos', href: '/investimentos' },
+    { label: 'Análise', href: '/analise' },
+    { label: 'Arquivo', href: '/arquivo' },
+  ];
+
+  const MoreButton = () => (
+    <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+      <SheetTrigger asChild>
+        <button className="flex flex-col items-center justify-center space-y-1 py-3 px-2 transition-all duration-200 active:scale-95 text-muted-foreground hover:text-finance-studio hover:scale-105">
+          <div className="p-1 rounded-lg transition-colors duration-200 hover:bg-muted">
+            <MoreHorizontal className="w-6 h-6" />
+          </div>
+          <span className="text-xs font-medium">Mais</span>
+        </button>
+      </SheetTrigger>
+      <SheetContent side="bottom" className="h-[60vh]">
+        <div className="py-4">
+          <h2 className="text-lg font-semibold mb-4">Menu</h2>
+          <div className="grid gap-2">
+            {menuItems.map((item) => (
+              <Link
+                key={item.href}
+                to={item.href}
+                onClick={() => setIsMenuOpen(false)}
+                className={`flex items-center p-3 rounded-lg transition-colors hover:bg-muted ${
+                  location.pathname === item.href 
+                    ? 'bg-finance-studio/10 text-finance-studio' 
+                    : 'text-foreground'
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t border-border z-50 shadow-lg pb-safe">
       <div className="grid grid-cols-4 h-20">
-        {navItems.map((item) => (
+        {mainNavItems.map((item) => (
           <NavItem
             key={item.href}
             icon={item.icon}
@@ -54,6 +98,7 @@ export const BottomNavigation = () => {
             }
           />
         ))}
+        <MoreButton />
       </div>
     </nav>
   );
