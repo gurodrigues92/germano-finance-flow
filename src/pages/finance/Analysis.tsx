@@ -1,5 +1,8 @@
 import { useMemo } from 'react';
 import { useFinance } from '@/hooks/useFinance';
+import { useCustosFixos } from '@/hooks/useCustosFixos';
+import { useInvestimentos } from '@/hooks/useInvestimentos';
+import { useProdutos } from '@/hooks/useProdutos';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
@@ -24,6 +27,9 @@ import { TrendingUp, TrendingDown, BarChart3, PieChart as PieChartIcon } from 'l
 
 export const Analysis = () => {
   const { currentMonth, setCurrentMonth, getMonthlyData, transactions } = useFinance();
+  const { custos, totalPorCategoria: totalCustosPorCategoria, totalGeral: totalCustos } = useCustosFixos(currentMonth);
+  const { investimentos, totalPorCategoria: totalInvestimentosPorCategoria, totalGeral: totalInvestimentos } = useInvestimentos();
+  const { produtos, produtosBaixoEstoque, valorTotalEstoque } = useProdutos();
   
   const currentData = getMonthlyData(currentMonth);
 
@@ -142,6 +148,66 @@ export const Analysis = () => {
     if (previousData.totalBruto === 0) return 0;
     return ((currentData.totalBruto - previousData.totalBruto) / previousData.totalBruto) * 100;
   }, [currentData.totalBruto, previousData.totalBruto]);
+
+  // Fixed Costs by Category
+  const custosData = useMemo(() => {
+    return Object.entries(totalCustosPorCategoria).map(([categoria, valor]) => ({
+      name: categoria,
+      value: valor,
+      color: categoria === 'Infraestrutura' ? 'hsl(var(--destructive))' :
+             categoria === 'Serviços Profissionais' ? 'hsl(var(--warning))' :
+             'hsl(var(--primary))',
+      percentage: totalCustos > 0 ? (valor / totalCustos * 100) : 0
+    }));
+  }, [totalCustosPorCategoria, totalCustos]);
+
+  // Investments by Category
+  const investimentosData = useMemo(() => {
+    return Object.entries(totalInvestimentosPorCategoria).map(([categoria, valor]) => ({
+      name: categoria,
+      value: valor,
+      color: categoria === 'Equipamentos' ? 'hsl(var(--chart-1))' :
+             categoria === 'Mobiliário' ? 'hsl(var(--chart-2))' :
+             categoria === 'Desenvolvimento' ? 'hsl(var(--chart-3))' :
+             'hsl(var(--chart-4))',
+      percentage: totalInvestimentos > 0 ? (valor / totalInvestimentos * 100) : 0
+    }));
+  }, [totalInvestimentosPorCategoria, totalInvestimentos]);
+
+  // Stock Status
+  const estoqueData = useMemo(() => {
+    const produtosOk = produtos.filter(p => p.estoque_atual > p.estoque_minimo);
+    const produtosBaixo = produtos.filter(p => p.estoque_atual <= p.estoque_minimo && p.estoque_atual > 0);
+    const produtosSemEstoque = produtos.filter(p => p.estoque_atual === 0);
+
+    const valorOk = produtosOk.reduce((sum, p) => sum + (p.estoque_atual * (p.valor_unitario || 0)), 0);
+    const valorBaixo = produtosBaixo.reduce((sum, p) => sum + (p.estoque_atual * (p.valor_unitario || 0)), 0);
+    const valorSemEstoque = produtosSemEstoque.reduce((sum, p) => sum + (p.estoque_atual * (p.valor_unitario || 0)), 0);
+
+    return [
+      {
+        name: 'Estoque OK',
+        value: valorOk,
+        count: produtosOk.length,
+        color: 'hsl(var(--success))',
+        percentage: valorTotalEstoque > 0 ? (valorOk / valorTotalEstoque * 100) : 0
+      },
+      {
+        name: 'Estoque Baixo',
+        value: valorBaixo,
+        count: produtosBaixo.length,
+        color: 'hsl(var(--warning))',
+        percentage: valorTotalEstoque > 0 ? (valorBaixo / valorTotalEstoque * 100) : 0
+      },
+      {
+        name: 'Sem Estoque',
+        value: valorSemEstoque,
+        count: produtosSemEstoque.length,
+        color: 'hsl(var(--destructive))',
+        percentage: valorTotalEstoque > 0 ? (valorSemEstoque / valorTotalEstoque * 100) : 0
+      }
+    ].filter(item => item.count > 0);
+  }, [produtos, valorTotalEstoque]);
 
   return (
     <PageLayout 
@@ -297,6 +363,196 @@ export const Analysis = () => {
                 <Bar dataKey="value" fill="hsl(var(--finance-studio))" />
               </BarChart>
             </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Operational Charts Grid */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        {/* Fixed Costs by Category */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <PieChartIcon className="h-5 w-5" />
+              Custos Fixos por Categoria
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {custosData.length > 0 ? (
+              <>
+                <ResponsiveContainer width="100%" height={250}>
+                  <PieChart>
+                    <Pie
+                      data={custosData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={50}
+                      outerRadius={100}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {custosData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value) => 
+                        new Intl.NumberFormat('pt-BR', {
+                          style: 'currency',
+                          currency: 'BRL'
+                        }).format(Number(value))
+                      }
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+                
+                <div className="space-y-2 mt-4">
+                  {custosData.map((item, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded-full" 
+                        style={{ backgroundColor: item.color }}
+                      />
+                      <span className="text-sm text-muted-foreground flex-1">
+                        {item.name}
+                      </span>
+                      <Badge variant="secondary" className="text-xs">
+                        {item.percentage.toFixed(1)}%
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="h-[250px] flex items-center justify-center text-muted-foreground">
+                Nenhum custo encontrado
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Investments by Category */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <PieChartIcon className="h-5 w-5" />
+              Investimentos por Categoria
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {investimentosData.length > 0 ? (
+              <>
+                <ResponsiveContainer width="100%" height={250}>
+                  <PieChart>
+                    <Pie
+                      data={investimentosData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={50}
+                      outerRadius={100}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {investimentosData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value) => 
+                        new Intl.NumberFormat('pt-BR', {
+                          style: 'currency',
+                          currency: 'BRL'
+                        }).format(Number(value))
+                      }
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+                
+                <div className="space-y-2 mt-4">
+                  {investimentosData.map((item, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded-full" 
+                        style={{ backgroundColor: item.color }}
+                      />
+                      <span className="text-sm text-muted-foreground flex-1">
+                        {item.name}
+                      </span>
+                      <Badge variant="secondary" className="text-xs">
+                        {item.percentage.toFixed(1)}%
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="h-[250px] flex items-center justify-center text-muted-foreground">
+                Nenhum investimento encontrado
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Stock Status */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <PieChartIcon className="h-5 w-5" />
+              Status do Estoque
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {estoqueData.length > 0 ? (
+              <>
+                <ResponsiveContainer width="100%" height={250}>
+                  <PieChart>
+                    <Pie
+                      data={estoqueData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={50}
+                      outerRadius={100}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {estoqueData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value, name, props) => [
+                        new Intl.NumberFormat('pt-BR', {
+                          style: 'currency',
+                          currency: 'BRL'
+                        }).format(Number(value)),
+                        `${name} (${props.payload.count} produtos)`
+                      ]}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+                
+                <div className="space-y-2 mt-4">
+                  {estoqueData.map((item, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded-full" 
+                        style={{ backgroundColor: item.color }}
+                      />
+                      <span className="text-sm text-muted-foreground flex-1">
+                        {item.name}
+                      </span>
+                      <Badge variant="secondary" className="text-xs">
+                        {item.count}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="h-[250px] flex items-center justify-center text-muted-foreground">
+                Nenhum produto encontrado
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
