@@ -94,8 +94,8 @@ export const FinanceSidebar = () => {
   const getNavClasses = (path: string) => {
     const active = isActive(path);
     return active 
-      ? "bg-primary text-primary-foreground font-medium" 
-      : "hover:bg-muted text-foreground hover:text-foreground";
+      ? "!bg-blue-600 !text-white font-medium [&>*]:!text-white" 
+      : "!text-gray-900 dark:!text-gray-100 hover:!bg-gray-100 dark:hover:!bg-gray-800 [&>*]:!text-gray-900 dark:[&>*]:!text-gray-100";
   };
 
   return (
