@@ -55,96 +55,86 @@ export function CustosForm({ onSubmit, initialData, isEdit = false }: CustosForm
 
   const subcategorias = categoria ? CATEGORIAS_CUSTOS[categoria] : [];
 
-  // Debug logs
-  console.log('CATEGORIAS_CUSTOS:', CATEGORIAS_CUSTOS);
-  console.log('Categoria selecionada:', categoria);
-  console.log('Subcategorias disponíveis:', subcategorias);
-  console.log('Object.keys(CATEGORIAS_CUSTOS):', Object.keys(CATEGORIAS_CUSTOS));
-
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{isEdit ? "Editar" : "Adicionar"} Custo Fixo</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="categoria">Categoria</Label>
-              <Select value={categoria} onValueChange={(value) => {
-                setCategoria(value as CategoriaCusto);
-                setSubcategoria(""); // Reset subcategoria when categoria changes
-              }}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione uma categoria" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.keys(CATEGORIAS_CUSTOS).map((cat) => (
-                    <SelectItem key={cat} value={cat}>
-                      {cat}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="categoria">Categoria</Label>
+          <Select value={categoria} onValueChange={(value) => {
+            setCategoria(value as CategoriaCusto);
+            setSubcategoria(""); // Reset subcategoria when categoria changes
+          }}>
+            <SelectTrigger>
+              <SelectValue placeholder="Selecione uma categoria" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.keys(CATEGORIAS_CUSTOS).map((cat) => (
+                <SelectItem key={cat} value={cat}>
+                  {cat}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="subcategoria">Subcategoria</Label>
-              <Select value={subcategoria} onValueChange={setSubcategoria} disabled={!categoria}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecione uma subcategoria" />
-                </SelectTrigger>
-                <SelectContent>
-                  {subcategorias.map((subcat) => (
-                    <SelectItem key={subcat} value={subcat}>
-                      {subcat}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+        <div className="space-y-2">
+          <Label htmlFor="subcategoria">Subcategoria</Label>
+          <Select value={subcategoria} onValueChange={setSubcategoria} disabled={!categoria}>
+            <SelectTrigger>
+              <SelectValue placeholder="Selecione uma subcategoria" />
+            </SelectTrigger>
+            <SelectContent>
+              {subcategorias.map((subcat) => (
+                <SelectItem key={subcat} value={subcat}>
+                  {subcat}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="valor">Valor (R$)</Label>
-              <Input
-                id="valor"
-                type="number"
-                step="0.01"
-                min="0"
-                value={valor}
-                onChange={(e) => setValor(e.target.value)}
-                placeholder="0,00"
-                required
-              />
-            </div>
+        <div className="space-y-2">
+          <Label htmlFor="valor">Valor (R$)</Label>
+          <Input
+            id="valor"
+            type="number"
+            step="0.01"
+            min="0"
+            value={valor}
+            onChange={(e) => setValor(e.target.value)}
+            placeholder="0,00"
+            required
+          />
+        </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="mes_referencia">Mês de Referência</Label>
-              <Input
-                id="mes_referencia"
-                type="month"
-                value={mesReferencia}
-                onChange={(e) => setMesReferencia(e.target.value)}
-                required
-              />
-            </div>
-          </div>
+        <div className="space-y-2">
+          <Label htmlFor="mes_referencia">Mês de Referência</Label>
+          <Input
+            id="mes_referencia"
+            type="month"
+            value={mesReferencia}
+            onChange={(e) => setMesReferencia(e.target.value)}
+            required
+          />
+        </div>
+      </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="observacoes">Observações (opcional)</Label>
-            <Textarea
-              id="observacoes"
-              value={observacoes}
-              onChange={(e) => setObservacoes(e.target.value)}
-              placeholder="Detalhes adicionais sobre este custo..."
-            />
-          </div>
+      <div className="space-y-2">
+        <Label htmlFor="observacoes">Observações (opcional)</Label>
+        <Textarea
+          id="observacoes"
+          value={observacoes}
+          onChange={(e) => setObservacoes(e.target.value)}
+          placeholder="Detalhes adicionais sobre este custo..."
+          rows={3}
+        />
+      </div>
 
-          <Button type="submit" disabled={loading || !categoria || !subcategoria || !valor}>
-            {loading ? "Salvando..." : isEdit ? "Atualizar" : "Adicionar Custo"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+      <div className="flex justify-end gap-2">
+        <Button type="submit" disabled={loading || !categoria || !subcategoria || !valor}>
+          {loading ? "Salvando..." : isEdit ? "Atualizar" : "Adicionar Custo"}
+        </Button>
+      </div>
+    </form>
   );
 }

@@ -67,50 +67,48 @@ export function CustosFixos() {
 
   if (loading) {
     return (
-      <div className="p-6">
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-studio-gold"></div>
-        </div>
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   if (renderError) {
     return (
-      <div className="p-6">
-        <Card className="border-destructive">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-destructive">
-              <AlertCircle className="h-5 w-5" />
-              Erro ao carregar página
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">{renderError}</p>
-            <Button onClick={() => setRenderError(null)} variant="outline">
-              Tentar Novamente
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="border-destructive">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-destructive">
+            <AlertCircle className="h-5 w-5" />
+            Erro ao carregar página
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground mb-4">{renderError}</p>
+          <Button onClick={() => setRenderError(null)} variant="outline">
+            Tentar Novamente
+          </Button>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl sm:text-2xl font-semibold text-foreground">Custos Fixos</h2>
-          <p className="text-sm text-muted-foreground">Gerencie os custos fixos mensais</p>
+          <h1 className="text-2xl font-semibold text-foreground">Custos Fixos</h1>
+          <p className="text-muted-foreground">Gerencie os custos fixos mensais do seu negócio</p>
         </div>
         <Button 
           onClick={() => setShowForm(true)}
-          className="bg-finance-studio hover:bg-finance-studio/90 text-finance-studio-foreground sm:hidden"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground"
         >
           <Plus className="h-4 w-4 mr-2" />
           Novo Custo
         </Button>
       </div>
+
       {/* Summary Cards */}
       <CustosSummary
         totalGeral={totalGeral}
@@ -119,9 +117,16 @@ export function CustosFixos() {
         receita={0}
       />
 
+      {/* Main Table */}
+      <CustosTable
+        custos={custos}
+        onEdit={handleEdit}
+        onDelete={setDeletingId}
+      />
+
       {/* Form Dialog */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="max-w-4xl">
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>Adicionar Novo Custo Fixo</DialogTitle>
           </DialogHeader>
@@ -131,7 +136,7 @@ export function CustosFixos() {
 
       {/* Edit Dialog */}
       <Dialog open={!!editingCusto} onOpenChange={() => setEditingCusto(null)}>
-        <DialogContent className="max-w-4xl">
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>Editar Custo Fixo</DialogTitle>
           </DialogHeader>
@@ -156,19 +161,15 @@ export function CustosFixos() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90">
+            <AlertDialogAction 
+              onClick={handleDelete} 
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+            >
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {/* Table */}
-      <CustosTable
-        custos={custos}
-        onEdit={handleEdit}
-        onDelete={setDeletingId}
-      />
     </div>
   );
 }

@@ -44,10 +44,12 @@ export function CustosTable({ custos, onEdit, onDelete }: CustosTableProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Filter className="h-5 w-5" />
-          Custos Cadastrados
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <Filter className="h-5 w-5" />
+            Custos Cadastrados ({filteredCustos.length})
+          </CardTitle>
+        </div>
         
         {/* Filtros */}
         <div className="flex flex-col md:flex-row gap-4">
@@ -108,15 +110,15 @@ export function CustosTable({ custos, onEdit, onDelete }: CustosTableProps) {
               {filteredCustos.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
-                    Nenhum custo encontrado
+                    {custos.length === 0 ? "Nenhum custo cadastrado ainda" : "Nenhum custo encontrado com os filtros aplicados"}
                   </TableCell>
                 </TableRow>
               ) : (
                 filteredCustos.map((custo) => (
-                  <TableRow key={custo.id}>
+                  <TableRow key={custo.id} className="hover:bg-muted/50">
                     <TableCell className="font-medium">{custo.categoria}</TableCell>
                     <TableCell>{custo.subcategoria}</TableCell>
-                    <TableCell className="font-medium text-finance-fees">
+                    <TableCell className="font-medium text-destructive">
                       {formatCurrency(Number(custo.valor))}
                     </TableCell>
                     <TableCell>
@@ -126,11 +128,12 @@ export function CustosTable({ custos, onEdit, onDelete }: CustosTableProps) {
                       {custo.observacoes || "-"}
                     </TableCell>
                     <TableCell>
-                      <div className="flex gap-2">
+                      <div className="flex gap-1">
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => onEdit(custo)}
+                          className="h-8 w-8 p-0"
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -138,7 +141,7 @@ export function CustosTable({ custos, onEdit, onDelete }: CustosTableProps) {
                           variant="outline"
                           size="sm"
                           onClick={() => onDelete(custo.id)}
-                          className="text-destructive hover:text-destructive"
+                          className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
