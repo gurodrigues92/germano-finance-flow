@@ -27,7 +27,8 @@ export function CustosSummary({
     .sort(([,a], [,b]) => b - a)[0];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
       {/* Total Custos Fixos do Mês */}
       <Card className="border-l-4 border-l-destructive">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -82,24 +83,25 @@ export function CustosSummary({
         </CardContent>
       </Card>
 
-      {/* Cards por Categoria */}
-      {Object.entries(totalPorCategoria).map(([categoria, total]) => (
-        <Card key={categoria} className="border-l-4 border-l-accent">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              {categoria}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-foreground">
-              {formatCurrency(total)}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {((total / totalGeral) * 100).toFixed(1)}% do total
-            </p>
-          </CardContent>
-        </Card>
-      ))}
+        {/* Cards por Categoria */}
+        {Object.entries(totalPorCategoria).map(([categoria, total]) => (
+          <Card key={categoria} className="border-l-4 border-l-accent">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                {categoria}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xl md:text-2xl font-bold text-foreground">
+                {formatCurrency(total)}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {((total / totalGeral) * 100).toFixed(1)}% do total
+              </p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 }

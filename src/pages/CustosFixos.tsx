@@ -93,36 +93,37 @@ export function CustosFixos() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">Custos Fixos</h1>
-          <p className="text-muted-foreground">Gerencie os custos fixos mensais do seu negócio</p>
+    <div className="w-full max-w-full overflow-hidden">
+      <div className="space-y-4 md:space-y-6 p-4 md:p-0">
+        {/* Header */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-1">
+            <h1 className="text-xl md:text-2xl font-semibold text-foreground">Custos Fixos</h1>
+            <p className="text-sm md:text-base text-muted-foreground">Gerencie os custos fixos mensais do seu negócio</p>
+          </div>
+          <Button 
+            onClick={() => setShowForm(true)}
+            className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Novo Custo
+          </Button>
         </div>
-        <Button 
-          onClick={() => setShowForm(true)}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Novo Custo
-        </Button>
-      </div>
 
-      {/* Summary Cards */}
-      <CustosSummary
-        totalGeral={totalGeral}
-        maiorCusto={maiorCusto}
-        totalPorCategoria={totalPorCategoria}
-        receita={0}
-      />
+        {/* Summary Cards */}
+        <CustosSummary
+          totalGeral={totalGeral}
+          maiorCusto={maiorCusto}
+          totalPorCategoria={totalPorCategoria}
+          receita={0}
+        />
 
-      {/* Main Table */}
-      <CustosTable
-        custos={custos}
-        onEdit={handleEdit}
-        onDelete={setDeletingId}
-      />
+        {/* Main Table */}
+        <CustosTable
+          custos={custos}
+          onEdit={handleEdit}
+          onDelete={setDeletingId}
+        />
 
       {/* Form Dialog */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
@@ -170,6 +171,7 @@ export function CustosFixos() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      </div>
     </div>
   );
 }
