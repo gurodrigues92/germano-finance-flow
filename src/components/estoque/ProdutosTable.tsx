@@ -38,7 +38,8 @@ export function ProdutosTable({ produtos, onEdit, onDelete }: ProdutosTableProps
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="rounded-md border">
+        {/* Desktop Table */}
+        <div className="hidden md:block rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -100,6 +101,64 @@ export function ProdutosTable({ produtos, onEdit, onDelete }: ProdutosTableProps
               )}
             </TableBody>
           </Table>
+        </div>
+
+        {/* Mobile Cards */}
+        <div className="md:hidden space-y-3">
+          {produtos.length === 0 ? (
+            <div className="text-center text-muted-foreground py-8">
+              Nenhum produto cadastrado
+            </div>
+          ) : (
+            produtos.map((produto) => (
+              <Card key={produto.id} className="p-4">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex-1">
+                    <p className="font-medium text-base">{produto.nome}</p>
+                    <p className="text-sm text-muted-foreground">{produto.unidade_medida}</p>
+                  </div>
+                  {getStatusBadge(produto)}
+                </div>
+                
+                <div className="grid grid-cols-2 gap-3 text-sm mb-3">
+                  <div>
+                    <span className="text-muted-foreground">Categoria:</span>
+                    <p className="font-medium">{produto.categoria}</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Estoque:</span>
+                    <p className="font-medium">{produto.estoque_atual} / {produto.estoque_minimo}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="text-muted-foreground">Valor Unit.:</span>
+                    <p className="font-medium">
+                      {produto.valor_unitario ? formatCurrency(produto.valor_unitario) : "-"}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex gap-2 pt-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onEdit(produto)}
+                    className="flex-1"
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    Editar
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onDelete(produto.id)}
+                    className="text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </Card>
+            ))
+          )}
         </div>
       </CardContent>
     </Card>

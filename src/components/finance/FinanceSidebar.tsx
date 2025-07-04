@@ -74,9 +74,15 @@ const menuItems = [
 ];
 
 export const FinanceSidebar = () => {
-  const { state } = useSidebar();
+  const { state, isMobile, setOpenMobile } = useSidebar();
   const location = useLocation();
   const collapsed = state === 'collapsed';
+
+  const handleNavClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   const isActive = (path: string) => {
     if (path === '/financeiro') {
@@ -109,6 +115,7 @@ export const FinanceSidebar = () => {
                     <NavLink 
                       to={item.url} 
                       end={item.url === '/'}
+                      onClick={handleNavClick}
                       className={`${getNavClasses(item.url)} transition-all duration-200 rounded-lg p-3`}
                     >
                       <item.icon className="h-5 w-5 flex-shrink-0" />

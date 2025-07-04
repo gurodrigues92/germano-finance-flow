@@ -81,7 +81,7 @@ export function Estoque() {
         </div>
         <Button 
           onClick={() => setShowForm(true)}
-          className="bg-finance-studio hover:bg-finance-studio/90 text-finance-studio-foreground sm:hidden"
+          className="bg-finance-studio hover:bg-finance-studio/90 text-finance-studio-foreground"
         >
           <Plus className="h-4 w-4 mr-2" />
           Novo Produto
@@ -152,7 +152,7 @@ export function Estoque() {
 
       {/* Form Dialog */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
-        <DialogContent className="max-w-4xl">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Cadastrar Novo Produto</DialogTitle>
           </DialogHeader>
@@ -162,7 +162,7 @@ export function Estoque() {
 
       {/* Edit Dialog */}
       <Dialog open={!!editingProduto} onOpenChange={() => setEditingProduto(null)}>
-        <DialogContent className="max-w-4xl">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Editar Produto</DialogTitle>
           </DialogHeader>
