@@ -42,6 +42,48 @@ export type Database = {
         }
         Relationships: []
       }
+      investimentos: {
+        Row: {
+          categoria: string
+          created_at: string
+          data_compra: string
+          descricao: string
+          fornecedor: string | null
+          garantia_meses: number | null
+          id: string
+          observacoes: string | null
+          subcategoria: string
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          categoria: string
+          created_at?: string
+          data_compra: string
+          descricao: string
+          fornecedor?: string | null
+          garantia_meses?: number | null
+          id?: string
+          observacoes?: string | null
+          subcategoria: string
+          updated_at?: string
+          valor: number
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          data_compra?: string
+          descricao?: string
+          fornecedor?: string | null
+          garantia_meses?: number | null
+          id?: string
+          observacoes?: string | null
+          subcategoria?: string
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: []
+      }
       movimentacao_estoque: {
         Row: {
           created_at: string
@@ -119,6 +161,33 @@ export type Database = {
           unidade_medida?: string
           updated_at?: string
           valor_unitario?: number | null
+        }
+        Relationships: []
+      }
+      reserva_emergencia: {
+        Row: {
+          created_at: string
+          id: string
+          mes_referencia: string
+          meta_valor: number
+          updated_at: string
+          valor_atual: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mes_referencia: string
+          meta_valor: number
+          updated_at?: string
+          valor_atual: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mes_referencia?: string
+          meta_valor?: number
+          updated_at?: string
+          valor_atual?: number
         }
         Relationships: []
       }

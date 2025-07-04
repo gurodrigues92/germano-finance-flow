@@ -12,6 +12,7 @@ import { Analysis } from "./pages/finance/Analysis";
 import { Archive } from "./pages/finance/Archive";
 import { CustosFixos } from "./pages/CustosFixos";
 import { Estoque } from "./pages/Estoque";
+import { Investimentos } from "./pages/Investimentos";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +32,7 @@ const App = () => (
           </Route>
           <Route path="/custos-fixos" element={<CustosFixos />} />
           <Route path="/estoque" element={<Estoque />} />
+          <Route path="/investimentos" element={<Investimentos />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
