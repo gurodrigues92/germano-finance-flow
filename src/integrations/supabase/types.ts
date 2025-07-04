@@ -42,6 +42,86 @@ export type Database = {
         }
         Relationships: []
       }
+      movimentacao_estoque: {
+        Row: {
+          created_at: string
+          data_movimentacao: string
+          fornecedor: string | null
+          id: string
+          motivo: string | null
+          produto_id: string | null
+          quantidade: number
+          tipo: string
+          valor_total: number | null
+        }
+        Insert: {
+          created_at?: string
+          data_movimentacao: string
+          fornecedor?: string | null
+          id?: string
+          motivo?: string | null
+          produto_id?: string | null
+          quantidade: number
+          tipo: string
+          valor_total?: number | null
+        }
+        Update: {
+          created_at?: string
+          data_movimentacao?: string
+          fornecedor?: string | null
+          id?: string
+          motivo?: string | null
+          produto_id?: string | null
+          quantidade?: number
+          tipo?: string
+          valor_total?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movimentacao_estoque_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      produtos: {
+        Row: {
+          categoria: string
+          created_at: string
+          estoque_atual: number | null
+          estoque_minimo: number
+          id: string
+          nome: string
+          unidade_medida: string
+          updated_at: string
+          valor_unitario: number | null
+        }
+        Insert: {
+          categoria: string
+          created_at?: string
+          estoque_atual?: number | null
+          estoque_minimo: number
+          id?: string
+          nome: string
+          unidade_medida: string
+          updated_at?: string
+          valor_unitario?: number | null
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          estoque_atual?: number | null
+          estoque_minimo?: number
+          id?: string
+          nome?: string
+          unidade_medida?: string
+          updated_at?: string
+          valor_unitario?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -5,7 +5,8 @@ import {
   BarChart3, 
   Archive,
   TrendingUp,
-  Receipt
+  Receipt,
+  Package
 } from 'lucide-react';
 import {
   Sidebar,
@@ -49,6 +50,12 @@ const menuItems = [
     url: '/custos-fixos',
     icon: Receipt,
     description: 'Gastos mensais fixos'
+  },
+  {
+    title: 'Estoque',
+    url: '/estoque',
+    icon: Package,
+    description: 'Controle de produtos'
   }
 ];
 
