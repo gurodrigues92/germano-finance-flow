@@ -84,6 +84,51 @@ export type Database = {
         }
         Relationships: []
       }
+      metas_financeiras: {
+        Row: {
+          categoria: string | null
+          created_at: string
+          data_fim: string
+          data_inicio: string
+          descricao: string | null
+          id: string
+          status: string | null
+          tipo: string
+          titulo: string
+          updated_at: string
+          valor_atual: number | null
+          valor_meta: number
+        }
+        Insert: {
+          categoria?: string | null
+          created_at?: string
+          data_fim: string
+          data_inicio: string
+          descricao?: string | null
+          id?: string
+          status?: string | null
+          tipo: string
+          titulo: string
+          updated_at?: string
+          valor_atual?: number | null
+          valor_meta: number
+        }
+        Update: {
+          categoria?: string | null
+          created_at?: string
+          data_fim?: string
+          data_inicio?: string
+          descricao?: string | null
+          id?: string
+          status?: string | null
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+          valor_atual?: number | null
+          valor_meta?: number
+        }
+        Relationships: []
+      }
       movimentacao_estoque: {
         Row: {
           created_at: string
@@ -161,6 +206,39 @@ export type Database = {
           unidade_medida?: string
           updated_at?: string
           valor_unitario?: number | null
+        }
+        Relationships: []
+      }
+      relatorios_salvos: {
+        Row: {
+          configuracao: Json
+          created_at: string
+          data_fim: string | null
+          data_inicio: string | null
+          id: string
+          nome: string
+          tipo: string
+          updated_at: string
+        }
+        Insert: {
+          configuracao: Json
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string | null
+          id?: string
+          nome: string
+          tipo: string
+          updated_at?: string
+        }
+        Update: {
+          configuracao?: Json
+          created_at?: string
+          data_fim?: string | null
+          data_inicio?: string | null
+          id?: string
+          nome?: string
+          tipo?: string
+          updated_at?: string
         }
         Relationships: []
       }

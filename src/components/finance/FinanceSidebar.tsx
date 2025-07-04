@@ -7,7 +7,8 @@ import {
   TrendingUp,
   Receipt,
   Package,
-  TrendingUp as TrendingUpIcon
+  TrendingUp as TrendingUpIcon,
+  Target
 } from 'lucide-react';
 import {
   Sidebar,
@@ -63,6 +64,12 @@ const menuItems = [
     url: '/investimentos',
     icon: TrendingUpIcon,
     description: 'Investimentos e reserva'
+  },
+  {
+    title: 'Metas',
+    url: '/metas',
+    icon: Target,
+    description: 'Metas e objetivos'
   }
 ];
 
