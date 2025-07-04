@@ -65,7 +65,7 @@ export const QuickActionMenu = () => {
       <DropdownMenuTrigger asChild>
         <Button
           size="lg"
-          className="fixed bottom-4 right-4 h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg bg-finance-studio hover:bg-finance-studio/90 text-finance-studio-foreground z-50"
+          className="fixed bottom-20 right-4 h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg bg-gradient-to-r from-purple-600 to-orange-500 hover:shadow-xl hover:scale-105 text-white z-50 transition-all duration-200"
         >
           <Plus className="h-5 w-5 sm:h-6 sm:w-6" />
         </Button>
@@ -74,9 +74,9 @@ export const QuickActionMenu = () => {
       <DropdownMenuContent 
         align="end" 
         sideOffset={8}
-        className="w-56 sm:w-64 bg-background border border-border shadow-xl z-50"
+        className="w-56 sm:w-64 glass border border-purple-100 shadow-xl z-50"
       >
-        <DropdownMenuLabel className="text-finance-studio font-semibold">
+        <DropdownMenuLabel className="text-purple-600 font-semibold">
           Ações Rápidas
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -85,9 +85,9 @@ export const QuickActionMenu = () => {
           <DropdownMenuItem
             key={action.path}
             onClick={() => handleAction(action.path)}
-            className="flex items-start gap-3 p-3 cursor-pointer hover:bg-muted/50"
+            className="flex items-start gap-3 p-3 cursor-pointer hover:bg-purple-50/50 transition-colors rounded-lg"
           >
-            <action.icon className="h-5 w-5 text-finance-studio mt-0.5" />
+            <action.icon className="h-5 w-5 text-purple-600 mt-0.5" />
             <div className="flex flex-col">
               <span className="font-medium text-foreground">{action.label}</span>
               <span className="text-xs text-muted-foreground">{action.description}</span>

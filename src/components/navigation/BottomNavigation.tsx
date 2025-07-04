@@ -14,18 +14,18 @@ interface NavItemProps {
 const NavItem = ({ icon: Icon, label, href, active }: NavItemProps) => (
   <Link 
     to={href}
-    className={`flex flex-col items-center justify-center space-y-1 py-3 px-2 transition-all duration-200 active:scale-95 ${
-      active 
-        ? 'text-finance-studio' 
-        : 'text-muted-foreground hover:text-finance-studio hover:scale-105'
-    }`}
-  >
-    <div className={`p-1 rounded-lg transition-colors duration-200 ${
-      active ? 'bg-finance-studio/10' : 'hover:bg-muted'
-    }`}>
-      <Icon className={`w-6 h-6 ${active ? 'text-finance-studio' : ''}`} />
-    </div>
-    <span className={`text-xs font-medium ${active ? 'text-finance-studio' : ''}`}>
+      className={`flex flex-col items-center justify-center space-y-1 py-3 px-2 transition-all duration-200 active:scale-95 ${
+        active 
+          ? 'text-purple-600' 
+          : 'text-muted-foreground hover:text-purple-600 hover:scale-105'
+      }`}
+    >
+      <div className={`p-1 rounded-lg transition-colors duration-200 ${
+        active ? 'bg-purple-100 shadow-sm' : 'hover:bg-purple-50'
+      }`}>
+        <Icon className={`w-6 h-6 ${active ? 'text-purple-600' : ''}`} />
+      </div>
+      <span className={`text-xs font-medium ${active ? 'text-purple-600' : ''}`}>
       {label}
     </span>
   </Link>
@@ -53,14 +53,14 @@ export const BottomNavigation = () => {
   const MoreButton = () => (
     <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
       <SheetTrigger asChild>
-        <button className="flex flex-col items-center justify-center space-y-1 py-3 px-2 transition-all duration-200 active:scale-95 text-muted-foreground hover:text-finance-studio hover:scale-105">
-          <div className="p-1 rounded-lg transition-colors duration-200 hover:bg-muted">
+        <button className="flex flex-col items-center justify-center space-y-1 py-3 px-2 transition-all duration-200 active:scale-95 text-muted-foreground hover:text-purple-600 hover:scale-105">
+          <div className="p-1 rounded-lg transition-colors duration-200 hover:bg-purple-50">
             <MoreHorizontal className="w-6 h-6" />
           </div>
           <span className="text-xs font-medium">Mais</span>
         </button>
       </SheetTrigger>
-      <SheetContent side="bottom" className="h-[60vh]">
+      <SheetContent side="bottom" className="h-[60vh] glass-strong border-purple-100">
         <div className="py-4">
           <h2 className="text-lg font-semibold mb-4">Menu</h2>
           <div className="grid gap-2">
@@ -69,9 +69,9 @@ export const BottomNavigation = () => {
                 key={item.href}
                 to={item.href}
                 onClick={() => setIsMenuOpen(false)}
-                className={`flex items-center p-3 rounded-lg transition-colors hover:bg-muted ${
+                className={`flex items-center p-3 rounded-lg transition-colors hover:bg-purple-50 ${
                   location.pathname === item.href 
-                    ? 'bg-finance-studio/10 text-finance-studio' 
+                    ? 'bg-purple-100 text-purple-600' 
                     : 'text-foreground'
                 }`}
               >
@@ -100,7 +100,7 @@ export const BottomNavigation = () => {
   );
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t border-border z-50 shadow-lg pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 glass-strong border-t border-purple-100 z-50 shadow-lg pb-safe">
       <div className="grid grid-cols-4 h-20">
         {mainNavItems.map((item) => (
           <NavItem

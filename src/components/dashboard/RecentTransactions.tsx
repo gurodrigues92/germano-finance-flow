@@ -21,7 +21,7 @@ export const RecentTransactions = ({ transactions }: RecentTransactionsProps) =>
   const recentTransactions = transactions.slice(0, 5);
 
   return (
-    <Card className="border-border">
+    <Card className="border-purple-100 glass">
       <CardHeader>
         <CardTitle className="text-lg">📊 Últimas Transações</CardTitle>
       </CardHeader>
@@ -38,7 +38,7 @@ export const RecentTransactions = ({ transactions }: RecentTransactionsProps) =>
             {recentTransactions.map((transaction) => (
               <div 
                 key={transaction.id}
-                className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors"
+                className="flex items-center justify-between p-3 rounded-lg bg-purple-50/50 hover:bg-purple-100/50 transition-colors border border-purple-100/50"
               >
                 <div>
                   <p className="font-medium text-sm">

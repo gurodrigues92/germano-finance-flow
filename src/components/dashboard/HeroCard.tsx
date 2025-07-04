@@ -26,7 +26,7 @@ export const HeroCard = ({ title, value, icon: Icon, gradient, trend, subtitle }
   };
 
   return (
-    <div className={`${gradient} rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 active:scale-95`}>
+    <div className={`${gradient} rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-95`}>
       <div className="flex items-center justify-between mb-3">
         <span className="text-white/80 text-sm font-medium">{title}</span>
         <Icon className="w-6 h-6 text-white/90" />

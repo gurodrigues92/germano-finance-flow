@@ -2,25 +2,29 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { FinanceSidebar } from './FinanceSidebar';
 import { BottomNavigation } from '@/components/navigation/BottomNavigation';
+import { Scissors } from 'lucide-react';
 
 export const FinanceLayout = () => {
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+      <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 via-purple-50 to-orange-50 animate-gradient">
         <FinanceSidebar />
         
         <div className="flex-1 flex flex-col">
-          <header className="h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+          <header className="h-16 border-b glass-strong border-purple-100 sticky top-0 z-50">
             <div className="flex h-full items-center px-4 gap-4">
               <SidebarTrigger />
               <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-orange-500 rounded-full flex items-center justify-center">
+                  <Scissors className="w-5 h-5 text-white" />
+                </div>
                 <h1 className="text-xl font-semibold text-foreground">Studio Germano</h1>
                 <span className="text-sm text-muted-foreground">Sistema Financeiro</span>
               </div>
             </div>
           </header>
           
-          <main className="flex-1 p-6 bg-muted/10 pb-24">
+          <main className="flex-1 p-6 pb-24 animate-slide-up">
             <Outlet />
           </main>
         </div>

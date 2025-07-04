@@ -26,7 +26,7 @@ export const MetricCard = ({ title, value, icon: Icon, colorClass, trend, subtit
   };
 
   return (
-    <div className="bg-card rounded-2xl p-4 border border-border hover:shadow-md hover:-translate-y-1 transition-all duration-200 cursor-pointer active:scale-95">
+    <div className="glass rounded-2xl p-4 border border-purple-100 hover:shadow-md hover:scale-[1.02] transition-all duration-200 cursor-pointer active:scale-95">
       <div className="flex items-center justify-between mb-3">
         <span className="text-sm text-muted-foreground font-medium">{title}</span>
         <div className={`p-2 rounded-lg ${colorClass} shadow-sm`}>

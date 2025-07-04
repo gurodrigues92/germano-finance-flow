@@ -27,7 +27,7 @@ export const CompactCard = ({ title, value, icon: Icon, iconColor, iconBg, trend
   };
 
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-50 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 active:scale-95">
+    <div className="glass rounded-xl p-4 shadow-sm border border-purple-100 hover:shadow-md hover:scale-[1.02] transition-all duration-200 active:scale-95">
       <div className="flex items-center space-x-3 mb-3">
         <div className={`w-10 h-10 ${iconBg} rounded-lg flex items-center justify-center`}>
           <Icon className={`w-5 h-5 ${iconColor}`} />

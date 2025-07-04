@@ -20,7 +20,7 @@ export const MotivationalSection = () => {
   const currentPhraseIndex = getCurrentPhraseIndex();
 
   return (
-    <div className="bg-card rounded-2xl p-6 text-center border border-border">
+    <div className="glass rounded-2xl p-6 text-center border border-purple-100 animate-float">
       <h3 className="text-lg font-semibold text-foreground mb-2">💫 Inspiração do Dia</h3>
       <p className="text-muted-foreground italic text-base">
         "{motivationalPhrases[currentPhraseIndex]}"
