@@ -93,8 +93,8 @@ export function CustosFixos() {
   }
 
   return (
-    <div className="w-full max-w-full overflow-hidden">
-      <div className="space-y-4 md:space-y-6 p-4 md:p-0">
+    <div className="w-full max-w-full overflow-x-hidden">
+      <div className="space-y-4 md:space-y-6 min-w-0">
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="space-y-1">

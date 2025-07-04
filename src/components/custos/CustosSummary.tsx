@@ -27,8 +27,8 @@ export function CustosSummary({
     .sort(([,a], [,b]) => b - a)[0];
 
   return (
-    <div className="w-full">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+    <div className="w-full max-w-full overflow-hidden">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 min-w-0">
       {/* Total Custos Fixos do Mês */}
       <Card className="border-l-4 border-l-destructive">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

@@ -42,7 +42,7 @@ export function CustosTable({ custos, onEdit, onDelete }: CustosTableProps) {
   };
 
   return (
-    <Card>
+    <Card className="w-full max-w-full overflow-hidden">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
@@ -65,8 +65,8 @@ export function CustosTable({ custos, onEdit, onDelete }: CustosTableProps) {
           
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-2">
             <Select value={filterCategoria} onValueChange={setFilterCategoria}>
-              <SelectTrigger className="w-full sm:w-44 min-w-0">
-                <SelectValue placeholder="Todas as categorias" />
+              <SelectTrigger className="w-full sm:w-40 min-w-0 max-w-full">
+                <SelectValue placeholder="Categorias" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todas as categorias</SelectItem>
@@ -79,8 +79,8 @@ export function CustosTable({ custos, onEdit, onDelete }: CustosTableProps) {
             </Select>
 
             <Select value={filterMes} onValueChange={setFilterMes}>
-              <SelectTrigger className="w-full sm:w-32 min-w-0">
-                <SelectValue placeholder="Todos os meses" />
+              <SelectTrigger className="w-full sm:w-28 min-w-0 max-w-full">
+                <SelectValue placeholder="Meses" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Todos os meses</SelectItem>
