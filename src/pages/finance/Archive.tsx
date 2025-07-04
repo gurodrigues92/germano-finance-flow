@@ -5,14 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { PageLayout } from '@/components/layout/PageLayout';
 import { 
   Archive as ArchiveIcon, 
   Download, 
   Eye, 
   Calendar,
   TrendingUp,
-  DollarSign
+  DollarSign,
+  ChevronRight
 } from 'lucide-react';
 
 export const Archive = () => {
@@ -111,28 +111,28 @@ export const Archive = () => {
   };
 
   return (
-    <PageLayout 
-      title="Arquivo Histórico"
-      subtitle="Histórico completo de transações organizadas por mês"
-    >
-      <div className="flex justify-end mb-6">
-        <Button onClick={exportToCSV} variant="outline">
-          <Download className="mr-2 h-4 w-4" />
-          Exportar Tudo
+    <div className="space-y-4 p-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">Arquivo Histórico</h1>
+          <p className="text-muted-foreground">Histórico completo de transações organizadas por mês</p>
+        </div>
+        <Button onClick={exportToCSV} variant="outline" size="sm">
+          <Download className="h-4 w-4" />
         </Button>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {/* Summary Cards - Mobile First */}
+      <div className="grid grid-cols-2 gap-3">
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              Meses Arquivados
+            <CardTitle className="text-xs text-muted-foreground flex items-center gap-1">
+              <Calendar className="h-3 w-3" />
+              Meses
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">
+            <div className="text-lg font-bold text-foreground">
               {monthlyArchive.length}
             </div>
           </CardContent>
@@ -140,13 +140,13 @@ export const Archive = () => {
         
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground flex items-center gap-2">
-              <ArchiveIcon className="h-4 w-4" />
-              Total de Transações
+            <CardTitle className="text-xs text-muted-foreground flex items-center gap-1">
+              <ArchiveIcon className="h-3 w-3" />
+              Transações
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">
+            <div className="text-lg font-bold text-foreground">
               {transactions.length}
             </div>
           </CardContent>
@@ -154,13 +154,13 @@ export const Archive = () => {
         
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground flex items-center gap-2">
-              <DollarSign className="h-4 w-4" />
-              Faturamento Total
+            <CardTitle className="text-xs text-muted-foreground flex items-center gap-1">
+              <DollarSign className="h-3 w-3" />
+              Faturamento
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-finance-income">
+            <div className="text-sm font-bold text-finance-income">
               {transactions.reduce((sum, t) => sum + t.totalBruto, 0).toLocaleString('pt-BR', {
                 style: 'currency',
                 currency: 'BRL'
@@ -171,13 +171,13 @@ export const Archive = () => {
         
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground flex items-center gap-2">
-              <TrendingUp className="h-4 w-4" />
-              Líquido Total
+            <CardTitle className="text-xs text-muted-foreground flex items-center gap-1">
+              <TrendingUp className="h-3 w-3" />
+              Líquido
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-finance-net">
+            <div className="text-sm font-bold text-finance-net">
               {transactions.reduce((sum, t) => sum + t.totalLiquido, 0).toLocaleString('pt-BR', {
                 style: 'currency',
                 currency: 'BRL'
@@ -187,10 +187,10 @@ export const Archive = () => {
         </Card>
       </div>
 
-      {/* Monthly Archive Table */}
+      {/* Monthly Archive - Mobile Cards */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-lg">
             <ArchiveIcon className="h-5 w-5" />
             Arquivo por Mês
           </CardTitle>
@@ -203,213 +203,171 @@ export const Archive = () => {
               Adicione transações para ver o histórico.
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Mês/Ano</TableHead>
-                    <TableHead>Transações</TableHead>
-                    <TableHead>Total Bruto</TableHead>
-                    <TableHead>Total Líquido</TableHead>
-                    <TableHead>Taxas</TableHead>
-                    <TableHead>Studio</TableHead>
-                    <TableHead>Edu</TableHead>
-                    <TableHead>Kam</TableHead>
-                    <TableHead className="text-right">Ações</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {monthlyArchive.map((monthData: any) => (
-                    <TableRow key={monthData.month} className="hover:bg-muted/50">
-                      <TableCell className="font-medium">
-                        {formatMonth(monthData.month)}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">
+            <div className="space-y-3">
+              {monthlyArchive.map((monthData: any) => (
+                <Card key={monthData.month} className="border bg-muted/20">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <h3 className="font-semibold text-foreground">
+                          {formatMonth(monthData.month)}
+                        </h3>
+                        <Badge variant="secondary" className="text-xs">
                           {monthData.transactions.length} transações
                         </Badge>
-                      </TableCell>
-                      <TableCell className="text-finance-income font-medium">
-                        {monthData.totalBruto.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                        })}
-                      </TableCell>
-                      <TableCell className="text-finance-net font-medium">
-                        {monthData.totalLiquido.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                        })}
-                      </TableCell>
-                      <TableCell className="text-finance-fees">
-                        {monthData.totalTaxas.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                        })}
-                      </TableCell>
-                      <TableCell className="text-finance-studio">
-                        {monthData.totalStudio.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                        })}
-                      </TableCell>
-                      <TableCell className="text-finance-edu">
-                        {monthData.totalEdu.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                        })}
-                      </TableCell>
-                      <TableCell className="text-finance-kam">
-                        {monthData.totalKam.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                        })}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex gap-2 justify-end">
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => setSelectedMonth(monthData.month)}
-                              >
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="max-w-4xl max-h-[80vh] overflow-auto">
-                              <DialogHeader>
-                                <DialogTitle>
-                                  Detalhes - {formatMonth(monthData.month)}
-                                </DialogTitle>
-                              </DialogHeader>
-                              
-                              {selectedMonthData && (
-                                <div className="space-y-4">
-                                  {/* Month Summary */}
-                                  <div className="grid gap-4 md:grid-cols-3">
-                                    <div className="text-center p-4 rounded-lg bg-muted/50">
-                                      <div className="text-lg font-bold text-finance-income">
-                                        {selectedMonthData.totalBruto.toLocaleString('pt-BR', {
-                                          style: 'currency',
-                                          currency: 'BRL'
-                                        })}
-                                      </div>
-                                      <div className="text-sm text-muted-foreground">Total Bruto</div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setSelectedMonth(monthData.month)}
+                              className="h-8 w-8 p-0"
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-[95vw] max-h-[90vh] overflow-auto">
+                            <DialogHeader>
+                              <DialogTitle className="text-lg">
+                                {formatMonth(monthData.month)}
+                              </DialogTitle>
+                            </DialogHeader>
+                            
+                            {selectedMonthData && (
+                              <div className="space-y-4">
+                                {/* Month Summary - Mobile */}
+                                <div className="grid grid-cols-1 gap-3">
+                                  <div className="text-center p-3 rounded-lg bg-muted/50">
+                                    <div className="text-base font-bold text-finance-income">
+                                      {selectedMonthData.totalBruto.toLocaleString('pt-BR', {
+                                        style: 'currency',
+                                        currency: 'BRL'
+                                      })}
                                     </div>
-                                    
-                                    <div className="text-center p-4 rounded-lg bg-muted/50">
-                                      <div className="text-lg font-bold text-finance-net">
-                                        {selectedMonthData.totalLiquido.toLocaleString('pt-BR', {
-                                          style: 'currency',
-                                          currency: 'BRL'
-                                        })}
-                                      </div>
-                                      <div className="text-sm text-muted-foreground">Total Líquido</div>
-                                    </div>
-                                    
-                                    <div className="text-center p-4 rounded-lg bg-muted/50">
-                                      <div className="text-lg font-bold text-finance-fees">
-                                        {selectedMonthData.totalTaxas.toLocaleString('pt-BR', {
-                                          style: 'currency',
-                                          currency: 'BRL'
-                                        })}
-                                      </div>
-                                      <div className="text-sm text-muted-foreground">Total Taxas</div>
-                                    </div>
+                                    <div className="text-xs text-muted-foreground">Total Bruto</div>
                                   </div>
+                                  
+                                  <div className="text-center p-3 rounded-lg bg-muted/50">
+                                    <div className="text-base font-bold text-finance-net">
+                                      {selectedMonthData.totalLiquido.toLocaleString('pt-BR', {
+                                        style: 'currency',
+                                        currency: 'BRL'
+                                      })}
+                                    </div>
+                                    <div className="text-xs text-muted-foreground">Total Líquido</div>
+                                  </div>
+                                  
+                                  <div className="text-center p-3 rounded-lg bg-muted/50">
+                                    <div className="text-base font-bold text-finance-fees">
+                                      {selectedMonthData.totalTaxas.toLocaleString('pt-BR', {
+                                        style: 'currency',
+                                        currency: 'BRL'
+                                      })}
+                                    </div>
+                                    <div className="text-xs text-muted-foreground">Total Taxas</div>
+                                  </div>
+                                </div>
 
-                                  {/* Transactions Table */}
-                                  <div className="overflow-x-auto">
-                                    <Table>
-                                      <TableHeader>
-                                        <TableRow>
-                                          <TableHead>Data</TableHead>
-                                          <TableHead>Dinheiro</TableHead>
-                                          <TableHead>PIX</TableHead>
-                                          <TableHead>Débito</TableHead>
-                                          <TableHead>Crédito</TableHead>
-                                          <TableHead>Total Bruto</TableHead>
-                                          <TableHead>Total Líquido</TableHead>
-                                        </TableRow>
-                                      </TableHeader>
-                                      <TableBody>
-                                        {selectedMonthData.transactions.map((transaction: any) => (
-                                          <TableRow key={transaction.id}>
-                                            <TableCell>
-                                              {new Date(transaction.date).toLocaleDateString('pt-BR')}
-                                            </TableCell>
-                                            <TableCell>
-                                              {transaction.dinheiro > 0 && (
-                                                transaction.dinheiro.toLocaleString('pt-BR', {
-                                                  style: 'currency',
-                                                  currency: 'BRL'
-                                                })
-                                              )}
-                                            </TableCell>
-                                            <TableCell>
-                                              {transaction.pix > 0 && (
-                                                transaction.pix.toLocaleString('pt-BR', {
-                                                  style: 'currency',
-                                                  currency: 'BRL'
-                                                })
-                                              )}
-                                            </TableCell>
-                                            <TableCell>
-                                              {transaction.debito > 0 && (
-                                                transaction.debito.toLocaleString('pt-BR', {
-                                                  style: 'currency',
-                                                  currency: 'BRL'
-                                                })
-                                              )}
-                                            </TableCell>
-                                            <TableCell>
-                                              {transaction.credito > 0 && (
-                                                transaction.credito.toLocaleString('pt-BR', {
-                                                  style: 'currency',
-                                                  currency: 'BRL'
-                                                })
-                                              )}
-                                            </TableCell>
-                                            <TableCell className="font-medium">
+                                {/* Transactions - Mobile Cards */}
+                                <div className="space-y-2">
+                                  <h4 className="font-medium">Transações</h4>
+                                  {selectedMonthData.transactions.map((transaction: any) => (
+                                    <Card key={transaction.id} className="border bg-background">
+                                      <CardContent className="p-3">
+                                        <div className="flex justify-between items-start mb-2">
+                                          <div className="text-sm font-medium">
+                                            {new Date(transaction.date).toLocaleDateString('pt-BR')}
+                                          </div>
+                                          <div className="text-right">
+                                            <div className="text-sm font-bold text-finance-income">
                                               {transaction.totalBruto.toLocaleString('pt-BR', {
                                                 style: 'currency',
                                                 currency: 'BRL'
                                               })}
-                                            </TableCell>
-                                            <TableCell className="font-medium text-finance-net">
-                                              {transaction.totalLiquido.toLocaleString('pt-BR', {
+                                            </div>
+                                            <div className="text-xs text-finance-net">
+                                              Líq: {transaction.totalLiquido.toLocaleString('pt-BR', {
                                                 style: 'currency',
                                                 currency: 'BRL'
                                               })}
-                                            </TableCell>
-                                          </TableRow>
-                                        ))}
-                                      </TableBody>
-                                    </Table>
-                                  </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                                          {transaction.dinheiro > 0 && (
+                                            <div>Dinheiro: {transaction.dinheiro.toLocaleString('pt-BR', {
+                                              style: 'currency',
+                                              currency: 'BRL'
+                                            })}</div>
+                                          )}
+                                          {transaction.pix > 0 && (
+                                            <div>PIX: {transaction.pix.toLocaleString('pt-BR', {
+                                              style: 'currency',
+                                              currency: 'BRL'
+                                            })}</div>
+                                          )}
+                                          {transaction.debito > 0 && (
+                                            <div>Débito: {transaction.debito.toLocaleString('pt-BR', {
+                                              style: 'currency',
+                                              currency: 'BRL'
+                                            })}</div>
+                                          )}
+                                          {transaction.credito > 0 && (
+                                            <div>Crédito: {transaction.credito.toLocaleString('pt-BR', {
+                                              style: 'currency',
+                                              currency: 'BRL'
+                                            })}</div>
+                                          )}
+                                        </div>
+                                      </CardContent>
+                                    </Card>
+                                  ))}
                                 </div>
-                              )}
-                            </DialogContent>
-                          </Dialog>
-                          
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => exportMonthData(monthData)}
-                          >
-                            <Download className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                              </div>
+                            )}
+                          </DialogContent>
+                        </Dialog>
+                        
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => exportMonthData(monthData)}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Download className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 gap-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Total Líquido:</span>
+                        <span className="font-medium text-finance-net">
+                          {monthData.totalLiquido.toLocaleString('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL'
+                          })}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Taxas:</span>
+                        <span className="text-finance-fees">
+                          {monthData.totalTaxas.toLocaleString('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL'
+                          })}
+                        </span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           )}
         </CardContent>
       </Card>
-    </PageLayout>
+    </div>
   );
 };
