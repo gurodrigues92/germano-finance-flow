@@ -4,7 +4,8 @@ import {
   PlusCircle, 
   BarChart3, 
   Archive,
-  TrendingUp
+  TrendingUp,
+  Receipt
 } from 'lucide-react';
 import {
   Sidebar,
@@ -42,6 +43,12 @@ const menuItems = [
     url: '/financeiro/arquivo',
     icon: Archive,
     description: 'Histórico mensal'
+  },
+  {
+    title: 'Custos Fixos',
+    url: '/custos-fixos',
+    icon: Receipt,
+    description: 'Gastos mensais fixos'
   }
 ];
 
