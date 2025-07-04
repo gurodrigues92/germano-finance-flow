@@ -70,6 +70,7 @@ export function CustosFixos() {
         totalGeral={totalGeral}
         maiorCusto={maiorCusto}
         totalPorCategoria={totalPorCategoria}
+        receita={0}
       />
 
       {/* Form Dialog */}
