@@ -9,57 +9,57 @@ All colors MUST be HSL. Based on purple/orange gradient theme.
 
 @layer base {
   :root {
-    /* Base colors - glassmorphism friendly */
-    --background: 248 250 252;
-    --foreground: 15 23 42;
+    /* Base colors - minimalist white background */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 9%;
 
-    --card: 255 255 255;
-    --card-foreground: 15 23 42;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 9%;
 
-    --popover: 255 255 255;
-    --popover-foreground: 15 23 42;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 9%;
 
-    /* Primary purple gradient */
-    --primary: 262 83% 58%;
-    --primary-foreground: 255 255 255;
+    /* Primary purple - reduced saturation */
+    --primary: 262 50% 45%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary orange */
-    --secondary: 25 95% 53%;
-    --secondary-foreground: 255 255 255;
+    /* Secondary - neutral orange */
+    --secondary: 25 35% 55%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 248 250 252;
-    --muted-foreground: 100 116 139;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 262 83% 58%;
-    --accent-foreground: 255 255 255;
+    --accent: 262 50% 45%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 255 255 255;
+    --destructive: 0 65% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 248 250 252;
-    --input: 255 255 255;
-    --ring: 262 83% 58%;
+    --border: 0 0% 90%;
+    --input: 0 0% 100%;
+    --ring: 262 50% 45%;
 
-    /* Studio Germano Brand Colors */
-    --studio-gold: 43 74% 66%;
-    --studio-gold-foreground: 0 0% 0%;
-    --studio-black: 0 0% 10%;
+    /* Studio Germano Brand Colors - minimalist */
+    --studio-gold: 43 25% 65%;
+    --studio-gold-foreground: 0 0% 9%;
+    --studio-black: 0 0% 9%;
     --studio-black-foreground: 0 0% 100%;
     --studio-white: 0 0% 100%;
-    --studio-white-foreground: 0 0% 10%;
+    --studio-white-foreground: 0 0% 9%;
 
-    /* Studio Germano Financial Colors */
-    --finance-income: 142 76% 36%;
+    /* Studio Germano Financial Colors - high contrast */
+    --finance-income: 142 40% 40%;
     --finance-income-foreground: 0 0% 100%;
-    --finance-net: 217 91% 60%;
+    --finance-net: 217 45% 50%;
     --finance-net-foreground: 0 0% 100%;
-    --finance-studio: 262 83% 58%;
+    --finance-studio: 262 50% 45%;
     --finance-studio-foreground: 0 0% 100%;
-    --finance-fees: 0 84% 60%;
+    --finance-fees: 0 65% 51%;
     --finance-fees-foreground: 0 0% 100%;
-    --finance-edu: 39 98% 56%;
+    --finance-edu: 39 35% 55%;
     --finance-edu-foreground: 0 0% 100%;
-    --finance-kam: 280 87% 47%;
+    --finance-kam: 280 45% 45%;
     --finance-kam-foreground: 0 0% 100%;
 
     --radius: 0.5rem;
@@ -131,7 +131,7 @@ All colors MUST be HSL. Based on purple/orange gradient theme.
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     line-height: 1.6;
-    background: linear-gradient(135deg, #f8fafc 0%, #faf5ff 50%, #fff7ed 100%);
+    background: hsl(var(--background));
     min-height: 100vh;
     @apply text-foreground;
   }
