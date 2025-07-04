@@ -17,16 +17,16 @@ interface CustosTableProps {
 
 export function CustosTable({ custos, onEdit, onDelete }: CustosTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterCategoria, setFilterCategoria] = useState<string>("");
-  const [filterMes, setFilterMes] = useState<string>("");
+  const [filterCategoria, setFilterCategoria] = useState<string>("all");
+  const [filterMes, setFilterMes] = useState<string>("all");
 
   const filteredCustos = custos.filter((custo) => {
     const matchesSearch = 
       custo.subcategoria.toLowerCase().includes(searchTerm.toLowerCase()) ||
       custo.observacoes?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesCategoria = !filterCategoria || custo.categoria === filterCategoria;
-    const matchesMes = !filterMes || custo.mes_referencia.startsWith(filterMes);
+    const matchesCategoria = filterCategoria === "all" || custo.categoria === filterCategoria;
+    const matchesMes = filterMes === "all" || custo.mes_referencia.startsWith(filterMes);
 
     return matchesSearch && matchesCategoria && matchesMes;
   });
@@ -68,7 +68,7 @@ export function CustosTable({ custos, onEdit, onDelete }: CustosTableProps) {
               <SelectValue placeholder="Todas as categorias" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todas as categorias</SelectItem>
+              <SelectItem value="all">Todas as categorias</SelectItem>
               {categorias.map((categoria) => (
                 <SelectItem key={categoria} value={categoria}>
                   {categoria}
@@ -82,7 +82,7 @@ export function CustosTable({ custos, onEdit, onDelete }: CustosTableProps) {
               <SelectValue placeholder="Todos os meses" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todos os meses</SelectItem>
+              <SelectItem value="all">Todos os meses</SelectItem>
               {meses.sort().reverse().map((mes) => (
                 <SelectItem key={mes} value={mes}>
                   {format(new Date(mes + '-01'), 'MMM/yyyy', { locale: ptBR })}
