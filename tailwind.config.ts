@@ -18,6 +18,9 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'serif': ['Playfair Display', 'serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -61,6 +64,14 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				studio: {
+					gold: 'hsl(var(--studio-gold))',
+					'gold-foreground': 'hsl(var(--studio-gold-foreground))',
+					black: 'hsl(var(--studio-black))',
+					'black-foreground': 'hsl(var(--studio-black-foreground))',
+					white: 'hsl(var(--studio-white))',
+					'white-foreground': 'hsl(var(--studio-white-foreground))'
 				},
 				finance: {
 					income: 'hsl(var(--finance-income))',
