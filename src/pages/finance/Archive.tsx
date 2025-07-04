@@ -19,9 +19,14 @@ export const Archive = () => {
   const { transactions, exportToCSV } = useFinance();
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
 
-  // Group transactions by month
+  // Group transactions by month (2025 onwards only)
   const monthlyArchive = useMemo(() => {
-    const grouped = transactions.reduce((acc, transaction) => {
+    // Filter transactions from 2025 onwards only
+    const filteredTransactions = transactions.filter(t => 
+      new Date(t.date).getFullYear() >= 2025
+    );
+    
+    const grouped = filteredTransactions.reduce((acc, transaction) => {
       const month = transaction.month;
       if (!acc[month]) {
         acc[month] = {

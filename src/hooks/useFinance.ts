@@ -10,8 +10,18 @@ export const useFinance = () => {
   const { toast } = useToast();
   const [state, setState] = useState<FinanceState>({
     transactions: [],
-    currentMonth: new Date().toISOString().slice(0, 7), // YYYY-MM
-    currentYear: new Date().getFullYear(),
+    currentMonth: (() => {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth() + 1;
+      
+      // If we're in 2025 or later, use current month, otherwise default to 2025-01
+      if (currentYear >= 2025) {
+        return now.toISOString().slice(0, 7);
+      }
+      return '2025-01';
+    })(),
+    currentYear: Math.max(new Date().getFullYear(), 2025),
     archivedData: []
   });
 
@@ -187,7 +197,10 @@ export const useFinance = () => {
 
   const getMonthlyData = (month?: string): MonthlyData => {
     const targetMonth = month || state.currentMonth;
-    const transactions = state.transactions.filter(t => t.month === targetMonth);
+    // Filter transactions from 2025 onwards only
+    const transactions = state.transactions.filter(t => 
+      t.month === targetMonth && new Date(t.date).getFullYear() >= 2025
+    );
     
     const totals = transactions.reduce(
       (acc, t) => ({

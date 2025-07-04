@@ -96,14 +96,21 @@ export const Dashboard = () => {
     return months;
   }, [currentMonth, getMonthlyData]);
 
-  // Generate month options for the last 12 months
+  // Generate month options starting from January 2025
   const monthOptions = useMemo(() => {
     const options = [];
-    for (let i = 0; i < 12; i++) {
-      const date = new Date();
-      date.setMonth(date.getMonth() - i);
+    const startDate = new Date('2025-01-01');
+    const currentDate = new Date();
+    
+    // Calculate number of months from January 2025 to current month
+    const monthsDiff = (currentDate.getFullYear() - startDate.getFullYear()) * 12 
+      + (currentDate.getMonth() - startDate.getMonth()) + 1;
+    
+    for (let i = 0; i < monthsDiff; i++) {
+      const date = new Date('2025-01-01');
+      date.setMonth(date.getMonth() + i);
       const monthStr = date.toISOString().slice(0, 7);
-      options.push({
+      options.unshift({
         value: monthStr,
         label: date.toLocaleDateString('pt-BR', { 
           month: 'long', 
@@ -113,6 +120,55 @@ export const Dashboard = () => {
     }
     return options;
   }, []);
+
+  // Transaction count data for pie chart
+  const transactionCountData = useMemo(() => {
+    const counts = currentData.transactions.reduce(
+      (acc, t) => {
+        if (t.dinheiro > 0) acc.dinheiro++;
+        if (t.pix > 0) acc.pix++;
+        if (t.debito > 0) acc.debito++;
+        if (t.credito > 0) acc.credito++;
+        return acc;
+      },
+      { dinheiro: 0, pix: 0, debito: 0, credito: 0 }
+    );
+
+    return [
+      { name: 'Dinheiro', value: counts.dinheiro, color: '#10b981' },
+      { name: 'PIX', value: counts.pix, color: '#3b82f6' },
+      { name: 'Débito', value: counts.debito, color: '#8b5cf6' },
+      { name: 'Crédito', value: counts.credito, color: '#ef4444' }
+    ].filter(item => item.value > 0);
+  }, [currentData]);
+
+  // Bi-weekly comparison data
+  const biWeeklyData = useMemo(() => {
+    const firstHalf = currentData.transactions.filter(t => {
+      const day = new Date(t.date).getDate();
+      return day <= 15;
+    });
+    
+    const secondHalf = currentData.transactions.filter(t => {
+      const day = new Date(t.date).getDate();
+      return day > 15;
+    });
+
+    const calculateTotals = (transactions: any[]) => 
+      transactions.reduce(
+        (acc, t) => ({
+          bruto: acc.bruto + t.totalBruto,
+          liquido: acc.liquido + t.totalLiquido,
+          count: acc.count + 1
+        }),
+        { bruto: 0, liquido: 0, count: 0 }
+      );
+
+    return {
+      firstHalf: calculateTotals(firstHalf),
+      secondHalf: calculateTotals(secondHalf)
+    };
+  }, [currentData]);
 
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
@@ -267,6 +323,85 @@ export const Dashboard = () => {
           />
         </div>
       </div>
+
+      {/* Transaction Count Pie Chart */}
+      {transactionCountData.length > 0 && (
+        <Card className="mb-4 sm:mb-6">
+          <CardHeader>
+            <CardTitle className="text-sm sm:text-base">Distribuição de Transações</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-64 sm:h-80">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={transactionCountData}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                    label={({ name, value }) => `${name}: ${value}`}
+                  >
+                    {transactionCountData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Bi-weekly Comparison */}
+      {(biWeeklyData.firstHalf.count > 0 || biWeeklyData.secondHalf.count > 0) && (
+        <Card className="mb-4 sm:mb-6">
+          <CardHeader>
+            <CardTitle className="text-sm sm:text-base">Comparativo Quinzenal</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-muted-foreground">1ª Quinzena (1-15)</h4>
+                <div className="space-y-1">
+                  <div className="flex justify-between">
+                    <span className="text-xs text-muted-foreground">Transações:</span>
+                    <span className="text-xs font-medium">{biWeeklyData.firstHalf.count}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-xs text-muted-foreground">Total Bruto:</span>
+                    <span className="text-xs font-medium">R$ {biWeeklyData.firstHalf.bruto.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-xs text-muted-foreground">Total Líquido:</span>
+                    <span className="text-xs font-medium">R$ {biWeeklyData.firstHalf.liquido.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-muted-foreground">2ª Quinzena (16-31)</h4>
+                <div className="space-y-1">
+                  <div className="flex justify-between">
+                    <span className="text-xs text-muted-foreground">Transações:</span>
+                    <span className="text-xs font-medium">{biWeeklyData.secondHalf.count}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-xs text-muted-foreground">Total Bruto:</span>
+                    <span className="text-xs font-medium">R$ {biWeeklyData.secondHalf.bruto.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-xs text-muted-foreground">Total Líquido:</span>
+                    <span className="text-xs font-medium">R$ {biWeeklyData.secondHalf.liquido.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Motivational Section */}
       <MotivationalSection />
