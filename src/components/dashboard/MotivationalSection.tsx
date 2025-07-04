@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 
 const motivationalPhrases = [
-  "Cada corte é uma transformação",
-  "Seus sonhos merecem o melhor cuidado",
-  "Beleza que transforma vidas",
-  "Transformando histórias através dos cabelos",
-  "Cada cliente é uma obra de arte única"
+  "Cada cliente é uma oportunidade de crescer",
+  "Sucesso no salão começa com organização",
+  "Seus números contam sua história de sucesso",
+  "Profissionalismo gera resultados",
+  "Transforme talento em prosperidade",
+  "O sucesso está nos detalhes"
 ];
 
 export const MotivationalSection = () => {

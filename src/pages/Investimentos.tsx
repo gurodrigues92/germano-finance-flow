@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PageLayout } from "@/components/layout/PageLayout";
 import { Plus, TrendingUp, DollarSign, Target, PiggyBank } from "lucide-react";
 
 export function Investimentos() {
@@ -76,84 +77,74 @@ export function Investimentos() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Investimentos & Reserva</h1>
-          <p className="text-muted-foreground">
-            Controle de investimentos e reserva de emergência do Studio Germano
-          </p>
-        </div>
-        <Button onClick={() => setShowForm(true)} className="bg-studio-gold hover:bg-studio-gold/90">
-          <Plus className="h-4 w-4 mr-2" />
-          Novo Investimento
-        </Button>
-      </div>
-
+    <PageLayout 
+      title="Investimentos & Reserva"
+      subtitle="Controle de investimentos e reserva de emergência"
+      onFabClick={() => setShowForm(true)}
+    >
       {/* Cards de Resumo */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Total Investido
             </CardTitle>
-            <TrendingUp className="h-4 w-4" />
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(totalGeral)}</div>
-            <p className="text-xs text-blue-100">
+            <div className="text-2xl font-bold text-finance-income">{formatCurrency(totalGeral)}</div>
+            <p className="text-xs text-muted-foreground">
               {investimentos.length} investimentos
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Investimentos Recentes
             </CardTitle>
-            <DollarSign className="h-4 w-4" />
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(
+            <div className="text-2xl font-bold text-finance-net">{formatCurrency(
               investimentosRecentes.reduce((total, inv) => total + Number(inv.valor), 0)
             )}</div>
-            <p className="text-xs text-green-100">
+            <p className="text-xs text-muted-foreground">
               últimos 30 dias
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Reserva Emergência
             </CardTitle>
-            <PiggyBank className="h-4 w-4" />
+            <PiggyBank className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-finance-studio">
               {reservaAtual ? formatCurrency(Number(reservaAtual.valor_atual)) : formatCurrency(0)}
             </div>
-            <p className="text-xs text-purple-100">
+            <p className="text-xs text-muted-foreground">
               {percentualMeta.toFixed(1)}% da meta
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Meta da Reserva
             </CardTitle>
-            <Target className="h-4 w-4" />
+            <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-finance-edu">
               {reservaAtual ? formatCurrency(Number(reservaAtual.meta_valor)) : formatCurrency(0)}
             </div>
-            <p className="text-xs text-orange-100">
+            <p className="text-xs text-muted-foreground">
               valor objetivo
             </p>
           </CardContent>
@@ -164,7 +155,7 @@ export function Investimentos() {
       {Object.keys(totalPorCategoria).length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {Object.entries(totalPorCategoria).map(([categoria, total]) => (
-            <Card key={categoria} className="border-l-4 border-l-studio-gold">
+            <Card key={categoria} className="border-l-4 border-l-finance-studio">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium text-muted-foreground">
                   {categoria}
@@ -251,6 +242,6 @@ export function Investimentos() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </PageLayout>
   );
 }

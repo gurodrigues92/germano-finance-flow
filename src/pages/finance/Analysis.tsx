@@ -3,6 +3,7 @@ import { useFinance } from '@/hooks/useFinance';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { PageLayout } from '@/components/layout/PageLayout';
 import { 
   BarChart, 
   Bar, 
@@ -143,15 +144,11 @@ export const Analysis = () => {
   }, [currentData.totalBruto, previousData.totalBruto]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Análise Financeira</h1>
-          <p className="text-muted-foreground">
-            Relatórios detalhados e insights do Studio Germano
-          </p>
-        </div>
-        
+    <PageLayout 
+      title="Análise Financeira"
+      subtitle="Relatórios detalhados e insights"
+    >
+      <div className="flex justify-end mb-6">
         <Select value={currentMonth} onValueChange={setCurrentMonth}>
           <SelectTrigger className="w-[200px]">
             <SelectValue placeholder="Selecionar mês" />
@@ -453,6 +450,6 @@ export const Analysis = () => {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </PageLayout>
   );
 };

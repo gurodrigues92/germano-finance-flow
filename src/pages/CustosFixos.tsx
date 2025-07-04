@@ -7,6 +7,7 @@ import { CustoFixo } from "@/types/custos";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { PageLayout } from "@/components/layout/PageLayout";
 import { Plus } from "lucide-react";
 
 export function CustosFixos() {
@@ -59,21 +60,11 @@ export function CustosFixos() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Custos Fixos</h1>
-          <p className="text-muted-foreground">
-            Gerencie os custos fixos mensais do Studio Germano
-          </p>
-        </div>
-        <Button onClick={() => setShowForm(true)} className="bg-studio-gold hover:bg-studio-gold/90">
-          <Plus className="h-4 w-4 mr-2" />
-          Adicionar Custo
-        </Button>
-      </div>
-
+    <PageLayout 
+      title="Custos Fixos"
+      subtitle="Gerencie os custos fixos mensais"
+      onFabClick={() => setShowForm(true)}
+    >
       {/* Summary Cards */}
       <CustosSummary
         totalGeral={totalGeral}
@@ -131,6 +122,6 @@ export function CustosFixos() {
         onEdit={handleEdit}
         onDelete={setDeletingId}
       />
-    </div>
+    </PageLayout>
   );
 }

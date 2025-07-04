@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageLayout } from "@/components/layout/PageLayout";
 import { Plus, Package, DollarSign, TrendingDown } from "lucide-react";
 
 export function Estoque() {
@@ -72,63 +73,53 @@ export function Estoque() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Controle de Estoque</h1>
-          <p className="text-muted-foreground">
-            Gerencie produtos e movimentações do Studio Germano
-          </p>
-        </div>
-        <Button onClick={() => setShowForm(true)} className="bg-studio-gold hover:bg-studio-gold/90">
-          <Plus className="h-4 w-4 mr-2" />
-          Cadastrar Produto
-        </Button>
-      </div>
-
+    <PageLayout 
+      title="Controle de Estoque"
+      subtitle="Gerencie produtos e movimentações"
+      onFabClick={() => setShowForm(true)}
+    >
       {/* Cards de Resumo */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Total de Produtos
             </CardTitle>
-            <Package className="h-4 w-4" />
+            <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{produtos.length}</div>
-            <p className="text-xs text-blue-100">
+            <div className="text-2xl font-bold text-foreground">{produtos.length}</div>
+            <p className="text-xs text-muted-foreground">
               produtos cadastrados
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
               Valor Total do Estoque
             </CardTitle>
-            <DollarSign className="h-4 w-4" />
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(valorTotalEstoque)}</div>
-            <p className="text-xs text-green-100">
+            <div className="text-2xl font-bold text-finance-income">{formatCurrency(valorTotalEstoque)}</div>
+            <p className="text-xs text-muted-foreground">
               valor estimado
             </p>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Produtos em Baixo Estoque
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Produtos Baixo Estoque
             </CardTitle>
-            <TrendingDown className="h-4 w-4" />
+            <TrendingDown className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{produtosBaixoEstoque.length}</div>
-            <p className="text-xs text-orange-100">
+            <div className="text-2xl font-bold text-finance-fees">{produtosBaixoEstoque.length}</div>
+            <p className="text-xs text-muted-foreground">
               precisam de atenção
             </p>
           </CardContent>
@@ -199,6 +190,6 @@ export function Estoque() {
         onEdit={handleEditProduto}
         onDelete={setDeletingId}
       />
-    </div>
+    </PageLayout>
   );
 }

@@ -7,6 +7,8 @@ import { TransactionForm } from '@/components/finance/TransactionForm';
 import { TransactionTable } from '@/components/finance/TransactionTable';
 import { TransactionSummary } from '@/components/finance/TransactionSummary';
 import { TransactionActions } from '@/components/finance/TransactionActions';
+import { PageLayout } from '@/components/layout/PageLayout';
+import { Plus } from 'lucide-react';
 
 interface TransactionFormData {
   date: string;
@@ -76,15 +78,12 @@ export const Transactions = () => {
   const currentMonthTransactions = transactions.filter(t => t.month === currentMonth);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Gestão de Transações</h1>
-          <p className="text-muted-foreground">
-            Adicione e gerencie as transações do Studio Germano
-          </p>
-        </div>
-        
+    <PageLayout 
+      title="Gestão de Transações"
+      subtitle="Adicione e gerencie as transações do Studio Germano"
+      onFabClick={() => setIsOpen(true)}
+    >
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <TransactionActions
             onImportCSV={importFromCSV}
@@ -113,6 +112,6 @@ export const Transactions = () => {
         onEdit={handleEdit}
         onDelete={deleteTransaction}
       />
-    </div>
+    </PageLayout>
   );
 };

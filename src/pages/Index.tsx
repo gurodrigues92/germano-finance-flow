@@ -14,9 +14,9 @@ import {
 import { useFinance } from '@/hooks/useFinance';
 
 const motivationalPhrases = [
-  "Cada corte é uma transformação",
-  "Seus sonhos merecem o melhor cuidado", 
-  "Beleza que transforma vidas"
+  "Cada cliente é uma oportunidade de crescer",
+  "Sucesso no salão começa com organização",
+  "Seus números contam sua história de sucesso"
 ];
 
 const Index = () => {
@@ -40,16 +40,24 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-studio-white to-studio-gold/5">
+    <div className="min-h-screen bg-muted/20">
       {/* Header */}
-      <div className="bg-studio-black text-studio-black-foreground py-8">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="font-serif text-5xl md:text-6xl font-bold text-studio-gold mb-2">
+      <div className="bg-card text-foreground py-12 border-b border-border">
+        <div className="container mx-auto px-4 text-center space-y-6">
+          <h1 className="text-4xl font-bold text-foreground">
             Studio Germano
           </h1>
-          <p className="text-xl text-studio-gold/80 font-light">
-            Transformando vidas através dos cabelos desde 2011
-          </p>
+          
+          {/* Access Button */}
+          <Link to="/financeiro">
+            <Button 
+              size="lg" 
+              className="bg-finance-studio hover:bg-finance-studio/90 text-finance-studio-foreground font-semibold px-8 py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              Acessar Sistema
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
         </div>
       </div>
 
@@ -130,24 +138,24 @@ const Index = () => {
         </div>
 
         {/* Seção Motivacional */}
-        <Card className="mb-12 border-studio-gold/20 bg-gradient-to-r from-studio-white to-studio-gold/10">
-          <CardContent className="p-8 text-center">
+        <Card className="border-border bg-card">
+          <CardContent className="p-6 text-center">
             <div className="flex items-center justify-center mb-4">
-              <Sparkles className="h-8 w-8 text-studio-gold mr-3" />
-              <h2 className="font-serif text-3xl font-bold text-studio-black">
+              <Sparkles className="h-6 w-6 text-finance-studio mr-3" />
+              <h2 className="text-xl font-semibold text-foreground">
                 {motivationalPhrases[currentPhraseIndex]}
               </h2>
-              <Sparkles className="h-8 w-8 text-studio-gold ml-3" />
+              <Sparkles className="h-6 w-6 text-finance-studio ml-3" />
             </div>
             
-            <div className="max-w-md mx-auto mt-8">
+            <div className="max-w-md mx-auto mt-6">
               <div className="flex justify-between text-sm text-muted-foreground mb-2">
                 <span>Meta do Mês</span>
                 <span>{goalProgress.toFixed(1)}%</span>
               </div>
               <Progress value={goalProgress} className="h-3 mb-2" />
               <div className="flex justify-between text-sm">
-                <span className="text-studio-black font-medium">
+                <span className="text-foreground font-medium">
                   {currentData.totalBruto.toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL'
@@ -163,23 +171,6 @@ const Index = () => {
             </div>
           </CardContent>
         </Card>
-
-        {/* Acesso ao Sistema */}
-        <div className="text-center">
-          <Link to="/financeiro">
-            <Button 
-              size="lg" 
-              className="bg-studio-gold hover:bg-studio-gold/90 text-studio-gold-foreground font-semibold px-8 py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              Acessar Sistema Completo
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
-          
-          <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
-            Gerencie transações, visualize relatórios detalhados e acompanhe o crescimento do seu negócio
-          </p>
-        </div>
       </div>
     </div>
   );

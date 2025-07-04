@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { PageLayout } from '@/components/layout/PageLayout';
 import { 
   Archive as ArchiveIcon, 
   Download, 
@@ -110,15 +111,11 @@ export const Archive = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Arquivo Histórico</h1>
-          <p className="text-muted-foreground">
-            Histórico completo de transações organizadas por mês
-          </p>
-        </div>
-        
+    <PageLayout 
+      title="Arquivo Histórico"
+      subtitle="Histórico completo de transações organizadas por mês"
+    >
+      <div className="flex justify-end mb-6">
         <Button onClick={exportToCSV} variant="outline">
           <Download className="mr-2 h-4 w-4" />
           Exportar Tudo
@@ -413,6 +410,6 @@ export const Archive = () => {
           )}
         </CardContent>
       </Card>
-    </div>
+    </PageLayout>
   );
 };
