@@ -1,7 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, DollarSign, Package, MoreHorizontal } from 'lucide-react';
+import { Home, DollarSign, Package, MoreHorizontal, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface NavItemProps {
   icon: React.ComponentType<{ className?: string }>;
@@ -33,6 +34,7 @@ const NavItem = ({ icon: Icon, label, href, active }: NavItemProps) => (
 export const BottomNavigation = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { logout } = useAuth();
   
   const mainNavItems = [
     { icon: Home, label: 'Home', href: '/' },
@@ -76,6 +78,21 @@ export const BottomNavigation = () => {
                 {item.label}
               </Link>
             ))}
+            
+            {/* Separador */}
+            <div className="border-t border-border my-2"></div>
+            
+            {/* Botão de Logout */}
+            <button 
+              onClick={() => {
+                logout();
+                setIsMenuOpen(false);
+              }}
+              className="flex items-center space-x-3 w-full p-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            >
+              <LogOut className="w-5 h-5" />
+              <span>Sair do Sistema</span>
+            </button>
           </div>
         </div>
       </SheetContent>
