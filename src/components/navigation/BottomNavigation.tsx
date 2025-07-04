@@ -33,7 +33,7 @@ export const BottomNavigation = () => {
   
   const navItems = [
     { icon: Home, label: 'Home', href: '/' },
-    { icon: DollarSign, label: 'Finanças', href: '/financeiro' },
+    { icon: DollarSign, label: 'Finanças', href: '/transacoes' },
     { icon: Package, label: 'Estoque', href: '/estoque' },
     { icon: MoreHorizontal, label: 'Mais', href: '/metas' },
   ];
@@ -47,7 +47,11 @@ export const BottomNavigation = () => {
             icon={item.icon}
             label={item.label}
             href={item.href}
-            active={location.pathname === item.href}
+            active={
+              item.href === '/' 
+                ? location.pathname === '/' 
+                : location.pathname.startsWith(item.href)
+            }
           />
         ))}
       </div>

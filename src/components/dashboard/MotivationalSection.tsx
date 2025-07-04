@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React from 'react';
 
 const motivationalPhrases = [
   "Cada cliente é uma oportunidade de crescer",
@@ -10,15 +10,14 @@ const motivationalPhrases = [
 ];
 
 export const MotivationalSection = () => {
-  const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
+  // Generate phrase index based on current date for consistency throughout the day
+  const getCurrentPhraseIndex = () => {
+    const today = new Date();
+    const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 86400000);
+    return dayOfYear % motivationalPhrases.length;
+  };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentPhraseIndex((prev) => (prev + 1) % motivationalPhrases.length);
-    }, 4000);
-    
-    return () => clearInterval(interval);
-  }, []);
+  const currentPhraseIndex = getCurrentPhraseIndex();
 
   return (
     <div className="bg-card rounded-2xl p-6 text-center border border-border">

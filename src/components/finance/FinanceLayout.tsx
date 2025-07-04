@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { FinanceSidebar } from './FinanceSidebar';
+import { BottomNavigation } from '@/components/navigation/BottomNavigation';
 
 export const FinanceLayout = () => {
   return (
@@ -19,10 +20,12 @@ export const FinanceLayout = () => {
             </div>
           </header>
           
-          <main className="flex-1 p-6 bg-muted/10">
+          <main className="flex-1 p-6 bg-muted/10 pb-24">
             <Outlet />
           </main>
         </div>
+        
+        <BottomNavigation />
       </div>
     </SidebarProvider>
   );
