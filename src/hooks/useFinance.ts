@@ -24,8 +24,7 @@ export const useFinance = () => {
 
   const {
     importFromCSV,
-    exportToCSV,
-    loadSampleData
+    exportToCSV
   } = useFinanceIO(state, setState, saveToStorage, setLoading);
 
   return {
@@ -37,7 +36,6 @@ export const useFinance = () => {
     getMonthlyData,
     exportToCSV,
     importFromCSV,
-    loadSampleData,
     setCurrentMonth,
     setCurrentYear
   };

@@ -46,8 +46,8 @@ export const useTransactionOperations = (
 
       console.log('[Financeiro] Transaction added:', transaction);
       toast({
-        title: "Sucesso",
-        description: "Transação adicionada com sucesso"
+        title: "Transação foi arquivada com sucesso!",
+        description: "A transação foi salva no arquivo."
       });
 
       return transaction;

@@ -27,7 +27,7 @@ export const Transactions = () => {
     loading, 
     currentMonth,
     importFromCSV,
-    loadSampleData,
+    
     exportToCSV
   } = useFinance();
   const { toast } = useToast();
@@ -88,7 +88,6 @@ export const Transactions = () => {
           <TransactionActions
             onImportCSV={importFromCSV}
             onExportCSV={exportToCSV}
-            onLoadSampleData={loadSampleData}
             onNewTransaction={handleNewTransaction}
             loading={loading}
           />

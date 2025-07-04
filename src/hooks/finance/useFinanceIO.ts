@@ -1,6 +1,5 @@
 import { FinanceState } from '@/types/finance';
 import { importTransactionsFromCSV, exportTransactionsToCSV } from '@/lib/finance/csv';
-import { generateSampleTransactions } from '@/lib/finance/sampleData';
 import { useToast } from '@/hooks/use-toast';
 
 export const useFinanceIO = (
@@ -59,40 +58,8 @@ export const useFinanceIO = (
     }
   };
 
-  const loadSampleData = () => {
-    setLoading(true);
-    
-    try {
-      const sampleTransactions = generateSampleTransactions();
-
-      const newState = {
-        ...state,
-        transactions: [...sampleTransactions, ...state.transactions]
-      };
-
-      setState(newState);
-      saveToStorage(newState);
-
-      console.log('[Financeiro] Sample data loaded');
-      toast({
-        title: "Sucesso",
-        description: "Dados de exemplo carregados com sucesso"
-      });
-    } catch (error) {
-      console.error('[Financeiro] Error loading sample data:', error);
-      toast({
-        title: "Erro",
-        description: "Erro ao carregar dados de exemplo",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return {
     importFromCSV,
-    exportToCSV,
-    loadSampleData
+    exportToCSV
   };
 };

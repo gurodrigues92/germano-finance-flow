@@ -1,12 +1,11 @@
 import { useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { DialogTrigger } from '@/components/ui/dialog';
-import { Plus, Upload, Download, Database } from 'lucide-react';
+import { Plus, Upload, Download } from 'lucide-react';
 
 interface TransactionActionsProps {
   onImportCSV: (file: File) => void;
   onExportCSV: () => void;
-  onLoadSampleData: () => void;
   onNewTransaction: () => void;
   loading: boolean;
 }
@@ -14,7 +13,6 @@ interface TransactionActionsProps {
 export const TransactionActions = ({
   onImportCSV,
   onExportCSV,
-  onLoadSampleData,
   onNewTransaction,
   loading
 }: TransactionActionsProps) => {
@@ -56,15 +54,6 @@ export const TransactionActions = ({
       >
         <Download className="mr-2 h-4 w-4" />
         Exportar CSV
-      </Button>
-      
-      <Button 
-        variant="outline" 
-        onClick={onLoadSampleData}
-        disabled={loading}
-      >
-        <Database className="mr-2 h-4 w-4" />
-        Dados Exemplo
       </Button>
       
       <input

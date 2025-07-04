@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { TransactionForm } from '@/components/finance/TransactionForm';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Archive as ArchiveIcon, 
   Download, 
@@ -12,12 +15,17 @@ import {
   Calendar,
   TrendingUp,
   DollarSign,
-  ChevronRight
+  ChevronRight,
+  Edit,
+  Trash2
 } from 'lucide-react';
 
 export const Archive = () => {
-  const { transactions, exportToCSV } = useFinance();
+  const { transactions, exportToCSV, updateTransaction, deleteTransaction, loading } = useFinance();
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
+  const [editingTransaction, setEditingTransaction] = useState<any>(null);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const { toast } = useToast();
 
   // Group transactions by month (2025 onwards only)
   const monthlyArchive = useMemo(() => {
@@ -112,6 +120,37 @@ export const Archive = () => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('[Financeiro] Error exporting month data:', error);
+    }
+  };
+
+  const handleEditTransaction = (transaction: any) => {
+    setEditingTransaction(transaction);
+    setShowEditForm(true);
+  };
+
+  const handleDeleteTransaction = (transactionId: string) => {
+    deleteTransaction(transactionId);
+    toast({
+      title: "Transação excluída",
+      description: "A transação foi removida do arquivo."
+    });
+  };
+
+  const handleFormSubmit = (formData: any, isEditing: boolean) => {
+    if (isEditing && editingTransaction) {
+      updateTransaction(editingTransaction.id, {
+        date: formData.date,
+        dinheiro: parseFloat(formData.dinheiro) || 0,
+        pix: parseFloat(formData.pix) || 0,
+        debito: parseFloat(formData.debito) || 0,
+        credito: parseFloat(formData.credito) || 0
+      });
+      setEditingTransaction(null);
+      setShowEditForm(false);
+      toast({
+        title: "Transação atualizada",
+        description: "A transação foi atualizada no arquivo."
+      });
     }
   };
 
@@ -300,32 +339,74 @@ export const Archive = () => {
                                             </div>
                                           </div>
                                         </div>
-                                        <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
-                                          {transaction.dinheiro > 0 && (
-                                            <div>Dinheiro: {transaction.dinheiro.toLocaleString('pt-BR', {
-                                              style: 'currency',
-                                              currency: 'BRL'
-                                            })}</div>
-                                          )}
-                                          {transaction.pix > 0 && (
-                                            <div>PIX: {transaction.pix.toLocaleString('pt-BR', {
-                                              style: 'currency',
-                                              currency: 'BRL'
-                                            })}</div>
-                                          )}
-                                          {transaction.debito > 0 && (
-                                            <div>Débito: {transaction.debito.toLocaleString('pt-BR', {
-                                              style: 'currency',
-                                              currency: 'BRL'
-                                            })}</div>
-                                          )}
-                                          {transaction.credito > 0 && (
-                                            <div>Crédito: {transaction.credito.toLocaleString('pt-BR', {
-                                              style: 'currency',
-                                              currency: 'BRL'
-                                            })}</div>
-                                          )}
-                                        </div>
+                                         <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                                           {transaction.dinheiro > 0 && (
+                                             <div>Dinheiro: {transaction.dinheiro.toLocaleString('pt-BR', {
+                                               style: 'currency',
+                                               currency: 'BRL'
+                                             })}</div>
+                                           )}
+                                           {transaction.pix > 0 && (
+                                             <div>PIX: {transaction.pix.toLocaleString('pt-BR', {
+                                               style: 'currency',
+                                               currency: 'BRL'
+                                             })}</div>
+                                           )}
+                                           {transaction.debito > 0 && (
+                                             <div>Débito: {transaction.debito.toLocaleString('pt-BR', {
+                                               style: 'currency',
+                                               currency: 'BRL'
+                                             })}</div>
+                                           )}
+                                           {transaction.credito > 0 && (
+                                             <div>Crédito: {transaction.credito.toLocaleString('pt-BR', {
+                                               style: 'currency',
+                                               currency: 'BRL'
+                                             })}</div>
+                                           )}
+                                         </div>
+                                         
+                                         <div className="flex gap-2 mt-2 pt-2 border-t">
+                                           <Button
+                                             size="sm"
+                                             variant="outline"
+                                             onClick={() => handleEditTransaction(transaction)}
+                                             className="h-7 px-2"
+                                           >
+                                             <Edit className="h-3 w-3 mr-1" />
+                                             Editar
+                                           </Button>
+                                           
+                                           <AlertDialog>
+                                             <AlertDialogTrigger asChild>
+                                               <Button
+                                                 size="sm"
+                                                 variant="outline"
+                                                 className="h-7 px-2 text-destructive hover:text-destructive"
+                                               >
+                                                 <Trash2 className="h-3 w-3 mr-1" />
+                                                 Excluir
+                                               </Button>
+                                             </AlertDialogTrigger>
+                                             <AlertDialogContent>
+                                               <AlertDialogHeader>
+                                                 <AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
+                                                 <AlertDialogDescription>
+                                                   Tem certeza que deseja excluir esta transação? Esta ação não pode ser desfeita.
+                                                 </AlertDialogDescription>
+                                               </AlertDialogHeader>
+                                               <AlertDialogFooter>
+                                                 <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                 <AlertDialogAction 
+                                                   onClick={() => handleDeleteTransaction(transaction.id)}
+                                                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                                 >
+                                                   Excluir
+                                                 </AlertDialogAction>
+                                               </AlertDialogFooter>
+                                             </AlertDialogContent>
+                                           </AlertDialog>
+                                         </div>
                                       </CardContent>
                                     </Card>
                                   ))}
@@ -373,6 +454,15 @@ export const Archive = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Edit Transaction Form */}
+      <TransactionForm 
+        isOpen={showEditForm}
+        onOpenChange={setShowEditForm}
+        editingTransaction={editingTransaction}
+        onSubmit={handleFormSubmit}
+        loading={loading}
+      />
     </div>
   );
 };
