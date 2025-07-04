@@ -27,6 +27,10 @@ export interface MonthlyData {
   totalEdu: number;
   totalKam: number;
   totalTaxas: number;
+  totalDinheiro: number;
+  totalPix: number;
+  totalDebito: number;
+  totalCredito: number;
 }
 
 export interface FinanceState {

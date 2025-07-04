@@ -9,12 +9,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   DollarSign, 
-  TrendingUp, 
   Calculator,
   Scissors, 
-  GraduationCap, 
-  Star,
-  Receipt
+  User,
+  Receipt,
+  Banknote,
+  Smartphone,
+  CreditCard
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -49,7 +50,12 @@ export const Dashboard = () => {
     liquido: currentData.totalLiquido - previousData.totalLiquido,
     studio: currentData.totalStudio - previousData.totalStudio,
     edu: currentData.totalEdu - previousData.totalEdu,
-    kam: currentData.totalKam - previousData.totalKam
+    kam: currentData.totalKam - previousData.totalKam,
+    taxas: currentData.totalTaxas - previousData.totalTaxas,
+    dinheiro: currentData.totalDinheiro - previousData.totalDinheiro,
+    pix: currentData.totalPix - previousData.totalPix,
+    debito: currentData.totalDebito - previousData.totalDebito,
+    credito: currentData.totalCredito - previousData.totalCredito
   }), [currentData, previousData]);
 
   // Payment methods data for chart
@@ -137,8 +143,8 @@ export const Dashboard = () => {
         </Select>
       </div>
 
-      {/* Metrics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Main Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <MetricCard
           title="Total Bruto"
           value={currentData.totalBruto}
@@ -162,30 +168,114 @@ export const Dashboard = () => {
           }}
           subtitle="Após taxas"
         />
-        
-        <MetricCard
-          title="60% Studio"
-          value={currentData.totalStudio}
-          icon={Scissors}
-          colorClass="bg-finance-studio"
-          trend={{
-            value: trends.studio,
-            isPositive: trends.studio >= 0
-          }}
-          subtitle="Participação Studio"
-        />
-        
-        <MetricCard
-          title="40% Edu"
-          value={currentData.totalEdu}
-          icon={GraduationCap}
-          colorClass="bg-finance-edu"
-          trend={{
-            value: trends.edu,
-            isPositive: trends.edu >= 0
-          }}
-          subtitle="Participação Edu"
-        />
+      </div>
+
+      {/* Payment Methods */}
+      <div className="mb-4">
+        <h3 className="text-md font-medium text-muted-foreground mb-3">Métodos de Pagamento</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <MetricCard
+            title="Dinheiro"
+            value={currentData.totalDinheiro}
+            icon={Banknote}
+            colorClass="bg-finance-income"
+            trend={{
+              value: trends.dinheiro,
+              isPositive: trends.dinheiro >= 0
+            }}
+            subtitle={`${currentData.totalBruto > 0 ? ((currentData.totalDinheiro / currentData.totalBruto) * 100).toFixed(1) : 0}%`}
+          />
+          
+          <MetricCard
+            title="PIX"
+            value={currentData.totalPix}
+            icon={Smartphone}
+            colorClass="bg-finance-net"
+            trend={{
+              value: trends.pix,
+              isPositive: trends.pix >= 0
+            }}
+            subtitle={`${currentData.totalBruto > 0 ? ((currentData.totalPix / currentData.totalBruto) * 100).toFixed(1) : 0}%`}
+          />
+          
+          <MetricCard
+            title="Débito"
+            value={currentData.totalDebito}
+            icon={CreditCard}
+            colorClass="bg-finance-studio"
+            trend={{
+              value: trends.debito,
+              isPositive: trends.debito >= 0
+            }}
+            subtitle={`${currentData.totalBruto > 0 ? ((currentData.totalDebito / currentData.totalBruto) * 100).toFixed(1) : 0}%`}
+          />
+          
+          <MetricCard
+            title="Crédito"
+            value={currentData.totalCredito}
+            icon={CreditCard}
+            colorClass="bg-finance-fees"
+            trend={{
+              value: trends.credito,
+              isPositive: trends.credito >= 0
+            }}
+            subtitle={`${currentData.totalBruto > 0 ? ((currentData.totalCredito / currentData.totalBruto) * 100).toFixed(1) : 0}%`}
+          />
+        </div>
+      </div>
+
+      {/* Distribution & Fees */}
+      <div className="mb-6">
+        <h3 className="text-md font-medium text-muted-foreground mb-3">Distribuição e Taxas</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <MetricCard
+            title="Studio (60%)"
+            value={currentData.totalStudio}
+            icon={Scissors}
+            colorClass="bg-finance-studio"
+            trend={{
+              value: trends.studio,
+              isPositive: trends.studio >= 0
+            }}
+            subtitle="Participação"
+          />
+          
+          <MetricCard
+            title="Edu (40%)"
+            value={currentData.totalEdu}
+            icon={User}
+            colorClass="bg-finance-edu"
+            trend={{
+              value: trends.edu,
+              isPositive: trends.edu >= 0
+            }}
+            subtitle="Cabeleireiro"
+          />
+          
+          <MetricCard
+            title="Kam (10%)"
+            value={currentData.totalKam}
+            icon={User}
+            colorClass="bg-finance-kam"
+            trend={{
+              value: trends.kam,
+              isPositive: trends.kam >= 0
+            }}
+            subtitle="Cabeleireiro"
+          />
+          
+          <MetricCard
+            title="Total Taxas"
+            value={currentData.totalTaxas}
+            icon={Receipt}
+            colorClass="bg-finance-fees"
+            trend={{
+              value: trends.taxas,
+              isPositive: trends.taxas <= 0
+            }}
+            subtitle="Descontos"
+          />
+        </div>
       </div>
 
       {/* Motivational Section */}

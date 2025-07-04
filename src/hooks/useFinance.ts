@@ -196,7 +196,11 @@ export const useFinance = () => {
         totalStudio: acc.totalStudio + t.studioShare,
         totalEdu: acc.totalEdu + t.eduShare,
         totalKam: acc.totalKam + t.kamShare,
-        totalTaxas: acc.totalTaxas + t.taxaDebito + t.taxaCredito
+        totalTaxas: acc.totalTaxas + t.taxaDebito + t.taxaCredito,
+        totalDinheiro: acc.totalDinheiro + t.dinheiro,
+        totalPix: acc.totalPix + t.pix,
+        totalDebito: acc.totalDebito + t.debito,
+        totalCredito: acc.totalCredito + t.credito
       }),
       {
         totalBruto: 0,
@@ -204,7 +208,11 @@ export const useFinance = () => {
         totalStudio: 0,
         totalEdu: 0,
         totalKam: 0,
-        totalTaxas: 0
+        totalTaxas: 0,
+        totalDinheiro: 0,
+        totalPix: 0,
+        totalDebito: 0,
+        totalCredito: 0
       }
     );
 
