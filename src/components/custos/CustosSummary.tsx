@@ -29,7 +29,7 @@ export function CustosSummary({
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
       {/* Total Custos Fixos do Mês */}
-      <Card className="bg-gradient-to-r from-red-500 to-red-600 text-white">
+      <Card className="bg-finance-fees text-finance-fees-foreground">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
             Total Custos Fixos do Mês
@@ -40,14 +40,14 @@ export function CustosSummary({
           <div className="text-2xl font-bold">
             {formatCurrency(totalGeral)}
           </div>
-          <p className="text-xs text-red-100">
+          <p className="text-xs opacity-80">
             {Object.keys(totalPorCategoria).length} categorias ativas
           </p>
         </CardContent>
       </Card>
 
       {/* Maior Custo */}
-      <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+      <Card className="bg-finance-edu text-finance-edu-foreground">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
             Maior Custo Individual
@@ -58,14 +58,14 @@ export function CustosSummary({
           <div className="text-2xl font-bold">
             {maiorCusto ? formatCurrency(Number(maiorCusto.valor)) : formatCurrency(0)}
           </div>
-          <p className="text-xs text-orange-100">
+          <p className="text-xs opacity-80">
             {maiorCusto ? `${maiorCusto.categoria} - ${maiorCusto.subcategoria}` : "Nenhum custo cadastrado"}
           </p>
         </CardContent>
       </Card>
 
       {/* Custos vs Receita */}
-      <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+      <Card className="bg-finance-studio text-finance-studio-foreground">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
             Custos vs Receita
@@ -76,7 +76,7 @@ export function CustosSummary({
           <div className="text-2xl font-bold">
             {percentualReceita.toFixed(1)}%
           </div>
-          <p className="text-xs text-purple-100">
+          <p className="text-xs opacity-80">
             {receita > 0 ? `Receita: ${formatCurrency(receita)}` : "Receita não informada"}
           </p>
         </CardContent>
