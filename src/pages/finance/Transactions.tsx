@@ -25,10 +25,7 @@ export const Transactions = () => {
     updateTransaction, 
     deleteTransaction, 
     loading, 
-    currentMonth,
-    importFromCSV,
-    
-    exportToCSV
+    currentMonth
   } = useFinance();
   const { toast } = useToast();
   
@@ -86,10 +83,7 @@ export const Transactions = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <TransactionActions
-            onImportCSV={importFromCSV}
-            onExportCSV={exportToCSV}
             onNewTransaction={handleNewTransaction}
-            loading={loading}
           />
           
           <TransactionForm
