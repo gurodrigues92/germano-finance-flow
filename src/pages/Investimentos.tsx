@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PageLayout } from "@/components/layout/PageLayout";
+
 import { Plus, TrendingUp, DollarSign, Target, PiggyBank } from "lucide-react";
 
 export function Investimentos() {
@@ -77,11 +77,11 @@ export function Investimentos() {
   }
 
   return (
-    <PageLayout 
-      title="Investimentos & Reserva"
-      subtitle="Controle de investimentos e reserva de emergência"
-      onFabClick={() => setShowForm(true)}
-    >
+    <div className="p-6 space-y-6">
+      <div>
+        <h2 className="text-2xl font-semibold text-foreground">Investimentos & Reserva</h2>
+        <p className="text-muted-foreground">Controle de investimentos e reserva de emergência</p>
+      </div>
       {/* Cards de Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
@@ -242,6 +242,6 @@ export function Investimentos() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </PageLayout>
+    </div>
   );
 }

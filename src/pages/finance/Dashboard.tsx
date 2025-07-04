@@ -4,7 +4,7 @@ import { MetricCard } from '@/components/dashboard/MetricCard';
 import { GreetingHeader } from '@/components/dashboard/GreetingHeader';
 import { MotivationalSection } from '@/components/dashboard/MotivationalSection';
 import { RecentTransactions } from '@/components/dashboard/RecentTransactions';
-import { PageLayout } from '@/components/layout/PageLayout';
+import { QuickActionMenu } from '@/components/navigation/QuickActionMenu';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
@@ -114,18 +114,8 @@ export const Dashboard = () => {
     return options;
   }, []);
 
-  const handleAddTransaction = () => {
-    // TODO: Open transaction form modal
-    console.log('Add transaction clicked');
-  };
-
   return (
-    <PageLayout 
-      title=""
-      showGreeting={true}
-      onFabClick={handleAddTransaction}
-      subtitle="Sistema Financeiro"
-    >
+    <div className="p-6 space-y-6">
       {/* Month Selector */}
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-semibold text-foreground">Métricas do Mês</h2>
@@ -283,6 +273,9 @@ export const Dashboard = () => {
 
       {/* Recent Transactions */}
       <RecentTransactions transactions={currentData.transactions} />
-    </PageLayout>
+      
+      {/* Quick Action Menu */}
+      <QuickActionMenu />
+    </div>
   );
 };

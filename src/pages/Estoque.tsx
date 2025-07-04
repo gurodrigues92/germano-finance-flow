@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PageLayout } from "@/components/layout/PageLayout";
+
 import { Plus, Package, DollarSign, TrendingDown } from "lucide-react";
 
 export function Estoque() {
@@ -73,11 +73,11 @@ export function Estoque() {
   }
 
   return (
-    <PageLayout 
-      title="Controle de Estoque"
-      subtitle="Gerencie produtos e movimentações"
-      onFabClick={() => setShowForm(true)}
-    >
+    <div className="p-6 space-y-6">
+      <div>
+        <h2 className="text-2xl font-semibold text-foreground">Controle de Estoque</h2>
+        <p className="text-muted-foreground">Gerencie produtos e movimentações</p>
+      </div>
       {/* Cards de Resumo */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
@@ -190,6 +190,6 @@ export function Estoque() {
         onEdit={handleEditProduto}
         onDelete={setDeletingId}
       />
-    </PageLayout>
+    </div>
   );
 }

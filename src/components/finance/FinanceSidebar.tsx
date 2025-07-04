@@ -25,25 +25,25 @@ import {
 const menuItems = [
   {
     title: 'Dashboard',
-    url: '/financeiro',
+    url: '/',
     icon: LayoutDashboard,
     description: 'Visão geral e métricas'
   },
   {
     title: 'Transações',
-    url: '/financeiro/transacoes',
+    url: '/transacoes',
     icon: PlusCircle,
     description: 'Gerenciar transações'
   },
   {
     title: 'Análise',
-    url: '/financeiro/analise',
+    url: '/analise',
     icon: BarChart3,
     description: 'Relatórios e gráficos'
   },
   {
     title: 'Arquivo',
-    url: '/financeiro/arquivo',
+    url: '/arquivo',
     icon: Archive,
     description: 'Histórico mensal'
   },
@@ -80,7 +80,7 @@ export const FinanceSidebar = () => {
 
   const isActive = (path: string) => {
     if (path === '/financeiro') {
-      return location.pathname === path;
+      return location.pathname === '/' || location.pathname === '/financeiro';
     }
     return location.pathname.startsWith(path);
   };
@@ -108,7 +108,7 @@ export const FinanceSidebar = () => {
                   <SidebarMenuButton asChild className="h-12">
                     <NavLink 
                       to={item.url} 
-                      end={item.url === '/financeiro'}
+                      end={item.url === '/'}
                       className={`${getNavClasses(item.url)} transition-all duration-200 rounded-lg p-3`}
                     >
                       <item.icon className="h-5 w-5 flex-shrink-0" />

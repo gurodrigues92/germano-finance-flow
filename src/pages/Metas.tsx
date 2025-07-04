@@ -16,7 +16,7 @@ import { MetaCard } from '@/components/metas/MetaCard';
 import { MetaForm } from '@/components/metas/MetaForm';
 import { MetaFinanceira, MetaFinanceiraInput } from '@/types/metas';
 import { useToast } from '@/hooks/use-toast';
-import { PageLayout } from '@/components/layout/PageLayout';
+
 
 export const Metas = () => {
   const { metas, loading, addMeta, updateMeta, deleteMeta } = useMetas();
@@ -94,11 +94,11 @@ export const Metas = () => {
   }
 
   return (
-    <PageLayout 
-      title="Metas Financeiras"
-      subtitle="Defina e acompanhe suas metas"
-      onFabClick={() => setShowForm(true)}
-    >
+    <div className="p-6 space-y-6">
+      <div>
+        <h2 className="text-2xl font-semibold text-foreground">Metas Financeiras</h2>
+        <p className="text-muted-foreground">Defina e acompanhe suas metas</p>
+      </div>
       {/* Cards de Estatísticas */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
@@ -184,6 +184,6 @@ export const Metas = () => {
           </div>
         )}
       </div>
-    </PageLayout>
+    </div>
   );
 };
