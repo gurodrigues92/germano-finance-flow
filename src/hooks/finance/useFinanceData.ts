@@ -8,6 +8,12 @@ export const useFinanceData = (state: FinanceState) => {
       t.month === targetMonth && new Date(t.date).getFullYear() >= 2025
     );
     
+    // Debug: Log filtering results
+    console.log(`[FinanceData] Filtering for month: ${targetMonth}`);
+    console.log(`[FinanceData] Total transactions: ${state.transactions.length}`);
+    console.log(`[FinanceData] Filtered transactions: ${transactions.length}`);
+    console.log(`[FinanceData] Available months:`, [...new Set(state.transactions.map(t => t.month))].sort());
+    
     const totals = transactions.reduce(
       (acc, t) => ({
         totalBruto: acc.totalBruto + t.totalBruto,

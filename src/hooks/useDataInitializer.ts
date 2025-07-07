@@ -63,12 +63,15 @@ export const useDataInitializer = () => {
         // Converter transações reais para formato do sistema
         const convertedTransactions = realTransactions.map(convertRealTransactionToFinanceTransaction);
 
-        // Criar estado inicial com dados reais
+        // Criar estado inicial com dados reais (sem sobrescrever mês atual)
+        const existingState = loadFinanceData();
+        const currentMonth = existingState?.currentMonth || new Date().toISOString().slice(0, 7);
+        
         const initialState: FinanceState = {
           transactions: convertedTransactions,
-          currentMonth: '2025-06',
-          currentYear: 2025,
-          archivedData: []
+          currentMonth: currentMonth,
+          currentYear: Math.max(new Date().getFullYear(), 2025),
+          archivedData: existingState?.archivedData || []
         };
 
         // Salvar dados reais no sistema
@@ -112,8 +115,8 @@ export const useDataInitializer = () => {
       
       const initialState: FinanceState = {
         transactions: convertedTransactions,
-        currentMonth: '2025-06',
-        currentYear: 2025,
+        currentMonth: new Date().toISOString().slice(0, 7),
+        currentYear: Math.max(new Date().getFullYear(), 2025),
         archivedData: []
       };
 
