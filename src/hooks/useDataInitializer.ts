@@ -66,7 +66,7 @@ export const useDataInitializer = () => {
         // Criar estado inicial com dados reais
         const initialState: FinanceState = {
           transactions: convertedTransactions,
-          currentMonth: '2025-07',
+          currentMonth: '2025-06',
           currentYear: 2025,
           archivedData: []
         };
@@ -112,7 +112,7 @@ export const useDataInitializer = () => {
       
       const initialState: FinanceState = {
         transactions: convertedTransactions,
-        currentMonth: '2025-07',
+        currentMonth: '2025-06',
         currentYear: 2025,
         archivedData: []
       };
