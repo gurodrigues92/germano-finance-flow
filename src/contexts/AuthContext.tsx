@@ -73,6 +73,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
 
     try {
+      // Lista de emails permitidos para cadastro
+      const allowedEmails = [
+        'email1@exemplo.com',
+        'email2@exemplo.com', 
+        'email3@exemplo.com'
+      ];
+
+      // Verificar se o email está na whitelist
+      if (!allowedEmails.includes(email.toLowerCase().trim())) {
+        setError('Este email não tem permissão para se cadastrar no sistema.');
+        return false;
+      }
+
       const redirectUrl = `${window.location.origin}/`;
       
       const { data, error: authError } = await supabase.auth.signUp({
