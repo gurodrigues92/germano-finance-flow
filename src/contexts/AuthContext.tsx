@@ -8,9 +8,14 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  success: string | null;
+  isEmailConfirmed: boolean;
+  needsEmailConfirmation: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   signUp: (email: string, password: string) => Promise<boolean>;
+  resendConfirmation: (email: string) => Promise<boolean>;
   logout: () => Promise<void>;
+  clearMessages: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -20,8 +25,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const isAuthenticated = !!session && !!user;
+  const isEmailConfirmed = !!user?.email_confirmed_at;
+  const needsEmailConfirmation = !!user && !user.email_confirmed_at;
 
   // Set up auth state listener and check existing session
   useEffect(() => {
@@ -70,14 +78,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signUp = async (email: string, password: string): Promise<boolean> => {
     setError(null);
+    setSuccess(null);
     setIsLoading(true);
 
     try {
       // Lista de emails permitidos para cadastro
       const allowedEmails = [
-        'email1@exemplo.com',
-        'email2@exemplo.com', 
-        'email3@exemplo.com'
+        'gurodrigues92@gmail.com'
+        // Adicionar os outros 2 emails quando disponíveis
       ];
 
       // Verificar se o email está na whitelist
@@ -101,6 +109,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return false;
       }
 
+      // Verificar se o usuário precisa confirmar email
+      if (data.user && !data.session) {
+        setSuccess('Email de confirmação enviado! Verifique sua caixa de entrada e clique no link para ativar sua conta.');
+      }
+
       return true;
     } catch (error) {
       setError('Erro de conexão');
@@ -108,6 +121,42 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const resendConfirmation = async (email: string): Promise<boolean> => {
+    setError(null);
+    setSuccess(null);
+    setIsLoading(true);
+
+    try {
+      const redirectUrl = `${window.location.origin}/`;
+      
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email,
+        options: {
+          emailRedirectTo: redirectUrl
+        }
+      });
+
+      if (error) {
+        setError(error.message);
+        return false;
+      }
+
+      setSuccess('Email de confirmação reenviado! Verifique sua caixa de entrada.');
+      return true;
+    } catch (error) {
+      setError('Erro de conexão');
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const clearMessages = () => {
+    setError(null);
+    setSuccess(null);
   };
 
   const logout = async () => {
@@ -125,9 +174,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isAuthenticated,
       isLoading,
       error,
+      success,
+      isEmailConfirmed,
+      needsEmailConfirmation,
       login,
       signUp,
-      logout
+      resendConfirmation,
+      logout,
+      clearMessages
     }}>
       {children}
     </AuthContext.Provider>

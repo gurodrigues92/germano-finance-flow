@@ -9,7 +9,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   
-  const { login, signUp, isLoading, error, isAuthenticated } = useAuth();
+  const { login, signUp, resendConfirmation, isLoading, error, success, isAuthenticated, clearMessages } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,6 +20,11 @@ export default function Login() {
       navigate(from, { replace: true });
     }
   }, [isAuthenticated, navigate, location]);
+
+  // Clear messages when switching between login/signup
+  useEffect(() => {
+    clearMessages();
+  }, [isSignUp, clearMessages]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -124,6 +129,37 @@ export default function Login() {
               <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-center space-x-2 animate-slide-in" role="alert">
                 <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
                 <span className="text-red-600 text-sm">{error}</span>
+              </div>
+            )}
+
+            {success && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4 animate-slide-in" role="alert">
+                <div className="flex items-start space-x-2">
+                  <div className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <span className="text-green-700 text-sm">{success}</span>
+                    {success.includes('Email de confirmação') && (
+                      <div className="mt-2">
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            if (email.trim()) {
+                              await resendConfirmation(email.trim());
+                            }
+                          }}
+                          className="text-xs text-green-600 hover:text-green-800 underline"
+                          disabled={isLoading}
+                        >
+                          Reenviar email de confirmação
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
 
