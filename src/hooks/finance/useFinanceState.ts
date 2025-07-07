@@ -7,9 +7,9 @@ const getInitialCurrentMonth = () => {
   const now = new Date();
   const currentYear = now.getFullYear();
   
-  // Use June 2025 as default (last month with real data)
-  // If we're past 2025, use current month
-  if (currentYear > 2025) {
+  // If we're in 2025 or later, use current month
+  // This makes the system dynamic and always current
+  if (currentYear >= 2025) {
     return now.toISOString().slice(0, 7);
   }
   return '2025-06';
