@@ -1,39 +1,14 @@
 import { useMemo } from 'react';
 import { useFinance } from '@/hooks/useFinance';
 import { useDataInitializer } from '@/hooks/useDataInitializer';
-import { MetricCard } from '@/components/dashboard/MetricCard';
-import { HeroCard } from '@/components/dashboard/HeroCard';
-import { CompactCard } from '@/components/dashboard/CompactCard';
-import { GreetingHeader } from '@/components/dashboard/GreetingHeader';
-import { MotivationalSection } from '@/components/dashboard/MotivationalSection';
-import { RecentTransactions } from '@/components/dashboard/RecentTransactions';
-import { QuickActionMenu } from '@/components/navigation/QuickActionMenu';
 import { StockAlert } from '@/components/alerts/StockAlert';
-import { WeeklyInsights } from '@/components/insights/WeeklyInsights';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { 
-  DollarSign, 
-  Calculator,
-  Scissors, 
-  User,
-  Receipt,
-  Banknote,
-  Smartphone,
-  CreditCard
-} from 'lucide-react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell
-} from 'recharts';
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
+import { HeroMetrics } from '@/components/dashboard/HeroMetrics';
+import { PaymentMethodsGrid } from '@/components/dashboard/PaymentMethodsGrid';
+import { DistributionGrid } from '@/components/dashboard/DistributionGrid';
+import { TransactionCharts } from '@/components/dashboard/TransactionCharts';
+import { DashboardInsights } from '@/components/dashboard/DashboardInsights';
+import { DashboardFooter } from '@/components/dashboard/DashboardFooter';
 
 export const Dashboard = () => {
   const { currentMonth, setCurrentMonth, getMonthlyData, transactions } = useFinance();
@@ -65,44 +40,6 @@ export const Dashboard = () => {
     debito: currentData.totalDebito - previousData.totalDebito,
     credito: currentData.totalCredito - previousData.totalCredito
   }), [currentData, previousData]);
-
-  // Payment methods data for chart
-  const paymentData = useMemo(() => {
-    const totals = currentData.transactions.reduce(
-      (acc, t) => ({
-        dinheiro: acc.dinheiro + t.dinheiro,
-        pix: acc.pix + t.pix,
-        debito: acc.debito + t.debito,
-        credito: acc.credito + t.credito
-      }),
-      { dinheiro: 0, pix: 0, debito: 0, credito: 0 }
-    );
-
-    return [
-      { name: 'Dinheiro', value: totals.dinheiro, color: '#10b981' },
-      { name: 'PIX', value: totals.pix, color: '#3b82f6' },
-      { name: 'Débito', value: totals.debito, color: '#8b5cf6' },
-      { name: 'Crédito', value: totals.credito, color: '#ef4444' }
-    ].filter(item => item.value > 0);
-  }, [currentData]);
-
-  // Last 6 months data for bar chart
-  const monthlyChart = useMemo(() => {
-    const months = [];
-    for (let i = 5; i >= 0; i--) {
-      const date = new Date(currentMonth);
-      date.setMonth(date.getMonth() - i);
-      const monthStr = date.toISOString().slice(0, 7);
-      const data = getMonthlyData(monthStr);
-      months.push({
-        month: date.toLocaleDateString('pt-BR', { month: 'short' }),
-        bruto: data.totalBruto,
-        liquido: data.totalLiquido,
-        taxas: data.totalTaxas
-      });
-    }
-    return months;
-  }, [currentMonth, getMonthlyData]);
 
   // Dynamic month options - from March 2025 to current month
   const monthOptions = useMemo(() => {
@@ -188,261 +125,60 @@ export const Dashboard = () => {
       {/* Stock Alert */}
       <StockAlert />
       
-      {/* Month Selector */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-        <h2 className="text-lg sm:text-lg font-semibold text-foreground">Métricas do Mês</h2>
-        <Select value={currentMonth} onValueChange={setCurrentMonth}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Selecionar mês" />
-          </SelectTrigger>
-          <SelectContent>
-            {monthOptions.map(option => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      {/* Dashboard Header */}
+      <DashboardHeader 
+        currentMonth={currentMonth}
+        setCurrentMonth={setCurrentMonth}
+        monthOptions={monthOptions}
+      />
 
       {/* Hero Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
-        <HeroCard
-          title="Total Bruto"
-          value={currentData.totalBruto}
-          icon={DollarSign}
-          gradient="bg-gradient-to-r from-green-500 to-green-600"
-          trend={{
-            value: trends.bruto,
-            isPositive: trends.bruto >= 0
-          }}
-          subtitle="Receita total"
-        />
-        
-        <HeroCard
-          title="Total Líquido"
-          value={currentData.totalLiquido}
-          icon={Calculator}
-          gradient="bg-gradient-to-r from-blue-500 to-blue-600"
-          trend={{
-            value: trends.liquido,
-            isPositive: trends.liquido >= 0
-          }}
-          subtitle="Após taxas"
-        />
-      </div>
+      <HeroMetrics
+        totalBruto={currentData.totalBruto}
+        totalLiquido={currentData.totalLiquido}
+        trends={{ bruto: trends.bruto, liquido: trends.liquido }}
+      />
 
       {/* Payment Methods */}
-      <div className="mb-4 sm:mb-6">
-        <h3 className="text-sm sm:text-md font-semibold text-foreground mb-3 sm:mb-4">Métodos de Pagamento</h3>
-        <div className="grid grid-cols-2 gap-2 sm:gap-3">
-          <CompactCard
-            title="Dinheiro"
-            value={currentData.totalDinheiro}
-            icon={Banknote}
-            iconColor="text-green-600"
-            iconBg="bg-green-100"
-            trend={{
-              value: trends.dinheiro,
-              isPositive: trends.dinheiro >= 0
-            }}
-            percentage={`${currentData.totalBruto > 0 ? ((currentData.totalDinheiro / currentData.totalBruto) * 100).toFixed(1) : 0}%`}
-          />
-          
-          <CompactCard
-            title="PIX"
-            value={currentData.totalPix}
-            icon={Smartphone}
-            iconColor="text-blue-600"
-            iconBg="bg-blue-100"
-            trend={{
-              value: trends.pix,
-              isPositive: trends.pix >= 0
-            }}
-            percentage={`${currentData.totalBruto > 0 ? ((currentData.totalPix / currentData.totalBruto) * 100).toFixed(1) : 0}%`}
-          />
-          
-          <CompactCard
-            title="Débito"
-            value={currentData.totalDebito}
-            icon={CreditCard}
-            iconColor="text-violet-600"
-            iconBg="bg-violet-100"
-            trend={{
-              value: trends.debito,
-              isPositive: trends.debito >= 0
-            }}
-            percentage={`${currentData.totalBruto > 0 ? ((currentData.totalDebito / currentData.totalBruto) * 100).toFixed(1) : 0}%`}
-          />
-          
-          <CompactCard
-            title="Crédito"
-            value={currentData.totalCredito}
-            icon={CreditCard}
-            iconColor="text-amber-600"
-            iconBg="bg-amber-100"
-            trend={{
-              value: trends.credito,
-              isPositive: trends.credito >= 0
-            }}
-            percentage={`${currentData.totalBruto > 0 ? ((currentData.totalCredito / currentData.totalBruto) * 100).toFixed(1) : 0}%`}
-          />
-        </div>
-      </div>
+      <PaymentMethodsGrid
+        totalBruto={currentData.totalBruto}
+        totalDinheiro={currentData.totalDinheiro}
+        totalPix={currentData.totalPix}
+        totalDebito={currentData.totalDebito}
+        totalCredito={currentData.totalCredito}
+        trends={{
+          dinheiro: trends.dinheiro,
+          pix: trends.pix,
+          debito: trends.debito,
+          credito: trends.credito
+        }}
+      />
 
-      {/* Distribution & Fees */}
-      <div className="mb-4 sm:mb-6">
-        <h3 className="text-sm sm:text-md font-semibold text-foreground mb-3 sm:mb-4">Distribuição e Taxas</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
-          <MetricCard
-            title="Studio (60%)"
-            value={currentData.totalStudio}
-            icon={Scissors}
-            colorClass="bg-finance-studio"
-            trend={{
-              value: trends.studio,
-              isPositive: trends.studio >= 0
-            }}
-            subtitle="Participação"
-          />
-          
-          <MetricCard
-            title="Edu (40%)"
-            value={currentData.totalEdu}
-            icon={User}
-            colorClass="bg-finance-edu"
-            trend={{
-              value: trends.edu,
-              isPositive: trends.edu >= 0
-            }}
-            subtitle="Cabeleireiro"
-          />
-          
-          <MetricCard
-            title="Kam (10%)"
-            value={currentData.totalKam}
-            icon={User}
-            colorClass="bg-finance-kam"
-            trend={{
-              value: trends.kam,
-              isPositive: trends.kam >= 0
-            }}
-            subtitle="Cabeleireiro"
-          />
-          
-          <MetricCard
-            title="Total Taxas"
-            value={currentData.totalTaxas}
-            icon={Receipt}
-            colorClass="bg-finance-fees"
-            trend={{
-              value: trends.taxas,
-              isPositive: trends.taxas <= 0
-            }}
-            subtitle="Descontos"
-          />
-        </div>
-      </div>
+      {/* Distribution and Fees */}
+      <DistributionGrid
+        totalStudio={currentData.totalStudio}
+        totalEdu={currentData.totalEdu}
+        totalKam={currentData.totalKam}
+        totalTaxas={currentData.totalTaxas}
+        trends={{
+          studio: trends.studio,
+          edu: trends.edu,
+          kam: trends.kam,
+          taxas: trends.taxas
+        }}
+      />
 
-      {/* Transaction Count Pie Chart */}
-      {transactionCountData.length > 0 && (
-        <Card className="mb-6 hover:shadow-md transition-shadow duration-200">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">Distribuição de Transações</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64 sm:h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={transactionCountData}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={90}
-                    fill="#8884d8"
-                    dataKey="value"
-                    label={({ name, value, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {transactionCountData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip 
-                    formatter={(value, name) => [value, name]}
-                    labelStyle={{ color: '#374151' }}
-                    contentStyle={{ 
-                      backgroundColor: 'white', 
-                      border: '1px solid #e5e7eb',
-                      borderRadius: '8px',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {/* Transaction Charts */}
+      <TransactionCharts
+        transactionCountData={transactionCountData}
+        biWeeklyData={biWeeklyData}
+      />
 
-      {/* Bi-weekly Comparison */}
-      {(biWeeklyData.firstHalf.count > 0 || biWeeklyData.secondHalf.count > 0) && (
-        <Card className="mb-6 hover:shadow-md transition-shadow duration-200">
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">Comparativo Quinzenal</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <h4 className="text-sm font-medium text-muted-foreground">1ª Quinzena (1-15)</h4>
-                <div className="space-y-1">
-                  <div className="flex justify-between">
-                    <span className="text-xs text-muted-foreground">Transações:</span>
-                    <span className="text-xs font-medium">{biWeeklyData.firstHalf.count}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-xs text-muted-foreground">Total Bruto:</span>
-                    <span className="text-xs font-medium">R$ {biWeeklyData.firstHalf.bruto.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-xs text-muted-foreground">Total Líquido:</span>
-                    <span className="text-xs font-medium">R$ {biWeeklyData.firstHalf.liquido.toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <h4 className="text-sm font-medium text-muted-foreground">2ª Quinzena (16-31)</h4>
-                <div className="space-y-1">
-                  <div className="flex justify-between">
-                    <span className="text-xs text-muted-foreground">Transações:</span>
-                    <span className="text-xs font-medium">{biWeeklyData.secondHalf.count}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-xs text-muted-foreground">Total Bruto:</span>
-                    <span className="text-xs font-medium">R$ {biWeeklyData.secondHalf.bruto.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-xs text-muted-foreground">Total Líquido:</span>
-                    <span className="text-xs font-medium">R$ {biWeeklyData.secondHalf.liquido.toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {/* Insights */}
+      <DashboardInsights />
 
-      {/* Motivational Section */}
-      <MotivationalSection />
-
-      {/* Weekly Insights */}
-      <WeeklyInsights />
-
-      {/* Recent Transactions */}
-      <RecentTransactions transactions={currentData.transactions} />
-      
-      {/* Quick Action Menu */}
-      <QuickActionMenu />
+      {/* Footer */}
+      <DashboardFooter transactions={currentData.transactions} />
     </div>
   );
 };
