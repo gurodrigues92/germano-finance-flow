@@ -84,8 +84,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       // Lista de emails permitidos para cadastro
       const allowedEmails = [
-        'gurodrigues92@gmail.com'
-        // Adicionar os outros 2 emails quando disponíveis
+        'gurodrigues92@gmail.com',
+        'Eduardo.germano15@gmail.com',
+        'kamlley_zapata@outlook.com'
       ];
 
       // Verificar se o email está na whitelist
