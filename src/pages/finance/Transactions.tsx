@@ -72,6 +72,7 @@ export const Transactions = () => {
     resetForm();
   };
 
+  // Filter transactions to current month being viewed
   const currentMonthTransactions = transactions.filter(t => t.month === currentMonth);
 
   return (

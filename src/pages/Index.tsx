@@ -20,11 +20,11 @@ const motivationalPhrases = [
 ];
 
 const Index = () => {
-  const { getMonthlyData } = useFinance();
+  const { getMonthlyData, currentMonth } = useFinance();
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   
-  // Dados do mês atual
-  const currentData = getMonthlyData();
+  // Dados do mês atual (usando o mês atual do sistema)
+  const currentData = getMonthlyData(currentMonth);
   
   // Meta mensal (exemplo: R$ 50.000)
   const monthlyGoal = 50000;

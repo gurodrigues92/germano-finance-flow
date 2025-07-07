@@ -33,14 +33,25 @@ export const Analysis = () => {
   
   const currentData = getMonthlyData(currentMonth);
 
-  // Generate month options for the last 12 months
+  // Generate month options - from March 2025 onwards (matching Dashboard logic)
   const monthOptions = useMemo(() => {
     const options = [];
-    for (let i = 0; i < 12; i++) {
-      const date = new Date();
-      date.setMonth(date.getMonth() - i);
+    const startDate = new Date('2025-03-01'); // Start from March 2025 (first month with data)
+    const currentDate = new Date();
+    
+    // Generate months from March 2025 to current month
+    const startYear = startDate.getFullYear();
+    const startMonth = startDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    const currentMonthNum = currentDate.getMonth();
+    
+    // Calculate total months from start to current
+    const totalMonths = (currentYear - startYear) * 12 + (currentMonthNum - startMonth) + 1;
+    
+    for (let i = 0; i < totalMonths; i++) {
+      const date = new Date(startYear, startMonth + i, 1);
       const monthStr = date.toISOString().slice(0, 7);
-      options.push({
+      options.unshift({ // Add to beginning for reverse chronological order
         value: monthStr,
         label: date.toLocaleDateString('pt-BR', { 
           month: 'long', 
@@ -48,6 +59,7 @@ export const Analysis = () => {
         })
       });
     }
+    
     return options;
   }, []);
 

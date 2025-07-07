@@ -85,7 +85,7 @@ export function Investimentos() {
         </div>
         <Button 
           onClick={() => setShowForm(true)}
-          className="bg-finance-studio hover:bg-finance-studio/90 text-finance-studio-foreground sm:hidden"
+          className="bg-finance-studio hover:bg-finance-studio/90 text-finance-studio-foreground"
         >
           <Plus className="h-4 w-4 mr-2" />
           Novo Investimento

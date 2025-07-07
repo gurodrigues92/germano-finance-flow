@@ -25,7 +25,7 @@ export function CustosFixos() {
     totalPorCategoria,
     totalGeral,
     maiorCusto
-  } = useCustosFixos();
+  } = useCustosFixos(); // Using current month from the hook
 
   const handleCreate = async (data: any) => {
     try {
