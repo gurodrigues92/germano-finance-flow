@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useFinance } from '@/hooks/useFinance';
+import { useDataInitializer } from '@/hooks/useDataInitializer';
 import { MetricCard } from '@/components/dashboard/MetricCard';
 import { HeroCard } from '@/components/dashboard/HeroCard';
 import { CompactCard } from '@/components/dashboard/CompactCard';
@@ -7,6 +8,8 @@ import { GreetingHeader } from '@/components/dashboard/GreetingHeader';
 import { MotivationalSection } from '@/components/dashboard/MotivationalSection';
 import { RecentTransactions } from '@/components/dashboard/RecentTransactions';
 import { QuickActionMenu } from '@/components/navigation/QuickActionMenu';
+import { StockAlert } from '@/components/alerts/StockAlert';
+import { WeeklyInsights } from '@/components/insights/WeeklyInsights';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
@@ -34,6 +37,9 @@ import {
 
 export const Dashboard = () => {
   const { currentMonth, setCurrentMonth, getMonthlyData, transactions } = useFinance();
+  
+  // Inicializar dados reais
+  useDataInitializer();
   
   const currentData = getMonthlyData(currentMonth);
   
@@ -174,6 +180,9 @@ export const Dashboard = () => {
 
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 pb-24">
+      {/* Stock Alert */}
+      <StockAlert />
+      
       {/* Month Selector */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <h2 className="text-lg sm:text-lg font-semibold text-foreground">Métricas do Mês</h2>
@@ -420,6 +429,9 @@ export const Dashboard = () => {
 
       {/* Motivational Section */}
       <MotivationalSection />
+
+      {/* Weekly Insights */}
+      <WeeklyInsights />
 
       {/* Recent Transactions */}
       <RecentTransactions transactions={currentData.transactions} />
