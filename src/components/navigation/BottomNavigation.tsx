@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, DollarSign, Package, MoreHorizontal, LogOut } from 'lucide-react';
+import { Home, DollarSign, Package, MoreHorizontal, LogOut, Target, Receipt, TrendingUp, BarChart3, Archive } from 'lucide-react';
 import { useState } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useAuth } from '@/contexts/AuthContext';
@@ -37,17 +37,17 @@ export const BottomNavigation = () => {
   const { logout } = useAuth();
   
   const mainNavItems = [
-    { icon: Home, label: 'Home', href: '/' },
-    { icon: DollarSign, label: 'Finanças', href: '/transacoes' },
+    { icon: Home, label: 'Dashboard', href: '/' },
+    { icon: DollarSign, label: 'Transações', href: '/transacoes' },
     { icon: Package, label: 'Estoque', href: '/estoque' },
   ];
 
   const menuItems = [
-    { label: 'Metas Financeiras', href: '/metas' },
-    { label: 'Custos Fixos', href: '/custos-fixos' },
-    { label: 'Investimentos', href: '/investimentos' },
-    { label: 'Análise', href: '/analise' },
-    { label: 'Arquivo', href: '/arquivo' },
+    { label: 'Metas Financeiras', href: '/metas', icon: Target },
+    { label: 'Custos Fixos', href: '/custos-fixos', icon: Receipt },
+    { label: 'Investimentos', href: '/investimentos', icon: TrendingUp },
+    { label: 'Análise', href: '/analise', icon: BarChart3 },
+    { label: 'Arquivo', href: '/arquivo', icon: Archive },
   ];
 
   const MoreButton = () => (
@@ -69,13 +69,14 @@ export const BottomNavigation = () => {
                 key={item.href}
                 to={item.href}
                 onClick={() => setIsMenuOpen(false)}
-                className={`flex items-center p-3 rounded-lg transition-colors hover:bg-purple-50 ${
+                className={`flex items-center space-x-3 p-3 rounded-lg transition-colors hover:bg-purple-50 ${
                   location.pathname === item.href 
                     ? 'bg-purple-100 text-purple-600' 
                     : 'text-foreground'
                 }`}
               >
-                {item.label}
+                <item.icon className="w-5 h-5" />
+                <span>{item.label}</span>
               </Link>
             ))}
             

@@ -18,7 +18,10 @@ export const RecentTransactions = ({ transactions }: RecentTransactionsProps) =>
       month: '2-digit'
     });
 
-  const recentTransactions = transactions.slice(0, 5);
+  // Ordenar transações por data decrescente (mais recentes primeiro) e pegar as 5 primeiras
+  const recentTransactions = transactions
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 5);
 
   return (
     <Card className="border-purple-100 glass">
