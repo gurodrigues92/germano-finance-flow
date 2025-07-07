@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Edit, Trash2, Calendar } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { TransactionMobileCard } from './TransactionMobileCard';
 
 interface TransactionTableProps {
   transactions: Transaction[];
@@ -12,6 +14,8 @@ interface TransactionTableProps {
 }
 
 export const TransactionTable = ({ transactions, onEdit, onDelete }: TransactionTableProps) => {
+  const isMobile = useIsMobile();
+  
   const handleDelete = (id: string) => {
     if (confirm('Tem certeza que deseja excluir esta transação?')) {
       onDelete(id);
@@ -33,7 +37,20 @@ export const TransactionTable = ({ transactions, onEdit, onDelete }: Transaction
             <br />
             Clique em "Nova Transação" para começar.
           </div>
+        ) : isMobile ? (
+          // Mobile View - Cards
+          <div className="space-y-4">
+            {transactions.map((transaction) => (
+              <TransactionMobileCard
+                key={transaction.id}
+                transaction={transaction}
+                onEdit={onEdit}
+                onDelete={onDelete}
+              />
+            ))}
+          </div>
         ) : (
+          // Desktop View - Table
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
