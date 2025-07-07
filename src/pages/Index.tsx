@@ -49,8 +49,8 @@ const Index = () => {
           </h1>
           
           {/* Access Button */}
-          <Link to="/financeiro">
-            <Button 
+          <Link to="/">
+            <Button
               size="lg" 
               className="bg-finance-studio hover:bg-finance-studio/90 text-finance-studio-foreground font-semibold px-8 py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
             >
