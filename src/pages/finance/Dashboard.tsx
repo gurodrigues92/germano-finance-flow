@@ -104,29 +104,15 @@ export const Dashboard = () => {
     return months;
   }, [currentMonth, getMonthlyData]);
 
-  // Generate month options starting from January 2025
+  // Month options for real data (March to June 2025)
   const monthOptions = useMemo(() => {
-    const options = [];
-    const startDate = new Date('2025-01-01');
-    const currentDate = new Date();
-    
-    // Calculate number of months from January 2025 to current month
-    const monthsDiff = (currentDate.getFullYear() - startDate.getFullYear()) * 12 
-      + (currentDate.getMonth() - startDate.getMonth()) + 1;
-    
-    for (let i = 0; i < monthsDiff; i++) {
-      const date = new Date('2025-01-01');
-      date.setMonth(date.getMonth() + i);
-      const monthStr = date.toISOString().slice(0, 7);
-      options.unshift({
-        value: monthStr,
-        label: date.toLocaleDateString('pt-BR', { 
-          month: 'long', 
-          year: 'numeric' 
-        })
-      });
-    }
-    return options;
+    const availableMonths = [
+      { value: '2025-06', label: 'junho de 2025' },
+      { value: '2025-05', label: 'maio de 2025' },
+      { value: '2025-04', label: 'abril de 2025' },
+      { value: '2025-03', label: 'março de 2025' }
+    ];
+    return availableMonths;
   }, []);
 
   // Transaction count data for pie chart

@@ -7,11 +7,12 @@ const getInitialCurrentMonth = () => {
   const now = new Date();
   const currentYear = now.getFullYear();
   
-  // If we're in 2025 or later, use current month, otherwise default to 2025-01
-  if (currentYear >= 2025) {
+  // Use June 2025 as default (last month with real data)
+  // If we're past 2025, use current month
+  if (currentYear > 2025) {
     return now.toISOString().slice(0, 7);
   }
-  return '2025-01';
+  return '2025-06';
 };
 
 export const useFinanceState = () => {
