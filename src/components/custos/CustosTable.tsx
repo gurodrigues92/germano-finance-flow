@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CustoFixo } from "@/types/custos";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Edit, Trash2, Search, Filter } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Edit, Trash2, Search, Filter, Trash } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -13,12 +14,16 @@ interface CustosTableProps {
   custos: CustoFixo[];
   onEdit: (custo: CustoFixo) => void;
   onDelete: (id: string) => void;
+  onBulkDelete: (ids: string[]) => void;
 }
 
-export function CustosTable({ custos, onEdit, onDelete }: CustosTableProps) {
+export function CustosTable({ custos, onEdit, onDelete, onBulkDelete }: CustosTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategoria, setFilterCategoria] = useState<string>("all");
   const [filterMes, setFilterMes] = useState<string>("all");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isAllSelected, setIsAllSelected] = useState(false);
+  const [isIndeterminate, setIsIndeterminate] = useState(false);
 
   const filteredCustos = custos.filter((custo) => {
     const matchesSearch = 
@@ -41,6 +46,44 @@ export function CustosTable({ custos, onEdit, onDelete }: CustosTableProps) {
     }).format(value);
   };
 
+  // Atualizar estados de seleção baseado nos items filtrados
+  useEffect(() => {
+    const filteredIds = filteredCustos.map(c => c.id);
+    const selectedFromFiltered = Array.from(selectedIds).filter(id => filteredIds.includes(id));
+    
+    setIsAllSelected(selectedFromFiltered.length === filteredCustos.length && filteredCustos.length > 0);
+    setIsIndeterminate(selectedFromFiltered.length > 0 && selectedFromFiltered.length < filteredCustos.length);
+  }, [selectedIds, filteredCustos]);
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      // Desmarcar todos os filtrados
+      const filteredIds = new Set(filteredCustos.map(c => c.id));
+      setSelectedIds(prev => new Set(Array.from(prev).filter(id => !filteredIds.has(id))));
+    } else {
+      // Marcar todos os filtrados
+      const filteredIds = filteredCustos.map(c => c.id);
+      setSelectedIds(prev => new Set([...Array.from(prev), ...filteredIds]));
+    }
+  };
+
+  const handleSelectItem = (id: string) => {
+    setSelectedIds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const selectedCount = selectedIds.size;
+  const selectedTotal = custos
+    .filter(c => selectedIds.has(c.id))
+    .reduce((sum, c) => sum + Number(c.valor), 0);
+
   return (
     <Card className="w-full max-w-full overflow-hidden">
       <CardHeader>
@@ -49,6 +92,23 @@ export function CustosTable({ custos, onEdit, onDelete }: CustosTableProps) {
             <Filter className="h-5 w-5" />
             Custos Cadastrados ({filteredCustos.length})
           </CardTitle>
+          
+          {selectedCount > 0 && (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">
+                {selectedCount} selecionado{selectedCount > 1 ? 's' : ''} ({formatCurrency(selectedTotal)})
+              </span>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => onBulkDelete(Array.from(selectedIds))}
+                className="h-8"
+              >
+                <Trash className="h-4 w-4 mr-2" />
+                Excluir Selecionados
+              </Button>
+            </div>
+          )}
         </div>
         
         {/* Filtros */}
@@ -102,6 +162,13 @@ export function CustosTable({ custos, onEdit, onDelete }: CustosTableProps) {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">
+                    <Checkbox
+                      checked={isAllSelected}
+                      onCheckedChange={handleSelectAll}
+                      className={isIndeterminate ? "data-[state=checked]:bg-primary/80" : ""}
+                    />
+                  </TableHead>
                   <TableHead>Categoria</TableHead>
                   <TableHead>Subcategoria</TableHead>
                   <TableHead>Valor</TableHead>
@@ -113,13 +180,19 @@ export function CustosTable({ custos, onEdit, onDelete }: CustosTableProps) {
               <TableBody>
                 {filteredCustos.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
                       {custos.length === 0 ? "Nenhum custo cadastrado ainda" : "Nenhum custo encontrado com os filtros aplicados"}
                     </TableCell>
                   </TableRow>
                 ) : (
                   filteredCustos.map((custo) => (
                     <TableRow key={custo.id} className="hover:bg-muted/50">
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedIds.has(custo.id)}
+                          onCheckedChange={() => handleSelectItem(custo.id)}
+                        />
+                      </TableCell>
                       <TableCell className="font-medium">{custo.categoria}</TableCell>
                       <TableCell>{custo.subcategoria}</TableCell>
                       <TableCell className="font-medium text-destructive">

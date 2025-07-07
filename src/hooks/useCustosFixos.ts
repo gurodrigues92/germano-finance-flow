@@ -116,6 +116,31 @@ export function useCustosFixos(mesReferencia?: string) {
     }
   };
 
+  const deleteManyeCustos = async (ids: string[]) => {
+    try {
+      const { error } = await supabase
+        .from('custos_fixos')
+        .delete()
+        .in('id', ids);
+
+      if (error) throw error;
+
+      setCustos(prev => prev.filter(c => !ids.includes(c.id)));
+      toast({
+        title: "Sucesso",
+        description: `${ids.length} custos fixos removidos com sucesso`,
+      });
+    } catch (error) {
+      console.error('Erro ao deletar custos:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao remover custos fixos",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+
   useEffect(() => {
     fetchCustos();
   }, [mesReferencia]);
@@ -137,6 +162,7 @@ export function useCustosFixos(mesReferencia?: string) {
     createCusto,
     updateCusto,
     deleteCusto,
+    deleteManyeCustos,
     refetch: fetchCustos,
     totalPorCategoria,
     totalGeral,

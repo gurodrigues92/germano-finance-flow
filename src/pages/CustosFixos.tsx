@@ -15,6 +15,7 @@ export function CustosFixos() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [renderError, setRenderError] = useState<string | null>(null);
+  const [bulkDeleteIds, setBulkDeleteIds] = useState<string[] | null>(null);
 
   const {
     custos,
@@ -22,6 +23,7 @@ export function CustosFixos() {
     createCusto,
     updateCusto,
     deleteCusto,
+    deleteManyeCustos,
     totalPorCategoria,
     totalGeral,
     maiorCusto
@@ -62,6 +64,22 @@ export function CustosFixos() {
     } catch (error) {
       console.error("Erro ao deletar custo:", error);
       setRenderError("Erro ao deletar custo fixo");
+    }
+  };
+
+  const handleBulkDelete = (ids: string[]) => {
+    setBulkDeleteIds(ids);
+  };
+
+  const handleConfirmBulkDelete = async () => {
+    try {
+      if (bulkDeleteIds && bulkDeleteIds.length > 0) {
+        await deleteManyeCustos(bulkDeleteIds);
+        setBulkDeleteIds(null);
+      }
+    } catch (error) {
+      console.error("Erro ao deletar custos:", error);
+      setRenderError("Erro ao deletar custos fixos");
     }
   };
 
@@ -123,6 +141,7 @@ export function CustosFixos() {
           custos={custos}
           onEdit={handleEdit}
           onDelete={setDeletingId}
+          onBulkDelete={handleBulkDelete}
         />
 
       {/* Form Dialog */}
@@ -167,6 +186,27 @@ export function CustosFixos() {
               className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
             >
               Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Bulk Delete Dialog */}
+      <AlertDialog open={!!bulkDeleteIds} onOpenChange={() => setBulkDeleteIds(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar exclusão em massa</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza de que deseja excluir {bulkDeleteIds?.length} custos fixos selecionados? Esta ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleConfirmBulkDelete} 
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+            >
+              Excluir Todos
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
