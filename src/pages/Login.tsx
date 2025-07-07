@@ -1,20 +1,19 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Scissors, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Scissors, Lock, Eye, EyeOff, AlertCircle, Mail } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Login() {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [attempts, setAttempts] = useState(0);
-  const [isLocked, setIsLocked] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(0);
+  const [isSignUp, setIsSignUp] = useState(false);
   
-  const { login, isLoading, error, isAuthenticated } = useAuth();
+  const { login, signUp, isLoading, error, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Redirect se já estiver autenticado
+  // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
       const from = (location.state as any)?.from?.pathname || '/';
@@ -22,42 +21,17 @@ export default function Login() {
     }
   }, [isAuthenticated, navigate, location]);
 
-  // Timer para desbloqueio
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (isLocked && timeLeft > 0) {
-      timer = setTimeout(() => {
-        setTimeLeft(timeLeft - 1);
-      }, 1000);
-    } else if (timeLeft === 0 && isLocked) {
-      setIsLocked(false);
-      setAttempts(0);
-    }
-    return () => clearTimeout(timer);
-  }, [isLocked, timeLeft]);
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
-    if (isLocked || !password.trim()) return;
+    if (!email.trim() || !password.trim()) return;
 
-    const success = await login(password.trim());
+    const success = isSignUp 
+      ? await signUp(email.trim(), password)
+      : await login(email.trim(), password);
     
-    if (!success) {
-      const newAttempts = attempts + 1;
-      setAttempts(newAttempts);
-      
-      if (newAttempts >= 3) {
-        setIsLocked(true);
-        setTimeLeft(30);
-      }
-      
-      // Vibração no mobile
-      if (navigator.vibrate) {
-        navigator.vibrate(200);
-      }
-    } else {
-      setAttempts(0);
+    if (success) {
+      // Success is handled by the auth state change
     }
   };
 
@@ -80,32 +54,58 @@ export default function Login() {
         }`}>
           
           <div className="text-center">
-            <h2 className="text-2xl font-semibold text-gray-800 mb-2">Bem-vindo de volta!</h2>
-            <p className="text-gray-600">Digite a senha para acessar o sistema</p>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+              {isSignUp ? 'Criar Conta' : 'Bem-vindo de volta!'}
+            </h2>
+            <p className="text-gray-600">
+              {isSignUp ? 'Crie sua conta para acessar o sistema' : 'Digite suas credenciais para acessar'}
+            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             
+            {/* Campo de Email */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-finance-studio focus:border-transparent transition-all duration-200 ${
+                    error ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                  }`}
+                  placeholder="Digite seu email"
+                  autoFocus
+                  disabled={isLoading}
+                  autoComplete="email"
+                  required
+                />
+              </div>
+            </div>
+
             {/* Campo de Senha */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Senha de Acesso
+                Senha
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value.trim())}
+                  onChange={(e) => setPassword(e.target.value)}
                   className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 focus:ring-finance-studio focus:border-transparent transition-all duration-200 ${
                     error ? 'border-red-500 bg-red-50' : 'border-gray-300'
                   }`}
                   placeholder="Digite sua senha"
-                  autoFocus
-                  disabled={isLocked || isLoading}
-                  maxLength={50}
-                  autoComplete="current-password"
-                  aria-describedby={error ? "password-error" : undefined}
+                  disabled={isLoading}
+                  minLength={6}
+                  autoComplete={isSignUp ? "new-password" : "current-password"}
+                  required
                 />
                 <button
                   type="button"
@@ -121,33 +121,18 @@ export default function Login() {
 
             {/* Mensagens de Status */}
             {error && (
-              <div id="password-error" className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-center space-x-2 animate-slide-in" role="alert">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-center space-x-2 animate-slide-in" role="alert">
                 <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
                 <span className="text-red-600 text-sm">{error}</span>
               </div>
             )}
 
-            {isLocked && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 flex items-center space-x-2 animate-slide-in" role="alert">
-                <AlertCircle className="w-5 h-5 text-yellow-500 flex-shrink-0" />
-                <span className="text-yellow-600 text-sm">
-                  Muitas tentativas incorretas. Aguarde {timeLeft} segundos.
-                </span>
-              </div>
-            )}
-
-            {attempts > 0 && !isLocked && (
-              <p className="text-sm text-gray-500 text-center">
-                Tentativas restantes: {3 - attempts}
-              </p>
-            )}
-
-            {/* Botão de Login */}
+            {/* Botão de Login/Signup */}
             <button
               type="submit"
-              disabled={isLoading || isLocked || !password.trim()}
+              disabled={isLoading || !email.trim() || !password.trim()}
               className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-200 transform focus:outline-none focus:ring-2 focus:ring-finance-studio focus:ring-offset-2 ${
-                isLoading || isLocked || !password.trim()
+                isLoading || !email.trim() || !password.trim()
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   : 'bg-gradient-to-r from-finance-studio to-finance-kam text-white hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]'
               }`}
@@ -155,14 +140,24 @@ export default function Login() {
               {isLoading ? (
                 <div className="flex items-center justify-center space-x-2">
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>Verificando...</span>
+                  <span>{isSignUp ? 'Criando conta...' : 'Entrando...'}</span>
                 </div>
-              ) : isLocked ? (
-                `Aguarde ${timeLeft}s`
               ) : (
-                "Acessar Sistema"
+                isSignUp ? "Criar Conta" : "Acessar Sistema"
               )}
             </button>
+
+            {/* Toggle entre Login e Signup */}
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => setIsSignUp(!isSignUp)}
+                className="text-finance-studio hover:text-finance-kam transition-colors font-medium"
+                disabled={isLoading}
+              >
+                {isSignUp ? 'Já tem conta? Fazer login' : 'Não tem conta? Criar agora'}
+              </button>
+            </div>
           </form>
 
           <div className="text-center pt-4 border-t border-gray-100">

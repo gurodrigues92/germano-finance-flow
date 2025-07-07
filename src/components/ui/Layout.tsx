@@ -41,7 +41,7 @@ export default function Layout({ children, title, subtitle }: LayoutProps) {
             <div className="flex items-center space-x-4">
               <div className="hidden sm:flex items-center space-x-2 text-sm text-gray-600">
                 <User className="w-4 h-4" />
-                <span>Olá, {user?.name || 'Studio Germano'}</span>
+                <span>Olá, {user?.email?.split('@')[0] || 'Studio Germano'}</span>
               </div>
               <button
                 onClick={handleLogout}

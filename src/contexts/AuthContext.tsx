@@ -1,88 +1,92 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-}
+import { User, Session } from '@supabase/supabase-js';
 
 interface AuthContextType {
   user: User | null;
+  session: Session | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
-  login: (password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<boolean>;
+  signUp: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// Senha master
-const MASTER_PASSWORD = "omelhorstudio";
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const isAuthenticated = !!user;
+  const isAuthenticated = !!session && !!user;
 
-  // Verificar sessão existente ao carregar
+  // Set up auth state listener and check existing session
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        // Verificar localStorage primeiro
-        const savedAuth = localStorage.getItem('studio_auth');
-        if (savedAuth) {
-          const authData = JSON.parse(savedAuth);
-          // Verificar se a sessão não expirou (24 horas)
-          const isValid = Date.now() - authData.timestamp < 24 * 60 * 60 * 1000;
-          
-          if (isValid) {
-            setUser(authData.user);
-          } else {
-            localStorage.removeItem('studio_auth');
-          }
-        }
-      } catch (error) {
-        console.error('Erro ao verificar sessão:', error);
-        localStorage.removeItem('studio_auth');
-      } finally {
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
         setIsLoading(false);
       }
-    };
+    );
 
-    checkSession();
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setIsLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = async (password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<boolean> => {
     setError(null);
     setIsLoading(true);
 
     try {
-      // Validar senha localmente primeiro
-      if (password !== MASTER_PASSWORD) {
-        setError('Senha incorreta');
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (authError) {
+        setError(authError.message);
         return false;
       }
 
-      // Simular usuário autenticado (pode integrar com Supabase Auth depois)
-      setUser({
-        id: 'studio-admin',
-        email: 'admin@studiogermano.com',
-        name: 'Studio Germano'
-      });
+      return true;
+    } catch (error) {
+      setError('Erro de conexão');
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const signUp = async (email: string, password: string): Promise<boolean> => {
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      const redirectUrl = `${window.location.origin}/`;
       
-      // Salvar sessão no localStorage
-      localStorage.setItem('studio_auth', JSON.stringify({
-        user: {
-          id: 'studio-admin',
-          email: 'admin@studiogermano.com',
-          name: 'Studio Germano'
-        },
-        timestamp: Date.now()
-      }));
+      const { data, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl
+        }
+      });
+
+      if (authError) {
+        setError(authError.message);
+        return false;
+      }
 
       return true;
     } catch (error) {
@@ -95,8 +99,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     try {
-      setUser(null);
-      localStorage.removeItem('studio_auth');
+      await supabase.auth.signOut();
     } catch (error) {
       console.error('Erro ao fazer logout:', error);
     }
@@ -105,10 +108,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   return (
     <AuthContext.Provider value={{
       user,
+      session,
       isAuthenticated,
       isLoading,
       error,
       login,
+      signUp,
       logout
     }}>
       {children}
