@@ -179,7 +179,7 @@ export const Dashboard = () => {
   }, [currentData]);
 
   return (
-    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 pb-24">
+    <div className="p-3 sm:p-6 space-y-3 sm:space-y-6 pb-24">
       {/* Stock Alert */}
       <StockAlert />
       
@@ -201,7 +201,7 @@ export const Dashboard = () => {
       </div>
 
       {/* Hero Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
         <HeroCard
           title="Total Bruto"
           value={currentData.totalBruto}
@@ -228,9 +228,9 @@ export const Dashboard = () => {
       </div>
 
       {/* Payment Methods */}
-      <div className="mb-6">
-        <h3 className="text-md font-semibold text-foreground mb-4">Métodos de Pagamento</h3>
-        <div className="grid grid-cols-2 gap-3">
+      <div className="mb-4 sm:mb-6">
+        <h3 className="text-sm sm:text-md font-semibold text-foreground mb-3 sm:mb-4">Métodos de Pagamento</h3>
+        <div className="grid grid-cols-2 gap-2 sm:gap-3">
           <CompactCard
             title="Dinheiro"
             value={currentData.totalDinheiro}
@@ -286,9 +286,9 @@ export const Dashboard = () => {
       </div>
 
       {/* Distribution & Fees */}
-      <div className="mb-6">
-        <h3 className="text-md font-semibold text-foreground mb-4">Distribuição e Taxas</h3>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="mb-4 sm:mb-6">
+        <h3 className="text-sm sm:text-md font-semibold text-foreground mb-3 sm:mb-4">Distribuição e Taxas</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
           <MetricCard
             title="Studio (60%)"
             value={currentData.totalStudio}

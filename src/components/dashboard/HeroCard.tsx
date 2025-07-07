@@ -1,4 +1,6 @@
 import { LucideIcon } from 'lucide-react';
+import { formatCompactCurrency } from '@/lib/formatUtils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface HeroCardProps {
   title: string;
@@ -13,28 +15,24 @@ interface HeroCardProps {
 }
 
 export const HeroCard = ({ title, value, icon: Icon, gradient, trend, subtitle }: HeroCardProps) => {
-  const formatCurrency = (value: number) => 
-    new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
-
+  const isMobile = useIsMobile();
+  
   const formatTrend = (value: number) => {
     const abs = Math.abs(value);
-    const formatted = formatCurrency(abs);
+    const formatted = formatCompactCurrency(abs, isMobile);
     return trend?.isPositive ? `+${formatted}` : `-${formatted}`;
   };
 
   return (
-    <div className={`${gradient} rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-95`}>
+    <div className={`${gradient} rounded-2xl ${isMobile ? 'p-4' : 'p-6'} text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-95`}>
       <div className="flex items-center justify-between mb-3">
         <span className="text-white/80 text-sm font-medium">{title}</span>
-        <Icon className="w-6 h-6 text-white/90" />
+        <Icon className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'} text-white/90`} />
       </div>
       
       <div className="space-y-2">
-        <p className="text-3xl font-bold">
-          {formatCurrency(value)}
+        <p className={`${isMobile ? 'text-2xl' : 'text-3xl'} font-bold`} title={formatCompactCurrency(value, false)}>
+          {formatCompactCurrency(value, isMobile)}
         </p>
         
         {trend && (
