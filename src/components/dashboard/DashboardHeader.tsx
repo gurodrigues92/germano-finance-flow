@@ -3,7 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 interface DashboardHeaderProps {
   currentMonth: string;
   setCurrentMonth: (month: string) => void;
-  monthOptions: Array<{ value: string; label: string }>;
+  monthOptions: Array<{ value: string; label: string; hasData?: boolean; count?: number }>;
 }
 
 export const DashboardHeader = ({ currentMonth, setCurrentMonth, monthOptions }: DashboardHeaderProps) => {
@@ -17,7 +17,16 @@ export const DashboardHeader = ({ currentMonth, setCurrentMonth, monthOptions }:
         <SelectContent>
           {monthOptions.map(option => (
             <SelectItem key={option.value} value={option.value}>
-              {option.label}
+              <div className="flex items-center justify-between w-full">
+                <span className={option.hasData ? '' : 'text-muted-foreground'}>
+                  {option.label}
+                </span>
+                {option.hasData && option.count && (
+                  <span className="text-xs text-primary ml-2">
+                    {option.count} transações
+                  </span>
+                )}
+              </div>
             </SelectItem>
           ))}
         </SelectContent>

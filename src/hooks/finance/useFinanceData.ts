@@ -49,7 +49,16 @@ export const useFinanceData = (state: FinanceState) => {
     };
   };
 
+  const getAvailableMonths = () => {
+    const months = [...new Set(state.transactions.map(t => t.month))].sort().reverse();
+    return months.map(month => ({
+      month,
+      count: state.transactions.filter(t => t.month === month).length
+    }));
+  };
+
   return {
-    getMonthlyData
+    getMonthlyData,
+    getAvailableMonths
   };
 };

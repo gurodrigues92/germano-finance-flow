@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useFinance } from '@/hooks/useFinance';
+import { useFinanceData } from '@/hooks/finance/useFinanceData';
 import { useDataInitializer } from '@/hooks/useDataInitializer';
 import { StockAlert } from '@/components/alerts/StockAlert';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
@@ -12,7 +13,14 @@ import { MigrationPrompt } from '@/components/migration/MigrationPrompt';
 import { DashboardFooter } from '@/components/dashboard/DashboardFooter';
 
 export const Dashboard = () => {
-  const { currentMonth, setCurrentMonth, getMonthlyData, transactions } = useFinance();
+  const financeState = useFinance();
+  const { currentMonth, setCurrentMonth, getMonthlyData, transactions } = financeState;
+  const { getAvailableMonths } = useFinanceData({ 
+    transactions, 
+    currentMonth, 
+    currentYear: financeState.currentYear,
+    archivedData: financeState.archivedData || []
+  });
   
   // Inicializar dados reais
   useDataInitializer();
@@ -42,6 +50,8 @@ export const Dashboard = () => {
     credito: currentData.totalCredito - previousData.totalCredito
   }), [currentData, previousData]);
 
+  const availableMonths = getAvailableMonths();
+  
   // Dynamic month options - from March 2025 to current month
   const monthOptions = useMemo(() => {
     const options = [];
@@ -60,17 +70,21 @@ export const Dashboard = () => {
     for (let i = 0; i < totalMonths; i++) {
       const date = new Date(startYear, startMonth + i, 1);
       const monthStr = date.toISOString().slice(0, 7);
+      const monthData = availableMonths.find(m => m.month === monthStr);
+      
       options.unshift({ // Add to beginning for reverse chronological order
         value: monthStr,
         label: date.toLocaleDateString('pt-BR', { 
           month: 'long', 
           year: 'numeric' 
-        })
+        }),
+        hasData: !!monthData,
+        count: monthData?.count || 0
       });
     }
     
     return options;
-  }, []);
+  }, [availableMonths]);
 
   // Transaction count data for pie chart
   const transactionCountData = useMemo(() => {
@@ -136,53 +150,86 @@ export const Dashboard = () => {
         monthOptions={monthOptions}
       />
 
-      {/* Hero Metrics */}
-      <HeroMetrics
-        totalBruto={currentData.totalBruto}
-        totalLiquido={currentData.totalLiquido}
-        trends={{ bruto: trends.bruto, liquido: trends.liquido }}
-      />
+      {/* Empty State or Hero Metrics */}
+      {currentData.transactions.length === 0 ? (
+        <div className="text-center py-8">
+          <h3 className="text-lg font-semibold text-muted-foreground mb-2">
+            Nenhuma transação encontrada para {monthOptions.find(m => m.value === currentMonth)?.label}
+          </h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            {availableMonths.length > 0 ? (
+              <>
+                Dados disponíveis em: {availableMonths.map(m => {
+                  const option = monthOptions.find(opt => opt.value === m.month);
+                  return option?.label;
+                }).join(', ')}
+              </>
+            ) : (
+              'Nenhum dado disponível. Adicione algumas transações primeiro.'
+            )}
+          </p>
+          {availableMonths.length > 0 && (
+            <button 
+              onClick={() => setCurrentMonth(availableMonths[0].month)}
+              className="text-primary hover:underline"
+            >
+              Ir para o mês mais recente com dados
+            </button>
+          )}
+        </div>
+      ) : (
+        <HeroMetrics
+          totalBruto={currentData.totalBruto}
+          totalLiquido={currentData.totalLiquido}
+          trends={{ bruto: trends.bruto, liquido: trends.liquido }}
+        />
+      )}
 
-      {/* Payment Methods */}
-      <PaymentMethodsGrid
-        totalBruto={currentData.totalBruto}
-        totalDinheiro={currentData.totalDinheiro}
-        totalPix={currentData.totalPix}
-        totalDebito={currentData.totalDebito}
-        totalCredito={currentData.totalCredito}
-        trends={{
-          dinheiro: trends.dinheiro,
-          pix: trends.pix,
-          debito: trends.debito,
-          credito: trends.credito
-        }}
-      />
+      {/* Only show detailed metrics if there's data */}
+      {currentData.transactions.length > 0 && (
+        <>
+          {/* Payment Methods */}
+          <PaymentMethodsGrid
+            totalBruto={currentData.totalBruto}
+            totalDinheiro={currentData.totalDinheiro}
+            totalPix={currentData.totalPix}
+            totalDebito={currentData.totalDebito}
+            totalCredito={currentData.totalCredito}
+            trends={{
+              dinheiro: trends.dinheiro,
+              pix: trends.pix,
+              debito: trends.debito,
+              credito: trends.credito
+            }}
+          />
 
-      {/* Distribution and Fees */}
-      <DistributionGrid
-        totalStudio={currentData.totalStudio}
-        totalEdu={currentData.totalEdu}
-        totalKam={currentData.totalKam}
-        totalTaxas={currentData.totalTaxas}
-        trends={{
-          studio: trends.studio,
-          edu: trends.edu,
-          kam: trends.kam,
-          taxas: trends.taxas
-        }}
-      />
+          {/* Distribution and Fees */}
+          <DistributionGrid
+            totalStudio={currentData.totalStudio}
+            totalEdu={currentData.totalEdu}
+            totalKam={currentData.totalKam}
+            totalTaxas={currentData.totalTaxas}
+            trends={{
+              studio: trends.studio,
+              edu: trends.edu,
+              kam: trends.kam,
+              taxas: trends.taxas
+            }}
+          />
 
-      {/* Transaction Charts */}
-      <TransactionCharts
-        transactionCountData={transactionCountData}
-        biWeeklyData={biWeeklyData}
-      />
+          {/* Transaction Charts */}
+          <TransactionCharts
+            transactionCountData={transactionCountData}
+            biWeeklyData={biWeeklyData}
+          />
 
-      {/* Insights */}
-      <DashboardInsights />
+          {/* Insights */}
+          <DashboardInsights />
 
-      {/* Footer */}
-      <DashboardFooter transactions={currentData.transactions} />
+          {/* Footer */}
+          <DashboardFooter transactions={currentData.transactions} />
+        </>
+      )}
     </div>
   );
 };
