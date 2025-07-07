@@ -8,6 +8,7 @@ import { PaymentMethodsGrid } from '@/components/dashboard/PaymentMethodsGrid';
 import { DistributionGrid } from '@/components/dashboard/DistributionGrid';
 import { TransactionCharts } from '@/components/dashboard/TransactionCharts';
 import { DashboardInsights } from '@/components/dashboard/DashboardInsights';
+import { MigrationPrompt } from '@/components/migration/MigrationPrompt';
 import { DashboardFooter } from '@/components/dashboard/DashboardFooter';
 
 export const Dashboard = () => {
@@ -122,6 +123,9 @@ export const Dashboard = () => {
 
   return (
     <div className="p-3 sm:p-6 space-y-3 sm:space-y-6 pb-24">
+      {/* Migration Prompt */}
+      <MigrationPrompt />
+      
       {/* Stock Alert */}
       <StockAlert />
       

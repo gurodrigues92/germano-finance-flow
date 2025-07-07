@@ -274,6 +274,66 @@ export type Database = {
         }
         Relationships: []
       }
+      transacoes: {
+        Row: {
+          ano: number
+          created_at: string
+          credito: number
+          data: string
+          debito: number
+          dinheiro: number
+          edu_share: number
+          id: string
+          kam_share: number
+          mes_referencia: string
+          pix: number
+          studio_share: number
+          taxa_credito: number
+          taxa_debito: number
+          total_bruto: number
+          total_liquido: number
+          updated_at: string
+        }
+        Insert: {
+          ano: number
+          created_at?: string
+          credito?: number
+          data: string
+          debito?: number
+          dinheiro?: number
+          edu_share: number
+          id?: string
+          kam_share: number
+          mes_referencia: string
+          pix?: number
+          studio_share: number
+          taxa_credito?: number
+          taxa_debito?: number
+          total_bruto: number
+          total_liquido: number
+          updated_at?: string
+        }
+        Update: {
+          ano?: number
+          created_at?: string
+          credito?: number
+          data?: string
+          debito?: number
+          dinheiro?: number
+          edu_share?: number
+          id?: string
+          kam_share?: number
+          mes_referencia?: string
+          pix?: number
+          studio_share?: number
+          taxa_credito?: number
+          taxa_debito?: number
+          total_bruto?: number
+          total_liquido?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
