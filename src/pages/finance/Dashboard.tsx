@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useFinance } from '@/hooks/useFinance';
 import { useDataInitializer } from '@/hooks/useDataInitializer';
 import { useDashboardData } from '@/hooks/useDashboardData';
 import { useDashboardCharts } from '@/hooks/useDashboardCharts';
+import { useToast } from '@/hooks/use-toast';
 import { StockAlert } from '@/components/alerts/StockAlert';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { HeroMetrics } from '@/components/dashboard/HeroMetrics';
@@ -13,10 +14,26 @@ import { DashboardInsights } from '@/components/dashboard/DashboardInsights';
 import { MigrationPrompt } from '@/components/migration/MigrationPrompt';
 import { DashboardFooter } from '@/components/dashboard/DashboardFooter';
 import { PageLayout } from '@/components/layout/PageLayout';
+import { TransactionForm } from '@/components/finance/TransactionForm';
+import { Dialog } from '@/components/ui/dialog';
+import { Transaction } from '@/types/finance';
+
+interface TransactionFormData {
+  date: string;
+  dinheiro: string;
+  pix: string;
+  debito: string;
+  credito: string;
+}
 
 export const Dashboard = () => {
   const financeState = useFinance();
-  const { currentMonth, setCurrentMonth, getMonthlyData, transactions } = financeState;
+  const { currentMonth, setCurrentMonth, getMonthlyData, transactions, addTransaction, loading } = financeState;
+  const { toast } = useToast();
+  
+  // Transaction form state
+  const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   
   // Inicializar dados reais
   useDataInitializer();
@@ -58,10 +75,38 @@ export const Dashboard = () => {
     currentData
   });
 
+  // Transaction form handlers
+  const handleFormSubmit = (formData: TransactionFormData, isEditing: boolean) => {
+    const data = {
+      date: formData.date,
+      dinheiro: parseFloat(formData.dinheiro) || 0,
+      pix: parseFloat(formData.pix) || 0,
+      debito: parseFloat(formData.debito) || 0,
+      credito: parseFloat(formData.credito) || 0
+    };
+
+    if (data.dinheiro + data.pix + data.debito + data.credito <= 0) {
+      toast({
+        title: "Erro",
+        description: "Informe pelo menos um valor para a transação",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    addTransaction(data);
+  };
+
+  const handleOpenTransactionModal = () => {
+    setEditingTransaction(null);
+    setIsTransactionModalOpen(true);
+  };
+
   return (
     <PageLayout 
       title="Dashboard" 
       subtitle="Visão geral completa das finanças do Studio Germano"
+      onFabClick={handleOpenTransactionModal}
     >
       {/* Migration Prompt */}
       <MigrationPrompt />
@@ -160,6 +205,17 @@ export const Dashboard = () => {
           <DashboardFooter transactions={currentData.transactions} />
         </>
       )}
+
+      {/* Transaction Form Modal */}
+      <Dialog open={isTransactionModalOpen} onOpenChange={setIsTransactionModalOpen}>
+        <TransactionForm
+          isOpen={isTransactionModalOpen}
+          onOpenChange={setIsTransactionModalOpen}
+          editingTransaction={editingTransaction}
+          onSubmit={handleFormSubmit}
+          loading={loading}
+        />
+      </Dialog>
     </PageLayout>
   );
 };
