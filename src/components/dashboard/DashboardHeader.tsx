@@ -9,7 +9,7 @@ interface DashboardHeaderProps {
 export const DashboardHeader = ({ currentMonth, setCurrentMonth, monthOptions }: DashboardHeaderProps) => {
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-      <h2 className="text-lg sm:text-lg font-semibold text-foreground">Métricas do Mês</h2>
+      <h2 className="section-title">Período de Análise</h2>
       <Select value={currentMonth} onValueChange={setCurrentMonth}>
         <SelectTrigger className="w-full sm:w-[180px]">
           <SelectValue placeholder="Selecionar mês" />

@@ -11,6 +11,7 @@ import { TransactionCharts } from '@/components/dashboard/TransactionCharts';
 import { DashboardInsights } from '@/components/dashboard/DashboardInsights';
 import { MigrationPrompt } from '@/components/migration/MigrationPrompt';
 import { DashboardFooter } from '@/components/dashboard/DashboardFooter';
+import { PageLayout } from '@/components/layout/PageLayout';
 
 export const Dashboard = () => {
   const financeState = useFinance();
@@ -176,7 +177,10 @@ export const Dashboard = () => {
   }, [currentData]);
 
   return (
-    <div className="page-container">
+    <PageLayout 
+      title="Dashboard" 
+      subtitle="Visão geral completa das finanças do Studio Germano"
+    >
       {/* Migration Prompt */}
       <MigrationPrompt />
       
@@ -271,6 +275,6 @@ export const Dashboard = () => {
           <DashboardFooter transactions={currentData.transactions} />
         </>
       )}
-    </div>
+    </PageLayout>
   );
 };
