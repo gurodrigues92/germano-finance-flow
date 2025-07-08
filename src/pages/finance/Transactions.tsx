@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useFinance } from '@/hooks/useFinance';
+import { useDashboardData } from '@/hooks/useDashboardData';
 import { Transaction } from '@/types/finance';
 import { Dialog } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
@@ -7,6 +8,7 @@ import { TransactionForm } from '@/components/finance/TransactionForm';
 import { TransactionTable } from '@/components/finance/TransactionTable';
 import { TransactionSummary } from '@/components/finance/TransactionSummary';
 import { TransactionActions } from '@/components/finance/TransactionActions';
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { Plus } from 'lucide-react';
 
@@ -31,9 +33,20 @@ export const Transactions = () => {
     updateTransaction, 
     deleteTransaction, 
     loading, 
-    currentMonth
+    currentMonth,
+    currentYear,
+    archivedData,
+    setCurrentMonth
   } = useFinance();
   const { toast } = useToast();
+
+  // Get month options for the header
+  const { monthOptions } = useDashboardData({
+    transactions,
+    currentMonth,
+    currentYear,
+    archivedData
+  });
   
   const [isOpen, setIsOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
@@ -85,9 +98,16 @@ export const Transactions = () => {
   return (
     <PageLayout 
       title="Gestão de Transações"
-      subtitle="Adicione e gerencie as transações do Studio Germano"
+      subtitle={`Transações de ${monthOptions.find(m => m.value === currentMonth)?.label || currentMonth} - ${currentMonthTransactions.length} registros`}
       onFabClick={() => setIsOpen(true)}
     >
+      {/* Month Selection Header */}
+      <DashboardHeader
+        currentMonth={currentMonth}
+        setCurrentMonth={setCurrentMonth}
+        monthOptions={monthOptions}
+      />
+
       <div className="header-actions">
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <TransactionActions
