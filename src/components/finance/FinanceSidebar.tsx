@@ -1,4 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
+import { usePermissions } from '@/contexts/UserProfileContext';
 import { 
   LayoutDashboard, 
   PlusCircle, 
@@ -22,61 +23,73 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 
-const menuItems = [
+const allMenuItems = [
   {
     title: 'Dashboard',
     url: '/',
     icon: LayoutDashboard,
-    description: 'Visão geral e métricas'
+    description: 'Visão geral e métricas',
+    permission: 'view_dashboard'
   },
   {
     title: 'Transações',
     url: '/transacoes',
     icon: PlusCircle,
-    description: 'Gerenciar transações'
+    description: 'Gerenciar transações',
+    permission: 'view_transactions'
   },
   {
     title: 'Análise',
     url: '/analise',
     icon: BarChart3,
-    description: 'Relatórios e gráficos'
+    description: 'Relatórios e gráficos',
+    permission: 'view_analysis'
   },
   {
     title: 'Arquivo',
     url: '/arquivo',
     icon: Archive,
-    description: 'Histórico mensal'
+    description: 'Histórico mensal',
+    permission: 'view_archive'
   },
   {
     title: 'Custos Fixos',
     url: '/custos-fixos',
     icon: Receipt,
-    description: 'Gastos mensais fixos'
+    description: 'Gastos mensais fixos',
+    permission: 'view_fixed_costs'
   },
   {
     title: 'Estoque',
     url: '/estoque',
     icon: Package,
-    description: 'Controle de produtos'
+    description: 'Controle de produtos',
+    permission: 'view_stock'
   },
   {
     title: 'Investimentos',
     url: '/investimentos',
     icon: TrendingUpIcon,
-    description: 'Investimentos e reserva'
+    description: 'Investimentos e reserva',
+    permission: 'view_investments'
   },
   {
     title: 'Metas',
     url: '/metas',
     icon: Target,
-    description: 'Metas e objetivos'
+    description: 'Metas e objetivos',
+    permission: 'view_goals'
   }
 ];
 
 export const FinanceSidebar = () => {
   const { state, isMobile, setOpenMobile } = useSidebar();
+  const { hasPermission } = usePermissions();
   const location = useLocation();
   const collapsed = state === 'collapsed';
+
+  // Filtrar itens do menu baseado nas permissões
+  const menuItems = allMenuItems.filter(item => hasPermission(item.permission));
 
   const handleNavClick = () => {
     if (isMobile) {

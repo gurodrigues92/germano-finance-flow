@@ -3,6 +3,7 @@ import { Home, DollarSign, Package, MoreHorizontal, LogOut, Target, Receipt, Tre
 import { useState } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePermissions } from '@/contexts/UserProfileContext';
 
 interface NavItemProps {
   icon: React.ComponentType<{ className?: string }>;
@@ -35,6 +36,7 @@ export const BottomNavigation = () => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { logout } = useAuth();
+  const { hasPermission } = usePermissions();
   
   const mainNavItems = [
     { icon: Home, label: 'Dashboard', href: '/' },
@@ -42,13 +44,16 @@ export const BottomNavigation = () => {
     { icon: Package, label: 'Estoque', href: '/estoque' },
   ];
 
-  const menuItems = [
-    { label: 'Metas Financeiras', href: '/metas', icon: Target },
-    { label: 'Custos Fixos', href: '/custos-fixos', icon: Receipt },
-    { label: 'Investimentos', href: '/investimentos', icon: TrendingUp },
-    { label: 'Análise', href: '/analise', icon: BarChart3 },
-    { label: 'Arquivo', href: '/arquivo', icon: Archive },
+  const allMenuItems = [
+    { label: 'Metas Financeiras', href: '/metas', icon: Target, permission: 'view_goals' },
+    { label: 'Custos Fixos', href: '/custos-fixos', icon: Receipt, permission: 'view_fixed_costs' },
+    { label: 'Investimentos', href: '/investimentos', icon: TrendingUp, permission: 'view_investments' },
+    { label: 'Análise', href: '/analise', icon: BarChart3, permission: 'view_analysis' },
+    { label: 'Arquivo', href: '/arquivo', icon: Archive, permission: 'view_archive' },
   ];
+
+  // Filtrar itens do menu baseado nas permissões
+  const menuItems = allMenuItems.filter(item => hasPermission(item.permission));
 
   const MoreButton = () => (
     <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>

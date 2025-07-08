@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { UserProfileProvider } from "@/contexts/UserProfileContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Login from "@/pages/Login";
 import NotFound from "./pages/NotFound";
@@ -12,6 +13,7 @@ import { Dashboard } from "./pages/finance/Dashboard";
 import { Transactions } from "./pages/finance/Transactions";
 import { Analysis } from "./pages/finance/Analysis";
 import { Archive } from "./pages/finance/Archive";
+import { ProtectedPage } from "./components/ProtectedPage";
 import { CustosFixos } from "./pages/CustosFixos";
 import { Estoque } from "./pages/Estoque";
 import { Investimentos } from "./pages/Investimentos";
@@ -25,7 +27,8 @@ const App = () => (
       <Toaster />
       <Sonner />
       <AuthProvider>
-        <BrowserRouter>
+        <UserProfileProvider>
+          <BrowserRouter>
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/" element={
@@ -35,17 +38,30 @@ const App = () => (
             }>
               <Route index element={<Dashboard />} />
               <Route path="transacoes" element={<Transactions />} />
-              <Route path="analise" element={<Analysis />} />
+              <Route path="analise" element={
+                <ProtectedPage permission="view_analysis">
+                  <Analysis />
+                </ProtectedPage>
+              } />
               <Route path="arquivo" element={<Archive />} />
               <Route path="custos-fixos" element={<CustosFixos />} />
               <Route path="estoque" element={<Estoque />} />
-              <Route path="investimentos" element={<Investimentos />} />
-              <Route path="metas" element={<Metas />} />
+              <Route path="investimentos" element={
+                <ProtectedPage permission="view_investments">
+                  <Investimentos />
+                </ProtectedPage>
+              } />
+              <Route path="metas" element={
+                <ProtectedPage permission="view_goals">
+                  <Metas />
+                </ProtectedPage>
+              } />
             </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </BrowserRouter>
+          </BrowserRouter>
+        </UserProfileProvider>
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
