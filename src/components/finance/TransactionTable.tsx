@@ -24,6 +24,7 @@ export const TransactionTable = ({ transactions, onEdit, onDelete }: Transaction
 
   return (
     <div className="space-y-4">
+      <h3 className="text-lg font-semibold text-foreground">Transações do Mês</h3>
       {transactions.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
           Nenhuma transação encontrada para este mês.
