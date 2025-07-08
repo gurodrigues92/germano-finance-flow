@@ -94,8 +94,8 @@ export const FinanceSidebar = () => {
   const getNavClasses = (path: string) => {
     const active = isActive(path);
     return active 
-      ? "!bg-blue-600 !text-white font-medium [&>*]:!text-white" 
-      : "!text-gray-900 dark:!text-gray-100 hover:!bg-gray-100 dark:hover:!bg-gray-800 [&>*]:!text-gray-900 dark:[&>*]:!text-gray-100";
+      ? "!bg-gradient-to-r !from-purple-600 !to-orange-500 !text-white font-semibold [&>*]:!text-white glass shadow-lg hover:shadow-xl transform hover:scale-[1.02]" 
+      : "!text-gray-900 dark:!text-gray-100 hover:!bg-purple-50 dark:hover:!bg-purple-900/20 [&>*]:!text-gray-900 dark:[&>*]:!text-gray-100 hover:shadow-md transform hover:scale-[1.01]";
   };
 
   return (
@@ -108,21 +108,21 @@ export const FinanceSidebar = () => {
           </SidebarGroupLabel>
           
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-2">
+            <SidebarMenu className="space-y-4">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild className="h-12">
+                  <SidebarMenuButton asChild className="h-16 sm:h-14">
                     <NavLink 
                       to={item.url} 
                       end={item.url === '/'}
                       onClick={handleNavClick}
-                      className={`${getNavClasses(item.url)} transition-all duration-200 rounded-lg p-3`}
+                      className={`${getNavClasses(item.url)} transition-all duration-300 ease-in-out rounded-xl p-4 min-h-[64px] sm:min-h-[56px]`}
                     >
-                      <item.icon className="h-5 w-5 flex-shrink-0" />
+                      <item.icon className="h-6 w-6 sm:h-5 sm:w-5 flex-shrink-0" />
                       {!collapsed && (
-                        <div className="flex flex-col items-start ml-3">
-                          <span className="font-medium text-sm">{item.title}</span>
-                          <span className="text-xs opacity-70">{item.description}</span>
+                        <div className="flex flex-col items-start ml-4 sm:ml-3 min-w-0">
+                          <span className="font-semibold text-sm sm:text-sm truncate w-full">{item.title}</span>
+                          <span className="text-xs opacity-80 truncate w-full">{item.description}</span>
                         </div>
                       )}
                     </NavLink>
