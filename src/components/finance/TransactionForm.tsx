@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Transaction } from '@/types/finance';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Plus, Settings } from 'lucide-react';
-import { NOMENCLATURE } from '@/lib/finance/nomenclature';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { CustomRates } from '@/lib/finance/calculations';
+import { TransactionFormFields } from './TransactionFormFields';
+import { CustomRatesSection } from './CustomRatesSection';
+import { TransactionPreview } from './TransactionPreview';
 
 interface TransactionFormData {
   date: string;
@@ -102,6 +101,21 @@ export const TransactionForm = ({
     onOpenChange(false);
   };
 
+  const handleToggleCustomRates = (checked: boolean) => {
+    setFormData(prev => ({ 
+      ...prev, 
+      useCustomRates: checked,
+      customRates: checked ? { studioRate: 60, eduRate: 40, kamRate: 10 } : undefined
+    }));
+  };
+
+  const handleUpdateCustomRates = (rates: CustomRates) => {
+    setFormData(prev => ({
+      ...prev,
+      customRates: rates
+    }));
+  };
+
   // Set form data when editing
   React.useEffect(() => {
     if (editingTransaction) {
@@ -119,285 +133,55 @@ export const TransactionForm = ({
     }
   }, [editingTransaction]);
 
+  const hasValues = formData.dinheiro || formData.pix || formData.debito || formData.credito;
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>
+      <DialogContent className="w-[95vw] max-w-[425px] max-h-[90vh] p-0">
+        <DialogHeader className="px-4 sm:px-6 pt-4 sm:pt-6 pb-2">
+          <DialogTitle className="text-lg sm:text-xl">
             {editingTransaction ? 'Editar Transação' : 'Nova Transação'}
           </DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="date">Data</Label>
-            <Input
-              id="date"
-              type="date"
-              value={formData.date}
-              onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-              required
-              className="text-lg p-3"
+        <ScrollArea className="max-h-[calc(90vh-120px)] px-4 sm:px-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 pb-4">
+            <TransactionFormFields 
+              formData={formData}
+              setFormData={setFormData}
             />
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="dinheiro">Dinheiro (R$)</Label>
-              <Input
-                id="dinheiro"
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="0,00"
-                value={formData.dinheiro}
-                onChange={(e) => setFormData(prev => ({ ...prev, dinheiro: e.target.value }))}
-                className="text-lg p-3"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="pix">PIX (R$)</Label>
-              <Input
-                id="pix"
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="0,00"
-                value={formData.pix}
-                onChange={(e) => setFormData(prev => ({ ...prev, pix: e.target.value }))}
-                className="text-lg p-3"
-              />
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="debito">Débito (R$)</Label>
-              <Input
-                id="debito"
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="0,00"
-                value={formData.debito}
-                onChange={(e) => setFormData(prev => ({ ...prev, debito: e.target.value }))}
-                className="text-lg p-3"
-              />
-              <p className="text-xs text-muted-foreground">Taxa: 1,61%</p>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="credito">Crédito (R$)</Label>
-              <Input
-                id="credito"
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="0,00"
-                value={formData.credito}
-                onChange={(e) => setFormData(prev => ({ ...prev, credito: e.target.value }))}
-                className="text-lg p-3"
-              />
-              <p className="text-xs text-muted-foreground">Taxa: 3,51%</p>
-            </div>
-          </div>
 
-          {/* Seção de Distribuição */}
-          <div className="space-y-6 border-t pt-6">
-            <div className="bg-accent/5 border border-accent/20 rounded-lg p-4 space-y-4">
-              <div className="flex items-start justify-between gap-4">
-                <div className="space-y-2 flex-1">
-                  <div className="flex items-center gap-2">
-                    <Settings className="w-5 h-5 text-accent" />
-                    <Label htmlFor="customRates" className="text-base font-semibold text-foreground">
-                      Distribuição Personalizada
-                    </Label>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Por padrão: Studio 60%, {NOMENCLATURE.PROFISSIONAL_LABEL} 40%, {NOMENCLATURE.ASSISTENTE_LABEL} 10%
-                  </p>
-                </div>
-                <div className="flex-shrink-0">
-                  <Switch
-                    id="customRates"
-                    checked={formData.useCustomRates}
-                    onCheckedChange={(checked) => 
-                      setFormData(prev => ({ 
-                        ...prev, 
-                        useCustomRates: checked,
-                        customRates: checked ? { studioRate: 60, eduRate: 40, kamRate: 10 } : undefined
-                      }))
-                    }
-                    className="data-[state=checked]:bg-accent data-[state=unchecked]:bg-muted"
-                  />
-                </div>
-              </div>
-            </div>
+            <CustomRatesSection
+              useCustomRates={formData.useCustomRates}
+              customRates={formData.customRates}
+              onToggleCustomRates={handleToggleCustomRates}
+              onUpdateCustomRates={handleUpdateCustomRates}
+            />
 
-            {/* Campos de taxas customizadas */}
-            {formData.useCustomRates && (
-              <div className="space-y-4 bg-primary/5 border border-primary/20 rounded-lg p-6">
-                <h4 className="text-lg font-semibold flex items-center gap-2 text-primary">
-                  <Settings className="w-5 h-5" />
-                  Definir Taxas Personalizadas
-                </h4>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-3">
-                    <Label className="text-sm font-medium">Studio (%)</Label>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      step="1"
-                      value={formData.customRates?.studioRate || 60}
-                      onChange={(e) => {
-                        const value = parseInt(e.target.value) || 0;
-                        setFormData(prev => ({
-                          ...prev,
-                          customRates: {
-                            ...prev.customRates!,
-                            studioRate: value
-                          }
-                        }));
-                      }}
-                      className="text-xl py-4 px-4 text-center font-semibold min-h-[52px] touch-manipulation"
-                    />
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <Label className="text-sm font-medium">{NOMENCLATURE.PROFISSIONAL_LABEL} (%)</Label>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      step="1"
-                      value={formData.customRates?.eduRate || 40}
-                      onChange={(e) => {
-                        const value = parseInt(e.target.value) || 0;
-                        setFormData(prev => ({
-                          ...prev,
-                          customRates: {
-                            ...prev.customRates!,
-                            eduRate: value
-                          }
-                        }));
-                      }}
-                      className="text-xl py-4 px-4 text-center font-semibold min-h-[52px] touch-manipulation"
-                    />
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <Label className="text-sm font-medium">{NOMENCLATURE.ASSISTENTE_LABEL} (%)</Label>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      step="1"
-                      value={formData.customRates?.kamRate || 10}
-                      onChange={(e) => {
-                        const value = parseInt(e.target.value) || 0;
-                        setFormData(prev => ({
-                          ...prev,
-                          customRates: {
-                            ...prev.customRates!,
-                            kamRate: value
-                          }
-                        }));
-                      }}
-                      className="text-xl py-4 px-4 text-center font-semibold min-h-[52px] touch-manipulation"
-                    />
-                  </div>
-                </div>
-                
-                {/* Validação das taxas */}
-                {formData.customRates && (
-                  <div className="text-xs">
-                    {(() => {
-                      const total = (formData.customRates.studioRate || 0) + 
-                                    (formData.customRates.eduRate || 0) + 
-                                    (formData.customRates.kamRate || 0);
-                      if (total === 100) {
-                        return <span className="text-green-600">✓ Total: 100% (válido)</span>;
-                      } else {
-                        return <span className="text-destructive">⚠ Total: {total}% (deve somar 100%)</span>;
-                      }
-                    })()}
-                  </div>
-                )}
-              </div>
+            {hasValues && (
+              <TransactionPreview calculations={previewCalculation()} />
             )}
-          </div>
+          </form>
+        </ScrollArea>
 
-          {/* Preview dos cálculos */}
-          {(formData.dinheiro || formData.pix || formData.debito || formData.credito) && (
-            <div className="bg-muted/30 rounded-lg p-4 space-y-2">
-              <h4 className="font-medium text-sm">Preview dos Cálculos:</h4>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-muted-foreground">Total Bruto:</span>
-                  <span className="ml-2 font-medium text-finance-income">
-                    {previewCalculation().totalBruto.toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL'
-                    })}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Total Líquido:</span>
-                  <span className="ml-2 font-medium text-finance-net">
-                    {previewCalculation().totalLiquido.toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL'
-                    })}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">Studio ({previewCalculation().studioRate.toFixed(0)}%):</span>
-                  <span className="ml-2 font-medium text-finance-studio">
-                    {previewCalculation().studioShare.toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL'
-                    })}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">{NOMENCLATURE.PROFISSIONAL_LABEL} ({previewCalculation().eduRate.toFixed(0)}%):</span>
-                  <span className="ml-2 font-medium text-finance-edu">
-                    {previewCalculation().eduShare.toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL'
-                    })}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">{NOMENCLATURE.ASSISTENTE_LABEL} ({previewCalculation().kamRate.toFixed(0)}%):</span>
-                  <span className="ml-2 font-medium text-finance-kam">
-                    {previewCalculation().kamShare.toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL'
-                    })}
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-          
-          <div className="flex gap-2 pt-4">
-            <Button type="submit" disabled={loading} className="flex-1 text-lg py-3">
-              {editingTransaction ? 'Atualizar Transação' : 'Adicionar Transação'}
-            </Button>
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => onOpenChange(false)}
-              className="px-6"
-            >
-              Cancelar
-            </Button>
-          </div>
-        </form>
+        <div className="flex gap-2 p-4 sm:p-6 pt-2 border-t bg-background">
+          <Button 
+            type="button"
+            onClick={handleSubmit}
+            disabled={loading} 
+            className="flex-1 text-base sm:text-lg py-2 sm:py-3"
+          >
+            {editingTransaction ? 'Atualizar Transação' : 'Adicionar Transação'}
+          </Button>
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={() => onOpenChange(false)}
+            className="px-4 sm:px-6"
+          >
+            Cancelar
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
