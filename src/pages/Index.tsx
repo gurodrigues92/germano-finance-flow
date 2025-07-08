@@ -44,7 +44,7 @@ const Index = () => {
       {/* Header */}
       <div className="bg-card text-foreground py-12 border-b border-border">
         <div className="container mx-auto px-4 text-center space-y-6">
-          <h1 className="text-4xl font-bold text-foreground">
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground">
             Studio Germano
           </h1>
           
@@ -73,7 +73,7 @@ const Index = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl md:text-3xl font-bold">
+              <div className="metric-value">
                 {currentData.totalBruto.toLocaleString('pt-BR', {
                   style: 'currency',
                   currency: 'BRL'
@@ -91,7 +91,7 @@ const Index = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl md:text-3xl font-bold">
+              <div className="metric-value">
                 {currentData.totalLiquido.toLocaleString('pt-BR', {
                   style: 'currency',
                   currency: 'BRL'
@@ -109,7 +109,7 @@ const Index = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl md:text-3xl font-bold">
+              <div className="metric-value">
                 {currentData.totalStudio.toLocaleString('pt-BR', {
                   style: 'currency',
                   currency: 'BRL'
@@ -127,7 +127,7 @@ const Index = () => {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl md:text-3xl font-bold">
+              <div className="metric-value">
                 {currentData.totalEdu.toLocaleString('pt-BR', {
                   style: 'currency',
                   currency: 'BRL'
@@ -142,7 +142,7 @@ const Index = () => {
           <CardContent className="p-6 text-center">
             <div className="flex items-center justify-center mb-4">
               <Sparkles className="h-6 w-6 text-finance-studio mr-3" />
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="subsection-title">
                 {motivationalPhrases[currentPhraseIndex]}
               </h2>
               <Sparkles className="h-6 w-6 text-finance-studio ml-3" />

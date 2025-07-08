@@ -176,7 +176,7 @@ export const Dashboard = () => {
   }, [currentData]);
 
   return (
-    <div className="p-3 sm:p-6 space-y-3 sm:space-y-6 pb-24">
+    <div className="page-container">
       {/* Migration Prompt */}
       <MigrationPrompt />
       

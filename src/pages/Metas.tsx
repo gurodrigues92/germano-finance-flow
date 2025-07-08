@@ -97,11 +97,11 @@ export const Metas = () => {
   }
 
   return (
-    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <div className="page-container">
+      <div className="header-actions">
         <div>
-          <h2 className="text-xl sm:text-2xl font-semibold text-foreground">Metas Financeiras</h2>
-          <p className="text-sm text-muted-foreground">Defina e acompanhe suas metas</p>
+          <h2 className="section-title">Metas Financeiras</h2>
+          <p className="page-subtitle">Defina e acompanhe suas metas</p>
         </div>
         <Button 
           onClick={() => setShowForm(true)}
@@ -112,14 +112,14 @@ export const Metas = () => {
         </Button>
       </div>
       {/* Cards de Estatísticas */}
-      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
+      <div className="card-grid card-grid-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Metas Ativas</CardTitle>
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{estatisticas.totalMetas}</div>
+            <div className="metric-value">{estatisticas.totalMetas}</div>
           </CardContent>
         </Card>
 
@@ -129,7 +129,7 @@ export const Metas = () => {
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{estatisticas.metasConcluidas}</div>
+            <div className="metric-value">{estatisticas.metasConcluidas}</div>
           </CardContent>
         </Card>
 
@@ -139,7 +139,7 @@ export const Metas = () => {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-xl md:text-2xl font-bold">
+            <div className="metric-value">
               {formatCompactCurrency(estatisticas.totalValorMetas, isMobile)}
             </div>
           </CardContent>
@@ -151,7 +151,7 @@ export const Metas = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{estatisticas.progressoGeral.toFixed(1)}%</div>
+            <div className="metric-value">{estatisticas.progressoGeral.toFixed(1)}%</div>
             <Progress value={estatisticas.progressoGeral} className="mt-2" />
           </CardContent>
         </Card>
@@ -159,7 +159,7 @@ export const Metas = () => {
 
       {/* Lista de Metas */}
       <div className="space-y-4">
-        <h2 className="text-xl font-semibold">Suas Metas</h2>
+        <h2 className="subsection-title">Suas Metas</h2>
         
         {loading ? (
           <div className="text-center py-8">
@@ -180,7 +180,7 @@ export const Metas = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-3 sm:gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <div className="card-grid card-grid-3">
             {metas.map((meta) => (
               <MetaCard
                 key={meta.id}

@@ -81,7 +81,7 @@ export const Transactions = () => {
       subtitle="Adicione e gerencie as transações do Studio Germano"
       onFabClick={() => setIsOpen(true)}
     >
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div className="header-actions">
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <TransactionActions
             onNewTransaction={handleNewTransaction}

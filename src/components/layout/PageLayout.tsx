@@ -20,25 +20,22 @@ export const PageLayout = ({
 }: PageLayoutProps) => {
   return <div className="min-h-screen bg-muted/20 pb-24">
       {/* Header */}
-      <header className="bg-card shadow-sm p-4 sm:p-6 border-b border-border">
+      <header className="bg-card shadow-sm p-4 md:p-6 border-b border-border">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-semibold text-foreground">{title}</h1>
-          <p className="text-sm text-muted-foreground">{subtitle || 'Sistema de Gestão Profissional'}</p>
+          <h1 className="page-title">{title}</h1>
+          <p className="page-subtitle">{subtitle || 'Sistema de Gestão Profissional'}</p>
         </div>
       </header>
 
       {/* Content */}
-      <main className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8 lg:space-y-10">
+      <main className="max-w-7xl mx-auto page-container">
         {/* Greeting Section */}
         {showGreeting && <GreetingHeader />}
-        
-        {/* Page Title */}
-        {title && <div>
-            
-          </div>}
 
         {/* Page Content */}
-        {children}
+        <div className="section-spacing">
+          {children}
+        </div>
       </main>
 
       {/* Bottom Navigation */}

@@ -39,7 +39,7 @@ export const Analysis = () => {
       />
 
       {/* Charts Grid */}
-      <div className={`grid gap-6 lg:gap-8 ${isMobile ? 'grid-cols-1' : 'lg:grid-cols-2'}`}>
+      <div className={`card-grid ${isMobile ? 'grid-cols-1' : 'card-grid-2'}`}>
         <PaymentMethodsChart paymentMethodsData={paymentMethodsData} />
         <SharesDistributionChart sharesData={sharesData} />
       </div>

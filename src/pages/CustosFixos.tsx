@@ -112,12 +112,12 @@ export function CustosFixos() {
 
   return (
     <div className="w-full max-w-full overflow-x-hidden">
-      <div className="space-y-4 md:space-y-6 min-w-0">
+      <div className="page-container min-w-0">
         {/* Header */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="header-actions">
           <div className="space-y-1">
-            <h1 className="text-xl md:text-2xl font-semibold text-foreground">Custos Fixos</h1>
-            <p className="text-sm md:text-base text-muted-foreground">Gerencie os custos fixos mensais do seu negócio</p>
+            <h1 className="section-title">Custos Fixos</h1>
+            <p className="page-subtitle">Gerencie os custos fixos mensais do seu negócio</p>
           </div>
           <Button 
             onClick={() => setShowForm(true)}
