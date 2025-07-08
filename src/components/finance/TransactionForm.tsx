@@ -200,40 +200,48 @@ export const TransactionForm = ({
           </div>
 
           {/* Seção de Distribuição */}
-          <div className="space-y-4 border-t pt-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label htmlFor="customRates" className="text-sm font-medium">
-                  Distribuição Personalizada
-                </Label>
-                <p className="text-xs text-muted-foreground">
-                  Por padrão: Studio 60%, {NOMENCLATURE.PROFISSIONAL_LABEL} 40%, {NOMENCLATURE.ASSISTENTE_LABEL} 10%
-                </p>
+          <div className="space-y-6 border-t pt-6">
+            <div className="bg-accent/5 border border-accent/20 rounded-lg p-4 space-y-4">
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-2 flex-1">
+                  <div className="flex items-center gap-2">
+                    <Settings className="w-5 h-5 text-accent" />
+                    <Label htmlFor="customRates" className="text-base font-semibold text-foreground">
+                      Distribuição Personalizada
+                    </Label>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Por padrão: Studio 60%, {NOMENCLATURE.PROFISSIONAL_LABEL} 40%, {NOMENCLATURE.ASSISTENTE_LABEL} 10%
+                  </p>
+                </div>
+                <div className="flex-shrink-0">
+                  <Switch
+                    id="customRates"
+                    checked={formData.useCustomRates}
+                    onCheckedChange={(checked) => 
+                      setFormData(prev => ({ 
+                        ...prev, 
+                        useCustomRates: checked,
+                        customRates: checked ? { studioRate: 60, eduRate: 40, kamRate: 10 } : undefined
+                      }))
+                    }
+                    className="data-[state=checked]:bg-accent data-[state=unchecked]:bg-muted"
+                  />
+                </div>
               </div>
-              <Switch
-                id="customRates"
-                checked={formData.useCustomRates}
-                onCheckedChange={(checked) => 
-                  setFormData(prev => ({ 
-                    ...prev, 
-                    useCustomRates: checked,
-                    customRates: checked ? { studioRate: 60, eduRate: 40, kamRate: 10 } : undefined
-                  }))
-                }
-              />
             </div>
 
             {/* Campos de taxas customizadas */}
             {formData.useCustomRates && (
-              <div className="space-y-3 bg-muted/20 rounded-lg p-4">
-                <h4 className="text-sm font-medium flex items-center gap-2">
-                  <Settings className="w-4 h-4" />
+              <div className="space-y-4 bg-primary/5 border border-primary/20 rounded-lg p-6">
+                <h4 className="text-lg font-semibold flex items-center gap-2 text-primary">
+                  <Settings className="w-5 h-5" />
                   Definir Taxas Personalizadas
                 </h4>
                 
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="space-y-2">
-                    <Label className="text-xs">Studio (%)</Label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="space-y-3">
+                    <Label className="text-sm font-medium">Studio (%)</Label>
                     <Input
                       type="number"
                       min="0"
@@ -250,12 +258,12 @@ export const TransactionForm = ({
                           }
                         }));
                       }}
-                      className="text-sm"
+                      className="text-xl py-4 px-4 text-center font-semibold min-h-[52px] touch-manipulation"
                     />
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label className="text-xs">{NOMENCLATURE.PROFISSIONAL_LABEL} (%)</Label>
+                  <div className="space-y-3">
+                    <Label className="text-sm font-medium">{NOMENCLATURE.PROFISSIONAL_LABEL} (%)</Label>
                     <Input
                       type="number"
                       min="0"
@@ -272,12 +280,12 @@ export const TransactionForm = ({
                           }
                         }));
                       }}
-                      className="text-sm"
+                      className="text-xl py-4 px-4 text-center font-semibold min-h-[52px] touch-manipulation"
                     />
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label className="text-xs">{NOMENCLATURE.ASSISTENTE_LABEL} (%)</Label>
+                  <div className="space-y-3">
+                    <Label className="text-sm font-medium">{NOMENCLATURE.ASSISTENTE_LABEL} (%)</Label>
                     <Input
                       type="number"
                       min="0"
@@ -294,7 +302,7 @@ export const TransactionForm = ({
                           }
                         }));
                       }}
-                      className="text-sm"
+                      className="text-xl py-4 px-4 text-center font-semibold min-h-[52px] touch-manipulation"
                     />
                   </div>
                 </div>
