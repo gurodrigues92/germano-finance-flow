@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { TrendingUp, TrendingDown, Calendar, Target, Zap } from 'lucide-react';
+import { InsightCard } from './InsightCard';
+import { ActionableInsight } from './ActionableInsight';
+import { TrendingUp, TrendingDown, Calendar, Target, Zap, DollarSign, CreditCard, Percent } from 'lucide-react';
 
 interface WeeklyInsightsProps {
   transactions: any[];
@@ -13,6 +14,16 @@ export const WeeklyInsights = ({ transactions, currentMonth }: WeeklyInsightsPro
       style: 'currency',
       currency: 'BRL'
     }).format(value);
+
+  const formatCompactCurrency = (value: number) => {
+    if (value >= 1000000) {
+      return `R$ ${(value / 1000000).toFixed(1)}M`;
+    }
+    if (value >= 1000) {
+      return `R$ ${(value / 1000).toFixed(1)}K`;
+    }
+    return formatCurrency(value);
+  };
 
   // Calcular totais do período atual
   const currentMonthTotals = transactions.reduce(
@@ -27,6 +38,26 @@ export const WeeklyInsights = ({ transactions, currentMonth }: WeeklyInsightsPro
     { totalBruto: 0, totalLiquido: 0, totalPix: 0, totalCredito: 0, totalDebito: 0, totalDinheiro: 0 }
   );
 
+  // Cálculos dinâmicos baseados no mês atual
+  const currentDate = new Date();
+  const targetDate = new Date(currentMonth + '-01');
+  const isCurrentMonth = targetDate.getMonth() === currentDate.getMonth() && 
+                         targetDate.getFullYear() === currentDate.getFullYear();
+  
+  const daysInMonth = new Date(targetDate.getFullYear(), targetDate.getMonth() + 1, 0).getDate();
+  const daysPassed = isCurrentMonth ? currentDate.getDate() : daysInMonth;
+  const daysRemaining = Math.max(0, daysInMonth - daysPassed);
+
+  // Projeção mensal mais precisa
+  const dailyAverage = transactions.length > 0 ? currentMonthTotals.totalBruto / transactions.length : 0;
+  const projectedMonthly = isCurrentMonth && transactions.length > 0 ? 
+    currentMonthTotals.totalBruto + (dailyAverage * daysRemaining) : 
+    currentMonthTotals.totalBruto;
+  
+  // Meta mensal configurável (pode ser expandido para configuração do usuário)
+  const monthlyGoal = 50000;
+  const goalProgress = projectedMonthly / monthlyGoal;
+  
   // Análise por dia da semana
   const dayAnalysis = transactions.reduce((acc, tx) => {
     const dayName = new Date(tx.date).toLocaleDateString('pt-BR', { weekday: 'long' });
@@ -39,23 +70,64 @@ export const WeeklyInsights = ({ transactions, currentMonth }: WeeklyInsightsPro
   const bestDay = Object.entries(dayAnalysis)
     .sort(([,a], [,b]) => (b as { total: number; count: number }).total - (a as { total: number; count: number }).total)[0] as [string, { total: number; count: number }] | undefined;
 
-  // Projeção mensal baseada nos dias com transações
-  const dailyAverage = transactions.length > 0 ? currentMonthTotals.totalBruto / transactions.length : 0;
-  const projectedMonthly = dailyAverage * 30; // 30 dias no mês
-  
-  // Meta mensal (exemplo fixo de R$ 50.000 - pode ser configurável)
-  const monthlyGoal = 50000;
-  const goalProgress = monthlyGoal > 0 ? (currentMonthTotals.totalBruto / monthlyGoal) * 100 : 0;
-
   // Top método de pagamento
   const paymentMethods = [
-    { name: 'PIX', value: currentMonthTotals.totalPix, color: 'bg-finance-net' },
-    { name: 'Crédito', value: currentMonthTotals.totalCredito, color: 'bg-warning' },
-    { name: 'Débito', value: currentMonthTotals.totalDebito, color: 'bg-finance-kam' },
-    { name: 'Dinheiro', value: currentMonthTotals.totalDinheiro, color: 'bg-success' }
+    { name: 'PIX', value: currentMonthTotals.totalPix },
+    { name: 'Crédito', value: currentMonthTotals.totalCredito },
+    { name: 'Débito', value: currentMonthTotals.totalDebito },
+    { name: 'Dinheiro', value: currentMonthTotals.totalDinheiro }
   ].filter(method => method.value > 0).sort((a, b) => b.value - a.value);
 
   const topPaymentMethod = paymentMethods[0];
+  const efficiency = currentMonthTotals.totalBruto > 0 ? 
+    (currentMonthTotals.totalLiquido / currentMonthTotals.totalBruto) * 100 : 0;
+
+  // Insights acionáveis
+  const getActionableInsights = () => {
+    const insights = [];
+    
+    if (goalProgress >= 1.1) {
+      insights.push({
+        type: 'success' as const,
+        title: 'Meta superada!',
+        description: `Você já superou a meta mensal em ${((goalProgress - 1) * 100).toFixed(1)}%`,
+        action: 'Considere aumentar a meta para o próximo mês.',
+        priority: 'high' as const
+      });
+    } else if (goalProgress < 0.8 && isCurrentMonth && daysRemaining <= 5) {
+      insights.push({
+        type: 'warning' as const,
+        title: 'Meta em risco',
+        description: `Restam ${daysRemaining} dias e você está a ${((1 - goalProgress) * 100).toFixed(1)}% da meta`,
+        action: 'Foque em estratégias para aumentar o movimento nos próximos dias.',
+        priority: 'high' as const
+      });
+    }
+
+    if (efficiency < 85) {
+      insights.push({
+        type: 'info' as const,
+        title: 'Eficiência pode melhorar',
+        description: `Sua eficiência está em ${efficiency.toFixed(1)}% (líquido vs bruto)`,
+        action: 'Revise as taxas dos métodos de pagamento mais utilizados.',
+        priority: 'medium' as const
+      });
+    }
+
+    if (topPaymentMethod && (topPaymentMethod.value / currentMonthTotals.totalBruto) > 0.6) {
+      insights.push({
+        type: 'trend' as const,
+        title: 'Concentração de pagamentos',
+        description: `${topPaymentMethod.name} representa ${((topPaymentMethod.value / currentMonthTotals.totalBruto) * 100).toFixed(1)}% dos recebimentos`,
+        action: 'Considere diversificar os métodos de pagamento para reduzir riscos.',
+        priority: 'low' as const
+      });
+    }
+
+    return insights;
+  };
+
+  const actionableInsights = getActionableInsights();
 
   // Nome do mês para exibição
   const monthName = new Date(currentMonth + '-01').toLocaleDateString('pt-BR', { 
@@ -64,88 +136,116 @@ export const WeeklyInsights = ({ transactions, currentMonth }: WeeklyInsightsPro
   });
 
   return (
-    <Card className="hover:shadow-md transition-shadow duration-200">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Zap className="h-5 w-5 text-primary" />
-          Insights do Período
-        </CardTitle>
-        <p className="text-sm text-muted-foreground">
-          Análise de {monthName} • {transactions.length} transações
-        </p>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Projeção Mensal */}
-        <div className="flex items-center justify-between p-3 bg-primary/5 rounded-lg">
-          <div className="flex items-center gap-2">
-            <Target className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium">Projeção Mensal</span>
-          </div>
-          <div className="text-right">
-            <p className="font-bold text-primary">{formatCurrency(projectedMonthly)}</p>
-            <Badge variant={goalProgress >= 100 ? 'default' : 'secondary'} className="text-xs">
-              {goalProgress.toFixed(1)}% da meta ({formatCurrency(monthlyGoal)})
-            </Badge>
-          </div>
-        </div>
+    <div className="space-y-6">
+      {/* Header */}
+      <Card className="hover:shadow-md transition-shadow duration-200">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Zap className="h-5 w-5 text-primary" />
+            Insights do Período
+          </CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Análise de {monthName} • {transactions.length} transações
+            {isCurrentMonth && ` • ${daysRemaining} dias restantes`}
+          </p>
+        </CardHeader>
+      </Card>
 
-        {/* Melhor Dia */}
-        {bestDay && bestDay[1].total > 0 && (
-          <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-green-600" />
-              <span className="text-sm font-medium">Melhor Dia</span>
-            </div>
-            <div className="text-right">
-              <p className="font-bold text-green-700 capitalize">{bestDay[0]}</p>
-              <p className="text-xs text-green-600">{formatCurrency(bestDay[1].total)}</p>
-            </div>
-          </div>
-        )}
+      {/* Insights Principais */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {/* Projeção/Meta */}
+        <InsightCard
+          title="Meta Mensal"
+          value={formatCompactCurrency(projectedMonthly)}
+          subtitle={isCurrentMonth ? "Projeção atual" : "Total do mês"}
+          icon={Target}
+          variant={goalProgress >= 1 ? 'success' : goalProgress >= 0.8 ? 'default' : 'warning'}
+          progress={{
+            value: Math.min(projectedMonthly, monthlyGoal),
+            max: monthlyGoal,
+            label: `Meta: ${formatCompactCurrency(monthlyGoal)}`
+          }}
+          badge={{
+            text: `${(goalProgress * 100).toFixed(1)}%`,
+            variant: goalProgress >= 1 ? 'default' : goalProgress >= 0.8 ? 'secondary' : 'destructive'
+          }}
+          size="large"
+        />
 
-        {/* Top Método de Pagamento */}
-        {topPaymentMethod && (
-          <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-blue-600" />
-              <span className="text-sm font-medium">Método Preferido</span>
-            </div>
-            <div className="text-right">
-              <p className="font-bold text-blue-700">{topPaymentMethod.name}</p>
-              <p className="text-xs text-blue-600">
-                {currentMonthTotals.totalBruto > 0 ? 
-                  ((topPaymentMethod.value / currentMonthTotals.totalBruto) * 100).toFixed(1) : 0}% do total
-              </p>
-            </div>
-          </div>
-        )}
+        {/* Eficiência */}
+        <InsightCard
+          title="Eficiência"
+          value={`${efficiency.toFixed(1)}%`}
+          subtitle="Líquido vs Bruto"
+          icon={Percent}
+          variant={efficiency >= 90 ? 'success' : efficiency >= 85 ? 'default' : 'warning'}
+          trend={{
+            value: efficiency - 87, // comparação com benchmark
+            label: "vs padrão ideal",
+            isPositive: efficiency >= 87
+          }}
+        />
 
         {/* Média Diária */}
-        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-          <div className="flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-gray-600" />
-            <span className="text-sm font-medium">Média Diária</span>
-          </div>
-          <div className="text-right">
-            <p className="font-bold text-gray-700">{formatCurrency(dailyAverage)}</p>
-            <p className="text-xs text-gray-500">{transactions.length} dias analisados</p>
-          </div>
-        </div>
+        <InsightCard
+          title="Média Diária"
+          value={formatCompactCurrency(dailyAverage)}
+          subtitle={`${transactions.length} dias analisados`}
+          icon={TrendingUp}
+          variant="default"
+        />
 
-        {/* Eficiência (Líquido vs Bruto) */}
-        <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
-          <div className="flex items-center gap-2">
-            <TrendingDown className="h-4 w-4 text-purple-600" />
-            <span className="text-sm font-medium">Eficiência</span>
-          </div>
-          <div className="text-right">
-            <p className="font-bold text-purple-700">
-              {((currentMonthTotals.totalLiquido / currentMonthTotals.totalBruto) * 100).toFixed(1)}%
-            </p>
-            <p className="text-xs text-purple-600">Líquido vs Bruto</p>
+        {/* Melhor Dia da Semana */}
+        {bestDay && bestDay[1].total > 0 && (
+          <InsightCard
+            title="Melhor Dia"
+            value={bestDay[0].charAt(0).toUpperCase() + bestDay[0].slice(1)}
+            subtitle={formatCompactCurrency(bestDay[1].total)}
+            icon={Calendar}
+            variant="success"
+            badge={{
+              text: `${bestDay[1].count} transações`,
+              variant: 'secondary'
+            }}
+          />
+        )}
+
+        {/* Método Preferido */}
+        {topPaymentMethod && (
+          <InsightCard
+            title="Método Preferido"
+            value={topPaymentMethod.name}
+            subtitle={formatCompactCurrency(topPaymentMethod.value)}
+            icon={CreditCard}
+            variant="default"
+            badge={{
+              text: `${((topPaymentMethod.value / currentMonthTotals.totalBruto) * 100).toFixed(1)}%`,
+              variant: 'secondary'
+            }}
+          />
+        )}
+
+        {/* Faturamento Bruto */}
+        <InsightCard
+          title="Faturamento Bruto"
+          value={formatCompactCurrency(currentMonthTotals.totalBruto)}
+          subtitle="Total do período"
+          icon={DollarSign}
+          variant="default"
+        />
+      </div>
+
+      {/* Insights Acionáveis */}
+      {actionableInsights.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-lg font-semibold text-gray-900">Insights Acionáveis</h3>
+          <div className="space-y-3">
+            {actionableInsights.map((insight, index) => (
+              <ActionableInsight key={index} {...insight} />
+            ))}
           </div>
         </div>
-      </CardContent>
-    </Card>
+      )}
+    </div>
   );
 };
