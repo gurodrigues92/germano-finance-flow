@@ -2,16 +2,22 @@ import { AlertTriangle, Package } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { stockProducts, getLowStockProducts } from '@/data/mockData';
+import { useProdutos } from '@/hooks/useProdutos';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useNavigate } from 'react-router-dom';
 
 export const StockAlert = () => {
-  const lowStockProducts = getLowStockProducts();
+  const { produtosBaixoEstoque } = useProdutos();
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
-  if (lowStockProducts.length === 0) {
+  if (produtosBaixoEstoque.length === 0) {
     return null;
   }
+
+  const handleVerEstoque = () => {
+    navigate('/estoque');
+  };
 
   if (isMobile) {
     return (
@@ -20,27 +26,32 @@ export const StockAlert = () => {
         <AlertDescription>
           <div className="space-y-3">
             <p className="font-semibold text-destructive">
-              ⚠️ {lowStockProducts.length} produto(s) com estoque baixo
+              ⚠️ {produtosBaixoEstoque.length} produto(s) com estoque baixo
             </p>
             <div className="space-y-2">
-              {lowStockProducts.slice(0, 2).map(product => (
-                <div key={product.id} className="flex items-center justify-between text-sm">
+              {produtosBaixoEstoque.slice(0, 2).map(produto => (
+                <div key={produto.id} className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <Package className="h-3 w-3 flex-shrink-0" />
-                    <span className="font-medium truncate">{product.nome}</span>
+                    <span className="font-medium truncate">{produto.nome}</span>
                   </div>
                   <Badge variant="destructive" className="text-xs ml-2">
-                    {product.estoqueAtual === 0 ? 'ZERADO' : `${product.estoqueAtual}`}
+                    {produto.estoque_atual === 0 ? 'ZERADO' : `${produto.estoque_atual}`}
                   </Badge>
                 </div>
               ))}
-              {lowStockProducts.length > 2 && (
+              {produtosBaixoEstoque.length > 2 && (
                 <p className="text-xs text-muted-foreground">
-                  +{lowStockProducts.length - 2} outros produtos
+                  +{produtosBaixoEstoque.length - 2} outros produtos
                 </p>
               )}
             </div>
-            <Button size="sm" variant="outline" className="w-full border-destructive text-destructive hover:bg-destructive/10">
+            <Button 
+              size="sm" 
+              variant="outline" 
+              className="w-full border-destructive text-destructive hover:bg-destructive/10"
+              onClick={handleVerEstoque}
+            >
               Ver Estoque
             </Button>
           </div>
@@ -56,26 +67,31 @@ export const StockAlert = () => {
         <div className="flex items-center justify-between">
           <div>
             <p className="font-semibold text-destructive mb-2">
-              ⚠️ {lowStockProducts.length} produto(s) com estoque baixo
+              ⚠️ {produtosBaixoEstoque.length} produto(s) com estoque baixo
             </p>
             <div className="space-y-1">
-              {lowStockProducts.slice(0, 3).map(product => (
-                <div key={product.id} className="flex items-center gap-2 text-sm">
+              {produtosBaixoEstoque.slice(0, 3).map(produto => (
+                <div key={produto.id} className="flex items-center gap-2 text-sm">
                   <Package className="h-3 w-3" />
-                  <span className="font-medium">{product.nome}</span>
+                  <span className="font-medium">{produto.nome}</span>
                   <Badge variant="destructive" className="text-xs">
-                    {product.estoqueAtual === 0 ? 'ZERADO' : `${product.estoqueAtual} restante(s)`}
+                    {produto.estoque_atual === 0 ? 'ZERADO' : `${produto.estoque_atual} restante(s)`}
                   </Badge>
                 </div>
               ))}
-              {lowStockProducts.length > 3 && (
+              {produtosBaixoEstoque.length > 3 && (
                 <p className="text-xs text-muted-foreground">
-                  +{lowStockProducts.length - 3} outros produtos
+                  +{produtosBaixoEstoque.length - 3} outros produtos
                 </p>
               )}
             </div>
           </div>
-          <Button size="sm" variant="outline" className="border-destructive text-destructive hover:bg-destructive/10">
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="border-destructive text-destructive hover:bg-destructive/10"
+            onClick={handleVerEstoque}
+          >
             Ver Estoque
           </Button>
         </div>
