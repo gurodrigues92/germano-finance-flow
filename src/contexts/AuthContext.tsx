@@ -98,10 +98,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
 
     try {
-      // Lista de emails permitidos para cadastro
+      // Lista de emails permitidos para cadastro (todos em minúsculo)
       const allowedEmails = [
         'gurodrigues92@gmail.com',
-        'Eduardo.germano15@gmail.com',
+        'eduardo.germano15@gmail.com',
         'kamlley_zapata@outlook.com'
       ];
 

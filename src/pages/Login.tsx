@@ -13,10 +13,10 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Lista de emails permitidos (mesma do AuthContext)
+  // Lista de emails permitidos (todos em minúsculo - mesma do AuthContext)
   const allowedEmails = [
     'gurodrigues92@gmail.com',
-    'Eduardo.germano15@gmail.com',
+    'eduardo.germano15@gmail.com',
     'kamlley_zapata@outlook.com'
   ];
 
