@@ -17,7 +17,9 @@ export function useCustosFixos(mesReferencia?: string) {
         .order('mes_referencia', { ascending: false });
 
       if (mesReferencia) {
-        query = query.eq('mes_referencia', mesReferencia);
+        // Convert "YYYY-MM" to "YYYY-MM-01" for DATE column
+        const dateFormat = mesReferencia.length === 7 ? `${mesReferencia}-01` : mesReferencia;
+        query = query.eq('mes_referencia', dateFormat);
       }
 
       const { data, error } = await query;
