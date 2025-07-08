@@ -49,10 +49,10 @@ export const WeeklyInsights = ({ transactions, currentMonth }: WeeklyInsightsPro
 
   // Top método de pagamento
   const paymentMethods = [
-    { name: 'PIX', value: currentMonthTotals.totalPix, color: 'bg-blue-500' },
-    { name: 'Crédito', value: currentMonthTotals.totalCredito, color: 'bg-orange-500' },
-    { name: 'Débito', value: currentMonthTotals.totalDebito, color: 'bg-purple-500' },
-    { name: 'Dinheiro', value: currentMonthTotals.totalDinheiro, color: 'bg-green-500' }
+    { name: 'PIX', value: currentMonthTotals.totalPix, color: 'bg-finance-net' },
+    { name: 'Crédito', value: currentMonthTotals.totalCredito, color: 'bg-warning' },
+    { name: 'Débito', value: currentMonthTotals.totalDebito, color: 'bg-finance-kam' },
+    { name: 'Dinheiro', value: currentMonthTotals.totalDinheiro, color: 'bg-success' }
   ].filter(method => method.value > 0).sort((a, b) => b.value - a.value);
 
   const topPaymentMethod = paymentMethods[0];

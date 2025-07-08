@@ -30,10 +30,10 @@ export const MetaCard = ({ meta, onEdit, onDelete, onMarkComplete }: MetaCardPro
   const isMobile = useIsMobile();
 
   const getStatusColor = () => {
-    if (meta.status === 'concluida') return 'bg-green-500';
-    if (meta.status === 'cancelada') return 'bg-red-500';
-    if (isVencida) return 'bg-orange-500';
-    return 'bg-blue-500';
+    if (meta.status === 'concluida') return 'bg-success';
+    if (meta.status === 'cancelada') return 'bg-destructive';
+    if (isVencida) return 'bg-warning';
+    return 'bg-finance-net';
   };
 
   const getStatusText = () => {

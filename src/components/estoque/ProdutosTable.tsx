@@ -24,9 +24,9 @@ export function ProdutosTable({ produtos, onEdit, onDelete }: ProdutosTableProps
       return <Badge variant="destructive">Esgotado</Badge>;
     }
     if (produto.estoque_atual <= produto.estoque_minimo) {
-      return <Badge variant="secondary" className="bg-orange-500 text-white">Baixo</Badge>;
+      return <Badge variant="secondary" className="bg-warning text-warning-foreground">Baixo</Badge>;
     }
-    return <Badge variant="secondary" className="bg-green-500 text-white">Normal</Badge>;
+    return <Badge variant="secondary" className="bg-success text-success-foreground">Normal</Badge>;
   };
 
   return (
@@ -81,16 +81,15 @@ export function ProdutosTable({ produtos, onEdit, onDelete }: ProdutosTableProps
                       <div className="flex gap-2">
                         <Button
                           variant="outline"
-                          size="sm"
+                          className="h-9 w-9 p-0"
                           onClick={() => onEdit(produto)}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
                           variant="outline"
-                          size="sm"
+                          className="h-9 w-9 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
                           onClick={() => onDelete(produto.id)}
-                          className="text-destructive hover:text-destructive"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -140,18 +139,15 @@ export function ProdutosTable({ produtos, onEdit, onDelete }: ProdutosTableProps
                 <div className="flex gap-2 pt-2">
                   <Button
                     variant="outline"
-                    size="sm"
+                    className="h-9 w-9 p-0"
                     onClick={() => onEdit(produto)}
-                    className="flex-1"
                   >
-                    <Edit className="h-4 w-4 mr-2" />
-                    Editar
+                    <Edit className="h-4 w-4" />
                   </Button>
                   <Button
                     variant="outline"
-                    size="sm"
+                    className="h-9 w-9 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
                     onClick={() => onDelete(produto.id)}
-                    className="text-destructive hover:text-destructive"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>

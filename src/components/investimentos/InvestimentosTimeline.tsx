@@ -22,12 +22,12 @@ export function InvestimentosTimeline({ investimentos, onEdit, onDelete }: Inves
 
   const getCategoryColor = (categoria: string) => {
     const colors = {
-      'Equipamentos': 'bg-blue-500',
-      'Mobiliário': 'bg-green-500', 
-      'Desenvolvimento': 'bg-purple-500',
-      'Emergência': 'bg-red-500'
+      'Equipamentos': 'bg-finance-net',
+      'Mobiliário': 'bg-success', 
+      'Desenvolvimento': 'bg-finance-kam',
+      'Emergência': 'bg-destructive'
     };
-    return colors[categoria as keyof typeof colors] || 'bg-gray-500';
+    return colors[categoria as keyof typeof colors] || 'bg-muted';
   };
 
   const getGarantiaStatus = (investimento: Investimento) => {

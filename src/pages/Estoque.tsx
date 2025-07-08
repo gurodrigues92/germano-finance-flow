@@ -5,8 +5,9 @@ import { MovimentacaoTabs } from "@/components/estoque/MovimentacaoTabs";
 import { EstoqueAlerts } from "@/components/estoque/EstoqueAlerts";
 import { ProdutosTable } from "@/components/estoque/ProdutosTable";
 import { EstoqueSummaryCards } from "@/components/estoque/EstoqueSummaryCards";
-import { EstoquePageHeader } from "@/components/estoque/EstoquePageHeader";
 import { EstoqueDialogs } from "@/components/estoque/EstoqueDialogs";
+import { PageLayout } from "@/components/layout/PageLayout";
+import { Plus } from "lucide-react";
 
 export function Estoque() {
   const {
@@ -56,18 +57,21 @@ export function Estoque() {
 
   if (produtosLoading) {
     return (
-      <div className="p-6">
+      <PageLayout title="Estoque" subtitle="Gestão de produtos e movimentação de estoque">
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-studio-gold"></div>
         </div>
-      </div>
+      </PageLayout>
     );
   }
 
   return (
-    <div className="page-container">
-      <EstoquePageHeader onAddProduct={handleShowForm} />
-      
+    <PageLayout 
+      title="Estoque" 
+      subtitle="Gestão de produtos e movimentação de estoque"
+      onFabClick={handleShowForm}
+      fabIcon={<Plus className="h-5 w-5" />}
+    >
       <EstoqueSummaryCards
         totalProdutos={produtos.length}
         valorTotalEstoque={valorTotalEstoque}
@@ -103,6 +107,6 @@ export function Estoque() {
         onEdit={handleEditProduto}
         onDelete={handleDeleteId}
       />
-    </div>
+    </PageLayout>
   );
 }

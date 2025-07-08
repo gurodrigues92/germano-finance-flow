@@ -15,8 +15,8 @@ export function EstoqueAlerts({ produtosBaixoEstoque, totalProdutos }: EstoqueAl
 
   const getStatusColor = (produto: Produto) => {
     if (produto.estoque_atual === 0) return "bg-destructive";
-    if (produto.estoque_atual <= produto.estoque_minimo) return "bg-orange-500";
-    return "bg-green-500";
+    if (produto.estoque_atual <= produto.estoque_minimo) return "bg-warning";
+    return "bg-success";
   };
 
   const getStatusText = (produto: Produto) => {
