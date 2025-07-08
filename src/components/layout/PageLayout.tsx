@@ -34,7 +34,7 @@ export const PageLayout = ({
         
         {/* Page Title */}
         {title && <div>
-            <h2 className="text-xl font-semibold text-foreground">{title}</h2>
+            
           </div>}
 
         {/* Page Content */}
