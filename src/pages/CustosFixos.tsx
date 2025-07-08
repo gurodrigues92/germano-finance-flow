@@ -4,10 +4,11 @@ import { CustosForm } from "@/components/custos/CustosForm";
 import { CustosTable } from "@/components/custos/CustosTable";
 import { CustosSummary } from "@/components/custos/CustosSummary";
 import { CustoFixo } from "@/types/custos";
-import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { PageLayout } from "@/components/layout/PageLayout";
 import { Plus, AlertCircle } from "lucide-react";
 
 export function CustosFixos() {
@@ -111,38 +112,27 @@ export function CustosFixos() {
   }
 
   return (
-    <div className="w-full max-w-full overflow-x-hidden">
-      <div className="page-container min-w-0">
-        {/* Header */}
-        <div className="header-actions">
-          <div className="space-y-1">
-            <h1 className="section-title">Custos Fixos</h1>
-            <p className="page-subtitle">Gerencie os custos fixos mensais do seu negócio</p>
-          </div>
-          <Button 
-            onClick={() => setShowForm(true)}
-            className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Novo Custo
-          </Button>
-        </div>
+    <PageLayout
+      title="Custos Fixos"
+      subtitle="Gerencie os custos fixos mensais do seu negócio"
+      onFabClick={() => setShowForm(true)}
+      fabIcon={<Plus className="h-5 w-5" />}
+    >
+      {/* Summary Cards */}
+      <CustosSummary
+        totalGeral={totalGeral}
+        maiorCusto={maiorCusto}
+        totalPorCategoria={totalPorCategoria}
+        receita={0}
+      />
 
-        {/* Summary Cards */}
-        <CustosSummary
-          totalGeral={totalGeral}
-          maiorCusto={maiorCusto}
-          totalPorCategoria={totalPorCategoria}
-          receita={0}
-        />
-
-        {/* Main Table */}
-        <CustosTable
-          custos={custos}
-          onEdit={handleEdit}
-          onDelete={setDeletingId}
-          onBulkDelete={handleBulkDelete}
-        />
+      {/* Main Table */}
+      <CustosTable
+        custos={custos}
+        onEdit={handleEdit}
+        onDelete={setDeletingId}
+        onBulkDelete={handleBulkDelete}
+      />
 
       {/* Form Dialog */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
@@ -211,7 +201,6 @@ export function CustosFixos() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      </div>
-    </div>
+    </PageLayout>
   );
 }

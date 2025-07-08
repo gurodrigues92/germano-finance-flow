@@ -5,12 +5,11 @@ import { InvestimentoForm } from "@/components/investimentos/InvestimentoForm";
 import { ReservaEmergenciaForm } from "@/components/investimentos/ReservaEmergenciaForm";
 import { InvestimentosTimeline } from "@/components/investimentos/InvestimentosTimeline";
 import { Investimento } from "@/types/investimentos";
-import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
+import { PageLayout } from "@/components/layout/PageLayout";
 import { Plus, TrendingUp, DollarSign, Target, PiggyBank } from "lucide-react";
 
 export function Investimentos() {
@@ -77,20 +76,12 @@ export function Investimentos() {
   }
 
   return (
-    <div className="page-container">
-      <div className="header-actions">
-        <div>
-          <h2 className="section-title">Investimentos & Reserva</h2>
-          <p className="page-subtitle">Controle de investimentos e reserva de emergência</p>
-        </div>
-        <Button 
-          onClick={() => setShowForm(true)}
-          className="bg-finance-studio hover:bg-finance-studio/90 text-finance-studio-foreground"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Novo Investimento
-        </Button>
-      </div>
+    <PageLayout
+      title="Investimentos & Reserva"
+      subtitle="Controle de investimentos e reserva de emergência"
+      onFabClick={() => setShowForm(true)}
+      fabIcon={<Plus className="h-5 w-5" />}
+    >
       
       {/* Cards de Resumo */}
       <div className="card-grid card-grid-4">
@@ -252,6 +243,6 @@ export function Investimentos() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </PageLayout>
   );
 }

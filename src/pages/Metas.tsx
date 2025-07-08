@@ -1,13 +1,11 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { 
   Plus, 
   Target, 
   TrendingUp, 
-  Calendar,
   DollarSign,
   CheckCircle
 } from 'lucide-react';
@@ -18,6 +16,7 @@ import { MetaFinanceira, MetaFinanceiraInput } from '@/types/metas';
 import { useToast } from '@/hooks/use-toast';
 import { formatCompactCurrency } from '@/lib/formatUtils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { PageLayout } from '@/components/layout/PageLayout';
 
 
 export const Metas = () => {
@@ -86,31 +85,26 @@ export const Metas = () => {
 
   if (showForm) {
     return (
-      <div className="container mx-auto p-6">
+      <PageLayout
+        title="Metas Financeiras"
+        subtitle="Defina e acompanhe suas metas"
+      >
         <MetaForm
           meta={editingMeta}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
         />
-      </div>
+      </PageLayout>
     );
   }
 
   return (
-    <div className="page-container">
-      <div className="header-actions">
-        <div>
-          <h2 className="section-title">Metas Financeiras</h2>
-          <p className="page-subtitle">Defina e acompanhe suas metas</p>
-        </div>
-        <Button 
-          onClick={() => setShowForm(true)}
-          className="bg-finance-studio hover:bg-finance-studio/90 text-finance-studio-foreground"
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Nova Meta
-        </Button>
-      </div>
+    <PageLayout
+      title="Metas Financeiras"
+      subtitle="Defina e acompanhe suas metas"
+      onFabClick={() => setShowForm(true)}
+      fabIcon={<Plus className="h-5 w-5" />}
+    >
       {/* Cards de Estatísticas */}
       <div className="card-grid card-grid-4">
         <Card>
@@ -193,6 +187,6 @@ export const Metas = () => {
           </div>
         )}
       </div>
-    </div>
+    </PageLayout>
   );
 };

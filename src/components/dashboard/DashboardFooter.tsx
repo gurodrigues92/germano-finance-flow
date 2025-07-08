@@ -1,5 +1,4 @@
 import { RecentTransactions } from '@/components/dashboard/RecentTransactions';
-import { QuickActionMenu } from '@/components/navigation/QuickActionMenu';
 import { Transaction } from '@/types/finance';
 
 interface DashboardFooterProps {
@@ -8,9 +7,6 @@ interface DashboardFooterProps {
 
 export const DashboardFooter = ({ transactions }: DashboardFooterProps) => {
   return (
-    <>
-      <RecentTransactions transactions={transactions} />
-      <QuickActionMenu />
-    </>
+    <RecentTransactions transactions={transactions} />
   );
 };
