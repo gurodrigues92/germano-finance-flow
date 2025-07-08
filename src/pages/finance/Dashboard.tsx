@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useFinance } from '@/hooks/useFinance';
-import { useFinanceData } from '@/hooks/finance/useFinanceData';
 import { useDataInitializer } from '@/hooks/useDataInitializer';
+import { useDashboardData } from '@/hooks/useDashboardData';
+import { useDashboardCharts } from '@/hooks/useDashboardCharts';
 import { StockAlert } from '@/components/alerts/StockAlert';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { HeroMetrics } from '@/components/dashboard/HeroMetrics';
@@ -16,12 +17,6 @@ import { PageLayout } from '@/components/layout/PageLayout';
 export const Dashboard = () => {
   const financeState = useFinance();
   const { currentMonth, setCurrentMonth, getMonthlyData, transactions } = financeState;
-  const { getAvailableMonths } = useFinanceData({ 
-    transactions, 
-    currentMonth, 
-    currentYear: financeState.currentYear,
-    archivedData: financeState.archivedData || []
-  });
   
   // Inicializar dados reais
   useDataInitializer();
@@ -51,130 +46,17 @@ export const Dashboard = () => {
     credito: currentData.totalCredito - previousData.totalCredito
   }), [currentData, previousData]);
 
-  const availableMonths = getAvailableMonths();
-  
-  // Dynamic month options - from March 2025 to current month
-  const monthOptions = useMemo(() => {
-    const options = [];
-    const startDate = new Date('2025-03-01'); // Start from March 2025 (first month with data)
-    const currentDate = new Date();
-    
-    // Generate months from March 2025 to current month
-    const startYear = startDate.getFullYear();
-    const startMonth = startDate.getMonth();
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth();
-    
-    // Calculate total months from start to current
-    const totalMonths = (currentYear - startYear) * 12 + (currentMonth - startMonth) + 1;
-    
-    for (let i = 0; i < totalMonths; i++) {
-      const date = new Date(startYear, startMonth + i, 1);
-      const monthStr = date.toISOString().slice(0, 7);
-      const monthData = availableMonths.find(m => m.month === monthStr);
-      
-      options.unshift({ // Add to beginning for reverse chronological order
-        value: monthStr,
-        label: date.toLocaleDateString('pt-BR', { 
-          month: 'long', 
-          year: 'numeric' 
-        }),
-        hasData: !!monthData,
-        count: monthData?.count || 0
-      });
-    }
-    
-    return options;
-  }, [availableMonths]);
+  // Get dashboard data and chart calculations
+  const { availableMonths, monthOptions } = useDashboardData({
+    transactions,
+    currentMonth,
+    currentYear: financeState.currentYear,
+    archivedData: financeState.archivedData || []
+  });
 
-  // Transaction count data for pie chart
-  const transactionCountData = useMemo(() => {
-    const counts = currentData.transactions.reduce(
-      (acc, t) => {
-        if (t.dinheiro > 0) acc.dinheiro++;
-        if (t.pix > 0) acc.pix++;
-        if (t.debito > 0) acc.debito++;
-        if (t.credito > 0) acc.credito++;
-        return acc;
-      },
-      { dinheiro: 0, pix: 0, debito: 0, credito: 0 }
-    );
-
-    return [
-      { name: 'Dinheiro', value: counts.dinheiro, color: '#10b981' },
-      { name: 'PIX', value: counts.pix, color: '#3b82f6' },
-      { name: 'Débito', value: counts.debito, color: '#8b5cf6' },
-      { name: 'Crédito', value: counts.credito, color: '#ef4444' }
-    ].filter(item => item.value > 0);
-  }, [currentData]);
-
-  // Payment methods data with monetary values for enhanced pie chart
-  const paymentMethodsData = useMemo(() => {
-    const totals = currentData.transactions.reduce(
-      (acc, t) => ({
-        dinheiro: acc.dinheiro + t.dinheiro,
-        pix: acc.pix + t.pix,
-        debito: acc.debito + t.debito,
-        credito: acc.credito + t.credito
-      }),
-      { dinheiro: 0, pix: 0, debito: 0, credito: 0 }
-    );
-
-    return [
-      { 
-        name: 'Dinheiro', 
-        value: totals.dinheiro, 
-        color: '#10b981',
-        percentage: currentData.totalBruto > 0 ? (totals.dinheiro / currentData.totalBruto * 100) : 0
-      },
-      { 
-        name: 'PIX', 
-        value: totals.pix, 
-        color: '#3b82f6',
-        percentage: currentData.totalBruto > 0 ? (totals.pix / currentData.totalBruto * 100) : 0
-      },
-      { 
-        name: 'Débito', 
-        value: totals.debito, 
-        color: '#8b5cf6',
-        percentage: currentData.totalBruto > 0 ? (totals.debito / currentData.totalBruto * 100) : 0
-      },
-      { 
-        name: 'Crédito', 
-        value: totals.credito, 
-        color: '#ef4444',
-        percentage: currentData.totalBruto > 0 ? (totals.credito / currentData.totalBruto * 100) : 0
-      }
-    ].filter(item => item.value > 0);
-  }, [currentData]);
-
-  // Bi-weekly comparison data
-  const biWeeklyData = useMemo(() => {
-    const firstHalf = currentData.transactions.filter(t => {
-      const day = new Date(t.date).getDate();
-      return day <= 15;
-    });
-    
-    const secondHalf = currentData.transactions.filter(t => {
-      const day = new Date(t.date).getDate();
-      return day > 15;
-    });
-
-    const calculateTotals = (transactions: any[]) => 
-      transactions.reduce(
-        (acc, t) => ({
-          bruto: acc.bruto + t.totalBruto,
-          liquido: acc.liquido + t.totalLiquido,
-          count: acc.count + 1
-        }),
-        { bruto: 0, liquido: 0, count: 0 }
-      );
-
-    return {
-      firstHalf: calculateTotals(firstHalf),
-      secondHalf: calculateTotals(secondHalf)
-    };
-  }, [currentData]);
+  const { transactionCountData, paymentMethodsData, biWeeklyData } = useDashboardCharts({
+    currentData
+  });
 
   return (
     <PageLayout 
