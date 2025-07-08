@@ -65,7 +65,7 @@ export const QuickActionMenu = () => {
       <DropdownMenuTrigger asChild>
         <Button
           size="lg"
-          className="fixed bottom-20 right-4 h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg bg-gradient-to-r from-purple-600 to-orange-500 hover:shadow-xl hover:scale-105 text-white z-50 transition-all duration-200"
+          className="fixed bottom-24 sm:bottom-28 right-4 h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg bg-gradient-to-r from-purple-600 to-orange-500 hover:shadow-xl hover:scale-105 text-white z-60 transition-all duration-200"
         >
           <Plus className="h-5 w-5 sm:h-6 sm:w-6" />
         </Button>
@@ -74,7 +74,7 @@ export const QuickActionMenu = () => {
       <DropdownMenuContent 
         align="end" 
         sideOffset={8}
-        className="w-56 sm:w-64 glass border border-purple-100 shadow-xl z-50"
+        className="w-56 sm:w-64 glass border border-purple-100 shadow-xl z-60"
       >
         <DropdownMenuLabel className="text-purple-600 font-semibold">
           Ações Rápidas

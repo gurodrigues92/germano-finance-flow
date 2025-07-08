@@ -29,14 +29,14 @@ export const PaymentMethodsChart = ({ paymentMethodsData }: PaymentMethodsChartP
       <CardContent>
         {paymentMethodsData.length > 0 ? (
           <>
-            <ResponsiveContainer width="100%" height={chartConfig.pieChart.height}>
+            <ResponsiveContainer width="100%" height={isMobile ? 280 : chartConfig.pieChart.height}>
               <PieChart>
                 <Pie
                   data={paymentMethodsData}
                   cx="50%"
-                  cy={isMobile ? "40%" : "50%"}
-                  innerRadius={chartConfig.pieChart.innerRadius}
-                  outerRadius={chartConfig.pieChart.outerRadius}
+                  cy={isMobile ? "45%" : "50%"}
+                  innerRadius={isMobile ? 45 : chartConfig.pieChart.innerRadius}
+                  outerRadius={isMobile ? 90 : chartConfig.pieChart.outerRadius}
                   paddingAngle={5}
                   dataKey="value"
                   label={!isMobile ? ({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%` : false}
@@ -72,7 +72,7 @@ export const PaymentMethodsChart = ({ paymentMethodsData }: PaymentMethodsChartP
             </div>
           </>
         ) : (
-          <div style={{ height: chartConfig.pieChart.height }} className="flex items-center justify-center text-muted-foreground">
+          <div style={{ height: isMobile ? 280 : chartConfig.pieChart.height }} className="flex items-center justify-center text-muted-foreground">
             Nenhuma transação encontrada
           </div>
         )}

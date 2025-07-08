@@ -52,14 +52,14 @@ export const OperationalChartsGrid = ({ custosData, investimentosData, estoqueDa
       <CardContent>
         {data.length > 0 ? (
           <>
-            <ResponsiveContainer width="100%" height={chartConfig.pieChart.height - 50}>
+            <ResponsiveContainer width="100%" height={isMobile ? 240 : chartConfig.pieChart.height - 50}>
               <PieChart>
                 <Pie
                   data={data}
                   cx="50%"
-                  cy={isMobile ? "40%" : "50%"}
-                  innerRadius={isMobile ? 40 : 50}
-                  outerRadius={isMobile ? 80 : 100}
+                  cy={isMobile ? "45%" : "50%"}
+                  innerRadius={isMobile ? 35 : 50}
+                  outerRadius={isMobile ? 75 : 100}
                   paddingAngle={5}
                   dataKey="value"
                   label={!isMobile ? ({ name, percent }) => `${percent.toFixed(0)}%` : false}
@@ -100,7 +100,7 @@ export const OperationalChartsGrid = ({ custosData, investimentosData, estoqueDa
             </div>
           </>
         ) : (
-          <div style={{ height: chartConfig.pieChart.height - 50 }} className="flex items-center justify-center text-muted-foreground">
+          <div style={{ height: isMobile ? 240 : chartConfig.pieChart.height - 50 }} className="flex items-center justify-center text-muted-foreground">
             {emptyMessage}
           </div>
         )}
@@ -109,7 +109,7 @@ export const OperationalChartsGrid = ({ custosData, investimentosData, estoqueDa
   );
 
   return (
-    <div className={`grid gap-6 ${isMobile ? 'grid-cols-1' : 'lg:grid-cols-3'}`}>
+    <div className={`grid gap-6 lg:gap-8 ${isMobile ? 'grid-cols-1' : 'lg:grid-cols-3'}`}>
       <ChartCard 
         title="Custos Fixos por Categoria"
         data={custosData}
