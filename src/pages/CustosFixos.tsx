@@ -86,28 +86,38 @@ export function CustosFixos() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
+      <PageLayout
+        title="Custos Fixos"
+        subtitle="Gerencie os custos fixos mensais do seu negócio"
+      >
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </PageLayout>
     );
   }
 
   if (renderError) {
     return (
-      <Card className="border-destructive">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-destructive">
-            <AlertCircle className="h-5 w-5" />
-            Erro ao carregar página
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground mb-4">{renderError}</p>
-          <Button onClick={() => setRenderError(null)} variant="outline">
-            Tentar Novamente
-          </Button>
-        </CardContent>
-      </Card>
+      <PageLayout
+        title="Custos Fixos"
+        subtitle="Gerencie os custos fixos mensais do seu negócio"
+      >
+        <Card className="border-destructive">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-destructive">
+              <AlertCircle className="h-5 w-5" />
+              Erro ao carregar página
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground mb-4">{renderError}</p>
+            <Button onClick={() => setRenderError(null)} variant="outline">
+              Tentar Novamente
+            </Button>
+          </CardContent>
+        </Card>
+      </PageLayout>
     );
   }
 

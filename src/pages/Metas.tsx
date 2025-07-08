@@ -109,7 +109,7 @@ export const Metas = () => {
       <div className="card-grid card-grid-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Metas Ativas</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Metas Ativas</CardTitle>
             <Target className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -119,7 +119,7 @@ export const Metas = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Metas Concluídas</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Metas Concluídas</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -129,7 +129,7 @@ export const Metas = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Valor Total das Metas</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Valor Total das Metas</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -141,7 +141,7 @@ export const Metas = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Progresso Geral</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Progresso Geral</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -156,8 +156,8 @@ export const Metas = () => {
         <h2 className="subsection-title">Suas Metas</h2>
         
         {loading ? (
-          <div className="text-center py-8">
-            <p>Carregando metas...</p>
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
         ) : metas.length === 0 ? (
           <Card>

@@ -20,11 +20,13 @@ export const MotivationalSection = () => {
   const currentPhraseIndex = getCurrentPhraseIndex();
 
   return (
-    <div className="glass rounded-2xl p-6 text-center border border-purple-100 animate-float">
-      <h3 className="text-lg font-semibold text-foreground mb-2">💫 Inspiração do Dia</h3>
-      <p className="text-muted-foreground italic text-base">
+    <div className="relative bg-gradient-to-br from-yellow-100 to-yellow-200 p-6 text-center transform -rotate-1 shadow-lg border-l-4 border-yellow-400 animate-float">
+      <h3 className="text-sm font-medium text-yellow-800 mb-3">💫 Inspiração do Dia</h3>
+      <p className="font-serif text-yellow-900 italic text-base font-medium leading-relaxed">
         "{motivationalPhrases[currentPhraseIndex]}"
       </p>
+      {/* Post-it shadow effect */}
+      <div className="absolute inset-0 bg-yellow-200 opacity-30 rounded-sm -z-10 transform translate-x-1 translate-y-1"></div>
     </div>
   );
 };
