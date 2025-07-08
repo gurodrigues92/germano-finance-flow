@@ -269,7 +269,10 @@ export const Dashboard = () => {
           />
 
           {/* Insights */}
-          <DashboardInsights />
+          <DashboardInsights 
+            transactions={currentData.transactions} 
+            currentMonth={currentMonth} 
+          />
 
           {/* Footer */}
           <DashboardFooter transactions={currentData.transactions} />

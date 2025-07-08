@@ -1,11 +1,16 @@
 import { MotivationalSection } from '@/components/dashboard/MotivationalSection';
 import { WeeklyInsights } from '@/components/insights/WeeklyInsights';
 
-export const DashboardInsights = () => {
+interface DashboardInsightsProps {
+  transactions: any[];
+  currentMonth: string;
+}
+
+export const DashboardInsights = ({ transactions, currentMonth }: DashboardInsightsProps) => {
   return (
     <>
       <MotivationalSection />
-      <WeeklyInsights />
+      <WeeklyInsights transactions={transactions} currentMonth={currentMonth} />
     </>
   );
 };

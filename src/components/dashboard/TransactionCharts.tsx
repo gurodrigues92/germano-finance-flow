@@ -53,14 +53,14 @@ export const TransactionCharts = ({ transactionCountData, biWeeklyData, paymentM
             <CardTitle className="text-lg font-semibold">Distribuição de Transações</CardTitle>
           </CardHeader>
           <CardContent>
-            <div style={{ height: chartConfig.pieChart.height }}>
+            <div style={{ height: isMobile ? 280 : chartConfig.pieChart.height }}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={transactionCountData}
                     cx="50%"
-                    cy={isMobile ? "40%" : "50%"}
-                    outerRadius={chartConfig.pieChart.outerRadius}
+                    cy="50%"
+                    outerRadius={isMobile ? 80 : chartConfig.pieChart.outerRadius}
                     fill="#8884d8"
                     dataKey="value"
                     label={!isMobile ? ({ name, value, percent }) => `${name}: ${(percent * 100).toFixed(0)}%` : false}
