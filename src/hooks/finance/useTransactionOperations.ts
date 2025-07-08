@@ -16,6 +16,11 @@ export const useTransactionOperations = (
     pix: number;
     debito: number;
     credito: number;
+    customRates?: {
+      studioRate: number;
+      eduRate: number;
+      kamRate: number;
+    };
   }) => {
     setLoading(true);
     
@@ -24,16 +29,22 @@ export const useTransactionOperations = (
         transactionData.dinheiro,
         transactionData.pix,
         transactionData.debito,
-        transactionData.credito
+        transactionData.credito,
+        transactionData.customRates
       );
 
       const transaction: Transaction = {
         id: Date.now().toString(),
-        ...transactionData,
+        date: transactionData.date,
+        dinheiro: transactionData.dinheiro,
+        pix: transactionData.pix,
+        debito: transactionData.debito,
+        credito: transactionData.credito,
         ...calculations,
         month: transactionData.date.slice(0, 7),
         year: new Date(transactionData.date).getFullYear(),
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        customRates: transactionData.customRates
       };
 
       const newState = {

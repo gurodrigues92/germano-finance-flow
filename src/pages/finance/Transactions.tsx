@@ -16,6 +16,12 @@ interface TransactionFormData {
   pix: string;
   debito: string;
   credito: string;
+  useCustomRates: boolean;
+  customRates?: {
+    studioRate: number;
+    eduRate: number;
+    kamRate: number;
+  };
 }
 
 export const Transactions = () => {
@@ -42,7 +48,8 @@ export const Transactions = () => {
       dinheiro: parseFloat(formData.dinheiro) || 0,
       pix: parseFloat(formData.pix) || 0,
       debito: parseFloat(formData.debito) || 0,
-      credito: parseFloat(formData.credito) || 0
+      credito: parseFloat(formData.credito) || 0,
+      customRates: formData.useCustomRates ? formData.customRates : undefined
     };
 
     if (data.dinheiro + data.pix + data.debito + data.credito <= 0) {

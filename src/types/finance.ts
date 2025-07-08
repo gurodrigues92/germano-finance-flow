@@ -15,6 +15,12 @@ export interface Transaction {
   month: string;
   year: number;
   createdAt: string;
+  // Taxas personalizadas opcionais (em porcentagem)
+  customRates?: {
+    studioRate: number;
+    eduRate: number;
+    kamRate: number;
+  };
 }
 
 export interface MonthlyData {
