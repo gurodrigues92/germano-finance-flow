@@ -1,12 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
-import { Download, Eye } from 'lucide-react';
+import { Eye } from 'lucide-react';
 import { MonthDetailsDialog } from './MonthDetailsDialog';
 
 interface MonthlyArchiveCardProps {
   monthData: any;
   onSelectMonth: (month: string) => void;
-  onExportMonth: (monthData: any) => void;
   onEditTransaction: (transaction: any) => void;
   onDeleteTransaction: (transactionId: string) => void;
   selectedMonthData: any;
@@ -23,7 +22,6 @@ const formatMonth = (monthStr: string) => {
 export const MonthlyArchiveCard = ({
   monthData,
   onSelectMonth,
-  onExportMonth,
   onEditTransaction,
   onDeleteTransaction,
   selectedMonthData
@@ -39,35 +37,23 @@ export const MonthlyArchiveCard = ({
             {monthData.transactions.length} transações
           </p>
         </div>
-        <div className="flex gap-3">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onSelectMonth(monthData.month)}
-                className="h-10 w-10 p-0"
-              >
-                <Eye className="h-4 w-4" />
-              </Button>
-            </DialogTrigger>
-            <MonthDetailsDialog
-              monthData={selectedMonthData}
-              onEditTransaction={onEditTransaction}
-              onDeleteTransaction={onDeleteTransaction}
-            />
-          </Dialog>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onExportMonth(monthData)}
-            className="gap-2 h-10"
-          >
-            <Download className="h-4 w-4" />
-            Exportar
-          </Button>
-        </div>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onSelectMonth(monthData.month)}
+              className="h-10 w-10 p-0"
+            >
+              <Eye className="h-4 w-4" />
+            </Button>
+          </DialogTrigger>
+          <MonthDetailsDialog
+            monthData={selectedMonthData}
+            onEditTransaction={onEditTransaction}
+            onDeleteTransaction={onDeleteTransaction}
+          />
+        </Dialog>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">

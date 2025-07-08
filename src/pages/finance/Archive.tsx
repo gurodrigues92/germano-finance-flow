@@ -14,7 +14,7 @@ export const Archive = () => {
   const [showEditForm, setShowEditForm] = useState(false);
   const { toast } = useToast();
 
-  const { monthlyArchive, exportMonthData } = useArchiveData(transactions);
+  const { monthlyArchive } = useArchiveData(transactions);
 
   const selectedMonthData = useMemo(() => {
     return monthlyArchive.find((month: any) => month.month === selectedMonth);
@@ -82,7 +82,6 @@ export const Archive = () => {
                 key={monthData.month}
                 monthData={monthData}
                 onSelectMonth={setSelectedMonth}
-                onExportMonth={exportMonthData}
                 onEditTransaction={handleEditTransaction}
                 onDeleteTransaction={handleDeleteTransaction}
                 selectedMonthData={selectedMonthData}

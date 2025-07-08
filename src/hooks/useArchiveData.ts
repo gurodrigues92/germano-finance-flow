@@ -37,55 +37,8 @@ export const useArchiveData = (transactions: any[]) => {
     return Object.values(grouped).sort((a: any, b: any) => b.month.localeCompare(a.month));
   }, [transactions]);
 
-  const exportMonthData = (monthData: any) => {
-    try {
-      const headers = [
-        'Data',
-        'Dinheiro',
-        'PIX',
-        'Débito',
-        'Crédito',
-        'Total Bruto',
-        'Taxa Débito',
-        'Taxa Crédito',
-        'Total Líquido',
-        'Studio (60%)',
-        'Edu (40%)',
-        'Kam (10%)'
-      ];
-
-      const csvContent = [
-        headers.join(','),
-        ...monthData.transactions.map((t: any) => [
-          t.date,
-          t.dinheiro,
-          t.pix,
-          t.debito,
-          t.credito,
-          t.totalBruto,
-          t.taxaDebito,
-          t.taxaCredito,
-          t.totalLiquido,
-          t.studioShare,
-          t.eduShare,
-          t.kamShare
-        ].join(','))
-      ].join('\n');
-
-      const blob = new Blob([csvContent], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `studio_germano_${monthData.month}.csv`;
-      link.click();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('[Financeiro] Error exporting month data:', error);
-    }
-  };
 
   return {
-    monthlyArchive,
-    exportMonthData
+    monthlyArchive
   };
 };
