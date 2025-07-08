@@ -57,19 +57,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
 
     try {
+      console.log('Tentativa de login:', { email: email.toLowerCase().trim(), timestamp: new Date().toISOString() });
+      
       const { data, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (authError) {
-        setError(authError.message);
+        console.error('Erro no login Supabase:', authError);
+        
+        let errorMessage = 'Erro ao fazer login. Verifique suas credenciais.';
+        
+        if (authError.message.includes('Invalid login credentials')) {
+          errorMessage = 'Email ou senha incorretos. Tente novamente.';
+        } else if (authError.message.includes('Email not confirmed')) {
+          errorMessage = 'Email ainda não confirmado. Verifique sua caixa de entrada.';
+        } else if (authError.message.includes('Too many requests')) {
+          errorMessage = 'Muitas tentativas. Aguarde alguns minutos e tente novamente.';
+        }
+        
+        setError(errorMessage);
         return false;
       }
 
+      console.log('Login bem-sucedido:', { hasUser: !!data.user, hasSession: !!data.session });
       return true;
     } catch (error) {
-      setError('Erro de conexão');
+      console.error('Erro na função login:', error);
+      setError('Erro de conexão. Verifique sua internet e tente novamente.');
       return false;
     } finally {
       setIsLoading(false);
@@ -89,12 +105,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         'kamlley_zapata@outlook.com'
       ];
 
+      console.log('Tentativa de cadastro:', { email: email.toLowerCase().trim(), timestamp: new Date().toISOString() });
+
       // Verificar se o email está na whitelist
       if (!allowedEmails.includes(email.toLowerCase().trim())) {
-        setError('Este email não tem permissão para se cadastrar no sistema.');
+        console.log('Email rejeitado - não está na whitelist:', email.toLowerCase().trim());
+        setError('Este email não tem permissão para se cadastrar no sistema. Apenas emails autorizados podem criar contas.');
         return false;
       }
 
+      console.log('Email aprovado - iniciando cadastro no Supabase');
       const redirectUrl = `${window.location.origin}/`;
       
       const { data, error: authError } = await supabase.auth.signUp({
@@ -106,18 +126,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (authError) {
-        setError(authError.message);
+        console.error('Erro no cadastro Supabase:', authError);
+        let errorMessage = 'Erro ao criar conta. Tente novamente.';
+        
+        if (authError.message.includes('User already registered')) {
+          errorMessage = 'Este email já está cadastrado. Tente fazer login ou use outro email.';
+        } else if (authError.message.includes('Password')) {
+          errorMessage = 'A senha deve ter pelo menos 6 caracteres.';
+        } else if (authError.message.includes('Email')) {
+          errorMessage = 'Por favor, digite um email válido.';
+        }
+        
+        setError(errorMessage);
         return false;
       }
 
+      console.log('Cadastro Supabase concluído:', { hasUser: !!data.user, hasSession: !!data.session });
+
       // Verificar se o usuário precisa confirmar email
       if (data.user && !data.session) {
+        console.log('Usuário criado mas precisa confirmar email');
         setSuccess('Email de confirmação enviado! Verifique sua caixa de entrada e clique no link para ativar sua conta.');
+      } else if (data.user && data.session) {
+        console.log('Usuário criado e logado automaticamente');
+        setSuccess('Conta criada com sucesso! Bem-vindo ao sistema.');
       }
 
       return true;
     } catch (error) {
-      setError('Erro de conexão');
+      console.error('Erro na função signUp:', error);
+      setError('Erro de conexão. Verifique sua internet e tente novamente.');
       return false;
     } finally {
       setIsLoading(false);
@@ -130,6 +168,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
 
     try {
+      console.log('Reenviando email de confirmação para:', email);
       const redirectUrl = `${window.location.origin}/`;
       
       const { error } = await supabase.auth.resend({
@@ -141,14 +180,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (error) {
-        setError(error.message);
+        console.error('Erro ao reenviar email:', error);
+        let errorMessage = 'Erro ao reenviar email. Tente novamente.';
+        
+        if (error.message.includes('rate limit')) {
+          errorMessage = 'Aguarde alguns minutos antes de solicitar outro email de confirmação.';
+        } else if (error.message.includes('not found')) {
+          errorMessage = 'Email não encontrado. Verifique se o email está correto.';
+        }
+        
+        setError(errorMessage);
         return false;
       }
 
-      setSuccess('Email de confirmação reenviado! Verifique sua caixa de entrada.');
+      console.log('Email de confirmação reenviado com sucesso');
+      setSuccess('Email de confirmação reenviado! Verifique sua caixa de entrada e spam.');
       return true;
     } catch (error) {
-      setError('Erro de conexão');
+      console.error('Erro na função resendConfirmation:', error);
+      setError('Erro de conexão. Verifique sua internet e tente novamente.');
       return false;
     } finally {
       setIsLoading(false);

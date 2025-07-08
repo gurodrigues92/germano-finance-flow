@@ -1,6 +1,6 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Scissors, Lock, Eye, EyeOff, AlertCircle, Mail } from 'lucide-react';
+import { Scissors, Lock, Eye, EyeOff, AlertCircle, Mail, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Login() {
@@ -12,6 +12,17 @@ export default function Login() {
   const { login, signUp, resendConfirmation, isLoading, error, success, isAuthenticated, clearMessages } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Lista de emails permitidos (mesma do AuthContext)
+  const allowedEmails = [
+    'gurodrigues92@gmail.com',
+    'Eduardo.germano15@gmail.com',
+    'kamlley_zapata@outlook.com'
+  ];
+
+  // Verificar se o email está na whitelist
+  const isEmailAllowed = email.trim() && allowedEmails.includes(email.toLowerCase().trim());
+  const showEmailStatus = isSignUp && email.trim().length > 0;
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -65,6 +76,21 @@ export default function Login() {
             <p className="text-gray-600">
               {isSignUp ? 'Crie sua conta para acessar o sistema' : 'Digite suas credenciais para acessar'}
             </p>
+            {isSignUp && (
+              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 text-blue-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="text-left">
+                    <p className="text-sm font-medium text-blue-800">Sistema Restrito</p>
+                    <p className="text-xs text-blue-600">Apenas emails autorizados podem criar contas neste sistema.</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -90,6 +116,31 @@ export default function Login() {
                   required
                 />
               </div>
+              
+              {/* Status do Email na Whitelist */}
+              {showEmailStatus && (
+                <div className={`mt-2 p-2 rounded-lg border transition-all duration-200 ${
+                  isEmailAllowed 
+                    ? 'bg-green-50 border-green-200' 
+                    : 'bg-amber-50 border-amber-200'
+                }`}>
+                  <div className="flex items-center space-x-2">
+                    {isEmailAllowed ? (
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                    ) : (
+                      <AlertCircle className="w-4 h-4 text-amber-600" />
+                    )}
+                    <span className={`text-xs font-medium ${
+                      isEmailAllowed ? 'text-green-700' : 'text-amber-700'
+                    }`}>
+                      {isEmailAllowed 
+                        ? 'Email autorizado ✓' 
+                        : 'Email não autorizado para cadastro'
+                      }
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Campo de Senha */}
@@ -143,7 +194,15 @@ export default function Login() {
                   <div className="flex-1">
                     <span className="text-green-700 text-sm">{success}</span>
                     {success.includes('Email de confirmação') && (
-                      <div className="mt-2">
+                      <div className="mt-3 space-y-2">
+                        <div className="p-2 bg-green-100 rounded-lg">
+                          <p className="text-xs text-green-800">
+                            <strong>Próximos passos:</strong><br />
+                            1. Verifique sua caixa de entrada (e spam)<br />
+                            2. Clique no link de confirmação<br />
+                            3. Retorne aqui para fazer login
+                          </p>
+                        </div>
                         <button
                           type="button"
                           onClick={async () => {
@@ -166,9 +225,9 @@ export default function Login() {
             {/* Botão de Login/Signup */}
             <button
               type="submit"
-              disabled={isLoading || !email.trim() || !password.trim()}
+              disabled={isLoading || !email.trim() || !password.trim() || (isSignUp && !isEmailAllowed)}
               className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-200 transform focus:outline-none focus:ring-2 focus:ring-finance-studio focus:ring-offset-2 ${
-                isLoading || !email.trim() || !password.trim()
+                isLoading || !email.trim() || !password.trim() || (isSignUp && !isEmailAllowed)
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   : 'bg-gradient-to-r from-finance-studio to-finance-kam text-white hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]'
               }`}
