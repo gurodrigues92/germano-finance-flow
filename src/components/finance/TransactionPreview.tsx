@@ -1,17 +1,9 @@
 import React from 'react';
 import { NOMENCLATURE } from '@/lib/finance/nomenclature';
+import { TransactionCalculationResult } from '@/lib/finance/transactionCalculations';
 
 interface TransactionPreviewProps {
-  calculations: {
-    totalBruto: number;
-    totalLiquido: number;
-    studioShare: number;
-    eduShare: number;
-    kamShare: number;
-    studioRate: number;
-    eduRate: number;
-    kamRate: number;
-  };
+  calculations: TransactionCalculationResult;
 }
 
 export const TransactionPreview = ({ calculations }: TransactionPreviewProps) => {
