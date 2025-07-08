@@ -115,6 +115,12 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const hasPermission = (permission: string): boolean => {
+    // Fallback de segurança: emails específicos sempre têm acesso admin
+    const adminEmails = ['gurodrigues92@gmail.com', 'eduardo.germano15@gmail.com'];
+    if (user && adminEmails.includes(user.email || '')) {
+      return ADMIN_PERMISSIONS.includes(permission);
+    }
+    
     if (!profile) return false;
     
     if (profile.role === 'admin') {
@@ -126,8 +132,12 @@ export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
     return false;
   };
 
-  const isAdmin = profile?.role === 'admin';
-  const isAssistente = profile?.role === 'assistente';
+  // Fallback para determinar se é admin baseado no email
+  const adminEmails = ['gurodrigues92@gmail.com', 'eduardo.germano15@gmail.com'];
+  const isAdminByEmail = user && adminEmails.includes(user.email || '');
+  
+  const isAdmin = profile?.role === 'admin' || isAdminByEmail;
+  const isAssistente = profile?.role === 'assistente' && !isAdminByEmail;
 
   useEffect(() => {
     fetchProfile();
