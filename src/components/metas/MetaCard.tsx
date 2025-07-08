@@ -13,6 +13,8 @@ import {
 import { MetaFinanceira } from '@/types/metas';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { formatCompactCurrency } from '@/lib/formatUtils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface MetaCardProps {
   meta: MetaFinanceira;
@@ -25,6 +27,7 @@ export const MetaCard = ({ meta, onEdit, onDelete, onMarkComplete }: MetaCardPro
   const progresso = meta.valor_meta > 0 ? (meta.valor_atual / meta.valor_meta) * 100 : 0;
   const isCompleta = progresso >= 100;
   const isVencida = new Date(meta.data_fim) < new Date() && meta.status === 'ativa';
+  const isMobile = useIsMobile();
 
   const getStatusColor = () => {
     if (meta.status === 'concluida') return 'bg-green-500';
@@ -78,16 +81,10 @@ export const MetaCard = ({ meta, onEdit, onDelete, onMarkComplete }: MetaCardPro
           />
           <div className="flex justify-between text-sm">
             <span className="font-medium">
-              {meta.valor_atual.toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-              })}
+              {formatCompactCurrency(meta.valor_atual, isMobile)}
             </span>
             <span className="text-muted-foreground">
-              {meta.valor_meta.toLocaleString('pt-BR', {
-                style: 'currency', 
-                currency: 'BRL'
-              })}
+              {formatCompactCurrency(meta.valor_meta, isMobile)}
             </span>
           </div>
         </div>

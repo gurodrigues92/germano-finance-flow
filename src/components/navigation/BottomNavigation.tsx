@@ -63,20 +63,20 @@ export const BottomNavigation = () => {
       <SheetContent side="bottom" className="h-[60vh] glass-strong border-purple-100">
         <div className="py-4">
           <h2 className="text-lg font-semibold mb-4">Menu</h2>
-          <div className="grid gap-2">
+          <div className="grid gap-3">
             {menuItems.map((item) => (
               <Link
                 key={item.href}
                 to={item.href}
                 onClick={() => setIsMenuOpen(false)}
-                className={`flex items-center space-x-3 p-3 rounded-lg transition-colors hover:bg-purple-50 ${
+                className={`flex items-center space-x-3 p-4 md:p-3 rounded-lg transition-colors hover:bg-purple-50 min-h-[48px] ${
                   location.pathname === item.href 
                     ? 'bg-purple-100 text-purple-600' 
                     : 'text-foreground'
                 }`}
               >
                 <item.icon className="w-5 h-5" />
-                <span>{item.label}</span>
+                <span className="text-base md:text-sm">{item.label}</span>
               </Link>
             ))}
             
@@ -89,10 +89,10 @@ export const BottomNavigation = () => {
                 logout();
                 setIsMenuOpen(false);
               }}
-              className="flex items-center space-x-3 w-full p-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              className="flex items-center space-x-3 w-full p-4 md:p-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors min-h-[48px]"
             >
               <LogOut className="w-5 h-5" />
-              <span>Sair do Sistema</span>
+              <span className="text-base md:text-sm">Sair do Sistema</span>
             </button>
           </div>
         </div>

@@ -16,6 +16,8 @@ import { MetaCard } from '@/components/metas/MetaCard';
 import { MetaForm } from '@/components/metas/MetaForm';
 import { MetaFinanceira, MetaFinanceiraInput } from '@/types/metas';
 import { useToast } from '@/hooks/use-toast';
+import { formatCompactCurrency } from '@/lib/formatUtils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 
 export const Metas = () => {
@@ -23,6 +25,7 @@ export const Metas = () => {
   const { toast } = useToast();
   const [showForm, setShowForm] = useState(false);
   const [editingMeta, setEditingMeta] = useState<MetaFinanceira | undefined>();
+  const isMobile = useIsMobile();
 
   const estatisticas = useMetas().getEstatisticas();
 
@@ -136,11 +139,8 @@ export const Metas = () => {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {estatisticas.totalValorMetas.toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-              })}
+            <div className="text-xl md:text-2xl font-bold">
+              {formatCompactCurrency(estatisticas.totalValorMetas, isMobile)}
             </div>
           </CardContent>
         </Card>

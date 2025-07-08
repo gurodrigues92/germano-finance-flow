@@ -8,6 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { TransactionForm } from '@/components/finance/TransactionForm';
 import { useToast } from '@/hooks/use-toast';
+import { formatCompactCurrency } from '@/lib/formatUtils';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { 
   Archive as ArchiveIcon, 
   Download, 
@@ -155,17 +157,13 @@ export const Archive = () => {
   };
 
   return (
-    <div className="space-y-8 p-6 max-w-4xl mx-auto">
+    <div className="space-y-6 md:space-y-8 p-3 sm:p-6 max-w-4xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border pb-6">
         <div>
-          <h1 className="text-3xl font-semibold text-foreground">Arquivo Histórico</h1>
+          <h1 className="text-2xl md:text-3xl font-semibold text-foreground">Arquivo Histórico</h1>
           <p className="text-muted-foreground mt-1">Histórico completo de transações organizadas por mês</p>
         </div>
-        <Button onClick={exportToCSV} variant="outline" size="sm" className="gap-2">
-          <Download className="h-4 w-4" />
-          Exportar
-        </Button>
       </div>
 
       {/* Summary Stats */}
@@ -185,23 +183,17 @@ export const Archive = () => {
         </div>
         
         <div className="text-center">
-          <div className="text-2xl font-bold text-foreground">
-            {transactions.reduce((sum, t) => sum + t.totalBruto, 0).toLocaleString('pt-BR', {
-              style: 'currency',
-              currency: 'BRL'
-            })}
+          <div className="text-xl md:text-2xl font-bold text-foreground">
+            {formatCompactCurrency(transactions.reduce((sum, t) => sum + t.totalBruto, 0), useIsMobile())}
           </div>
-          <div className="text-sm text-muted-foreground">Faturamento</div>
+          <div className="text-xs md:text-sm text-muted-foreground">Faturamento</div>
         </div>
         
         <div className="text-center">
-          <div className="text-2xl font-bold text-foreground">
-            {transactions.reduce((sum, t) => sum + t.totalLiquido, 0).toLocaleString('pt-BR', {
-              style: 'currency',
-              currency: 'BRL'
-            })}
+          <div className="text-xl md:text-2xl font-bold text-foreground">
+            {formatCompactCurrency(transactions.reduce((sum, t) => sum + t.totalLiquido, 0), useIsMobile())}
           </div>
-          <div className="text-sm text-muted-foreground">Líquido</div>
+          <div className="text-xs md:text-sm text-muted-foreground">Líquido</div>
         </div>
       </div>
 
@@ -232,11 +224,11 @@ export const Archive = () => {
                       <DialogTrigger asChild>
                         <Button
                           variant="outline"
+                          size="sm"
                           onClick={() => setSelectedMonth(monthData.month)}
-                          className="gap-2"
+                          className="h-10 w-10 p-0"
                         >
                           <Eye className="h-4 w-4" />
-                          Ver detalhes
                         </Button>
                       </DialogTrigger>
                       <DialogContent className="max-w-2xl max-h-[80vh] overflow-auto">
@@ -384,8 +376,9 @@ export const Archive = () => {
                     
                     <Button
                       variant="outline"
+                      size="sm"
                       onClick={() => exportMonthData(monthData)}
-                      className="gap-2"
+                      className="gap-2 h-10"
                     >
                       <Download className="h-4 w-4" />
                       Exportar
