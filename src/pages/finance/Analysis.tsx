@@ -24,6 +24,8 @@ import {
   AreaChart
 } from 'recharts';
 import { TrendingUp, TrendingDown, BarChart3, PieChart as PieChartIcon } from 'lucide-react';
+import { useChartConfig, formatCompactCurrency } from '@/hooks/useChartConfig';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export const Analysis = () => {
   const { currentMonth, setCurrentMonth, getMonthlyData, transactions } = useFinance();
@@ -32,6 +34,8 @@ export const Analysis = () => {
   const { produtos, produtosBaixoEstoque, valorTotalEstoque } = useProdutos();
   
   const currentData = getMonthlyData(currentMonth);
+  const chartConfig = useChartConfig();
+  const isMobile = useIsMobile();
 
   // Generate month options - from March 2025 onwards (matching Dashboard logic)
   const monthOptions = useMemo(() => {
@@ -270,7 +274,7 @@ export const Analysis = () => {
       </Card>
 
       {/* Charts Grid */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className={`grid gap-6 ${isMobile ? 'grid-cols-1' : 'lg:grid-cols-2'}`}>
         {/* Payment Methods Distribution */}
         <Card>
           <CardHeader>
@@ -282,33 +286,29 @@ export const Analysis = () => {
           <CardContent>
             {paymentMethodsData.length > 0 ? (
               <>
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={chartConfig.pieChart.height}>
                   <PieChart>
                     <Pie
                       data={paymentMethodsData}
                       cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={120}
+                      cy={isMobile ? "40%" : "50%"}
+                      innerRadius={chartConfig.pieChart.innerRadius}
+                      outerRadius={chartConfig.pieChart.outerRadius}
                       paddingAngle={5}
                       dataKey="value"
+                      label={!isMobile ? ({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%` : false}
                     >
                       {paymentMethodsData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
                     <Tooltip 
-                      formatter={(value) => 
-                        new Intl.NumberFormat('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                        }).format(Number(value))
-                      }
+                      formatter={(value) => formatCompactCurrency(Number(value))}
                     />
                   </PieChart>
                 </ResponsiveContainer>
                 
-                <div className="grid grid-cols-2 gap-2 mt-4">
+                <div className={`grid gap-2 mt-4 ${isMobile ? 'grid-cols-1' : 'grid-cols-2'}`}>
                   {paymentMethodsData.map((item, index) => (
                     <div key={index} className="flex items-center gap-2">
                       <div 
@@ -318,15 +318,18 @@ export const Analysis = () => {
                       <span className="text-sm text-muted-foreground flex-1">
                         {item.name}
                       </span>
-                      <Badge variant="secondary" className="text-xs">
-                        {item.percentage.toFixed(1)}%
-                      </Badge>
+                      <div className="flex flex-col items-end">
+                        <span className="text-xs font-medium">{formatCompactCurrency(item.value)}</span>
+                        <Badge variant="secondary" className="text-xs">
+                          {item.percentage.toFixed(1)}%
+                        </Badge>
+                      </div>
                     </div>
                   ))}
                 </div>
               </>
             ) : (
-              <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+              <div style={{ height: chartConfig.pieChart.height }} className="flex items-center justify-center text-muted-foreground">
                 Nenhuma transação encontrada
               </div>
             )}
@@ -342,14 +345,15 @@ export const Analysis = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={chartConfig.barChart.height}>
               <BarChart data={sharesData} layout="horizontal">
                 <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                 <XAxis 
                   type="number"
                   className="text-sm"
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: isMobile ? 10 : 12 }}
                   tickFormatter={(value) => 
+                    isMobile ? formatCompactCurrency(value) :
                     new Intl.NumberFormat('pt-BR', {
                       style: 'currency',
                       currency: 'BRL',
@@ -361,16 +365,11 @@ export const Analysis = () => {
                   dataKey="name" 
                   type="category"
                   className="text-sm"
-                  tick={{ fontSize: 12 }}
-                  width={100}
+                  tick={{ fontSize: isMobile ? 10 : 12 }}
+                  width={isMobile ? 80 : 100}
                 />
                 <Tooltip 
-                  formatter={(value) => 
-                    new Intl.NumberFormat('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL'
-                    }).format(Number(value))
-                  }
+                  formatter={(value) => formatCompactCurrency(Number(value))}
                 />
                 <Bar dataKey="value" fill="hsl(var(--finance-studio))" />
               </BarChart>
@@ -380,7 +379,7 @@ export const Analysis = () => {
       </div>
 
       {/* Operational Charts Grid */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className={`grid gap-6 ${isMobile ? 'grid-cols-1' : 'lg:grid-cols-3'}`}>
         {/* Fixed Costs by Category */}
         <Card>
           <CardHeader>
@@ -392,28 +391,24 @@ export const Analysis = () => {
           <CardContent>
             {custosData.length > 0 ? (
               <>
-                <ResponsiveContainer width="100%" height={250}>
+                <ResponsiveContainer width="100%" height={chartConfig.pieChart.height - 50}>
                   <PieChart>
                     <Pie
                       data={custosData}
                       cx="50%"
-                      cy="50%"
-                      innerRadius={50}
-                      outerRadius={100}
+                      cy={isMobile ? "40%" : "50%"}
+                      innerRadius={isMobile ? 40 : 50}
+                      outerRadius={isMobile ? 80 : 100}
                       paddingAngle={5}
                       dataKey="value"
+                      label={!isMobile ? ({ name, percent }) => `${percent.toFixed(0)}%` : false}
                     >
                       {custosData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
                     <Tooltip 
-                      formatter={(value) => 
-                        new Intl.NumberFormat('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                        }).format(Number(value))
-                      }
+                      formatter={(value) => formatCompactCurrency(Number(value))}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -436,7 +431,7 @@ export const Analysis = () => {
                 </div>
               </>
             ) : (
-              <div className="h-[250px] flex items-center justify-center text-muted-foreground">
+              <div style={{ height: chartConfig.pieChart.height - 50 }} className="flex items-center justify-center text-muted-foreground">
                 Nenhum custo encontrado
               </div>
             )}
@@ -454,28 +449,24 @@ export const Analysis = () => {
           <CardContent>
             {investimentosData.length > 0 ? (
               <>
-                <ResponsiveContainer width="100%" height={250}>
+                <ResponsiveContainer width="100%" height={chartConfig.pieChart.height - 50}>
                   <PieChart>
                     <Pie
                       data={investimentosData}
                       cx="50%"
-                      cy="50%"
-                      innerRadius={50}
-                      outerRadius={100}
+                      cy={isMobile ? "40%" : "50%"}
+                      innerRadius={isMobile ? 40 : 50}
+                      outerRadius={isMobile ? 80 : 100}
                       paddingAngle={5}
                       dataKey="value"
+                      label={!isMobile ? ({ name, percent }) => `${percent.toFixed(0)}%` : false}
                     >
                       {investimentosData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
                     <Tooltip 
-                      formatter={(value) => 
-                        new Intl.NumberFormat('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                        }).format(Number(value))
-                      }
+                      formatter={(value) => formatCompactCurrency(Number(value))}
                     />
                   </PieChart>
                 </ResponsiveContainer>
@@ -498,7 +489,7 @@ export const Analysis = () => {
                 </div>
               </>
             ) : (
-              <div className="h-[250px] flex items-center justify-center text-muted-foreground">
+              <div style={{ height: chartConfig.pieChart.height - 50 }} className="flex items-center justify-center text-muted-foreground">
                 Nenhum investimento encontrado
               </div>
             )}
@@ -516,16 +507,17 @@ export const Analysis = () => {
           <CardContent>
             {estoqueData.length > 0 ? (
               <>
-                <ResponsiveContainer width="100%" height={250}>
+                <ResponsiveContainer width="100%" height={chartConfig.pieChart.height - 50}>
                   <PieChart>
                     <Pie
                       data={estoqueData}
                       cx="50%"
-                      cy="50%"
-                      innerRadius={50}
-                      outerRadius={100}
+                      cy={isMobile ? "40%" : "50%"}
+                      innerRadius={isMobile ? 40 : 50}
+                      outerRadius={isMobile ? 80 : 100}
                       paddingAngle={5}
                       dataKey="value"
+                      label={!isMobile ? ({ name, percent }) => `${percent.toFixed(0)}%` : false}
                     >
                       {estoqueData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
@@ -533,10 +525,7 @@ export const Analysis = () => {
                     </Pie>
                     <Tooltip 
                       formatter={(value, name, props) => [
-                        new Intl.NumberFormat('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                        }).format(Number(value)),
+                        formatCompactCurrency(Number(value)),
                         `${name} (${props.payload.count} produtos)`
                       ]}
                     />
@@ -561,7 +550,7 @@ export const Analysis = () => {
                 </div>
               </>
             ) : (
-              <div className="h-[250px] flex items-center justify-center text-muted-foreground">
+              <div style={{ height: chartConfig.pieChart.height - 50 }} className="flex items-center justify-center text-muted-foreground">
                 Nenhum produto encontrado
               </div>
             )}
@@ -575,7 +564,7 @@ export const Analysis = () => {
           <CardTitle>Evolução dos Últimos 12 Meses</CardTitle>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={400}>
+          <ResponsiveContainer width="100%" height={chartConfig.areaChart.height}>
             <AreaChart data={evolutionData}>
               <defs>
                 <linearGradient id="colorBruto" x1="0" y1="0" x2="0" y2="1">
@@ -591,12 +580,13 @@ export const Analysis = () => {
               <XAxis 
                 dataKey="month" 
                 className="text-sm"
-                tick={{ fontSize: 12 }}
+                tick={{ fontSize: isMobile ? 10 : 12 }}
               />
               <YAxis 
                 className="text-sm"
-                tick={{ fontSize: 12 }}
+                tick={{ fontSize: isMobile ? 10 : 12 }}
                 tickFormatter={(value) => 
+                  isMobile ? formatCompactCurrency(value) :
                   new Intl.NumberFormat('pt-BR', {
                     style: 'currency',
                     currency: 'BRL',
@@ -605,12 +595,7 @@ export const Analysis = () => {
                 }
               />
               <Tooltip 
-                formatter={(value) => 
-                  new Intl.NumberFormat('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
-                  }).format(Number(value))
-                }
+                formatter={(value) => formatCompactCurrency(Number(value))}
                 labelFormatter={(label, payload) => {
                   if (payload && payload[0]) {
                     return payload[0].payload.fullMonth;

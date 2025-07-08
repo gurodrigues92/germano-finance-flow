@@ -4,8 +4,11 @@ import {
   Pie,
   Cell,
   Tooltip,
-  ResponsiveContainer
+  ResponsiveContainer,
+  Legend
 } from 'recharts';
+import { useChartConfig, formatCompactCurrency } from '@/hooks/useChartConfig';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface TransactionChartsProps {
   transactionCountData: Array<{ name: string; value: number; color: string }>;
@@ -13,9 +16,34 @@ interface TransactionChartsProps {
     firstHalf: { bruto: number; liquido: number; count: number };
     secondHalf: { bruto: number; liquido: number; count: number };
   };
+  paymentMethodsData?: Array<{ name: string; value: number; color: string; percentage: number }>;
 }
 
-export const TransactionCharts = ({ transactionCountData, biWeeklyData }: TransactionChartsProps) => {
+export const TransactionCharts = ({ transactionCountData, biWeeklyData, paymentMethodsData }: TransactionChartsProps) => {
+  const chartConfig = useChartConfig();
+  const isMobile = useIsMobile();
+
+  // Custom legend component for payment methods
+  const renderCustomLegend = (props: any) => {
+    const { payload } = props;
+    if (!paymentMethodsData) return null;
+    
+    return (
+      <div className="flex flex-wrap justify-center gap-2 mt-4">
+        {paymentMethodsData.map((entry, index) => (
+          <div key={index} className="flex items-center gap-1.5 text-xs">
+            <div 
+              className="w-3 h-3 rounded-full" 
+              style={{ backgroundColor: entry.color }}
+            />
+            <span className="text-muted-foreground">
+              {entry.name}: {formatCompactCurrency(entry.value)} ({entry.percentage.toFixed(1)}%)
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  };
   return (
     <>
       {/* Transaction Count Pie Chart */}
@@ -25,17 +53,17 @@ export const TransactionCharts = ({ transactionCountData, biWeeklyData }: Transa
             <CardTitle className="text-lg font-semibold">Distribuição de Transações</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-64 sm:h-80">
+            <div style={{ height: chartConfig.pieChart.height }}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={transactionCountData}
                     cx="50%"
-                    cy="50%"
-                    outerRadius={90}
+                    cy={isMobile ? "40%" : "50%"}
+                    outerRadius={chartConfig.pieChart.outerRadius}
                     fill="#8884d8"
                     dataKey="value"
-                    label={({ name, value, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                    label={!isMobile ? ({ name, value, percent }) => `${name}: ${(percent * 100).toFixed(0)}%` : false}
                   >
                     {transactionCountData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
@@ -51,8 +79,10 @@ export const TransactionCharts = ({ transactionCountData, biWeeklyData }: Transa
                       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                     }}
                   />
+                  {paymentMethodsData && isMobile && <Legend content={renderCustomLegend} />}
                 </PieChart>
               </ResponsiveContainer>
+              {paymentMethodsData && !isMobile && renderCustomLegend({})}
             </div>
           </CardContent>
         </Card>

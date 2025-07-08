@@ -107,6 +107,46 @@ export const Dashboard = () => {
     ].filter(item => item.value > 0);
   }, [currentData]);
 
+  // Payment methods data with monetary values for enhanced pie chart
+  const paymentMethodsData = useMemo(() => {
+    const totals = currentData.transactions.reduce(
+      (acc, t) => ({
+        dinheiro: acc.dinheiro + t.dinheiro,
+        pix: acc.pix + t.pix,
+        debito: acc.debito + t.debito,
+        credito: acc.credito + t.credito
+      }),
+      { dinheiro: 0, pix: 0, debito: 0, credito: 0 }
+    );
+
+    return [
+      { 
+        name: 'Dinheiro', 
+        value: totals.dinheiro, 
+        color: '#10b981',
+        percentage: currentData.totalBruto > 0 ? (totals.dinheiro / currentData.totalBruto * 100) : 0
+      },
+      { 
+        name: 'PIX', 
+        value: totals.pix, 
+        color: '#3b82f6',
+        percentage: currentData.totalBruto > 0 ? (totals.pix / currentData.totalBruto * 100) : 0
+      },
+      { 
+        name: 'Débito', 
+        value: totals.debito, 
+        color: '#8b5cf6',
+        percentage: currentData.totalBruto > 0 ? (totals.debito / currentData.totalBruto * 100) : 0
+      },
+      { 
+        name: 'Crédito', 
+        value: totals.credito, 
+        color: '#ef4444',
+        percentage: currentData.totalBruto > 0 ? (totals.credito / currentData.totalBruto * 100) : 0
+      }
+    ].filter(item => item.value > 0);
+  }, [currentData]);
+
   // Bi-weekly comparison data
   const biWeeklyData = useMemo(() => {
     const firstHalf = currentData.transactions.filter(t => {
@@ -221,6 +261,7 @@ export const Dashboard = () => {
           <TransactionCharts
             transactionCountData={transactionCountData}
             biWeeklyData={biWeeklyData}
+            paymentMethodsData={paymentMethodsData}
           />
 
           {/* Insights */}
