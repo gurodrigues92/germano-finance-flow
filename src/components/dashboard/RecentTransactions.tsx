@@ -18,10 +18,10 @@ export const RecentTransactions = ({ transactions }: RecentTransactionsProps) =>
       month: '2-digit'
     });
 
-  // Ordenar transações por data decrescente (mais recentes primeiro) e pegar as 5 primeiras
+  // Ordenar transações por data decrescente (mais recentes primeiro) e pegar as 15 primeiras
   const recentTransactions = transactions
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 5);
+    .slice(0, 15);
 
   return (
     <Card className="border-purple-100 glass">
@@ -48,8 +48,12 @@ export const RecentTransactions = ({ transactions }: RecentTransactionsProps) =>
                     {formatDate(transaction.date)}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    PIX: {formatCurrency(transaction.pix)} • 
-                    Dinheiro: {formatCurrency(transaction.dinheiro)}
+                    {[
+                      transaction.dinheiro > 0 && `Dinheiro: ${formatCurrency(transaction.dinheiro)}`,
+                      transaction.pix > 0 && `PIX: ${formatCurrency(transaction.pix)}`,
+                      transaction.debito > 0 && `Débito: ${formatCurrency(transaction.debito)}`,
+                      transaction.credito > 0 && `Crédito: ${formatCurrency(transaction.credito)}`
+                    ].filter(Boolean).join(' • ')}
                   </p>
                 </div>
                 <div className="text-right">

@@ -37,6 +37,7 @@ const ADMIN_PERMISSIONS = [
   'view_investments',
   'view_goals',
   'view_financial_distribution',
+  'view_financial_metrics',
   'manage_all'
 ];
 

@@ -4,6 +4,7 @@ import { useDataInitializer } from '@/hooks/useDataInitializer';
 import { useDashboardData } from '@/hooks/useDashboardData';
 import { useDashboardCharts } from '@/hooks/useDashboardCharts';
 import { useToast } from '@/hooks/use-toast';
+import { usePermissions } from '@/contexts/UserProfileContext';
 import { StockAlert } from '@/components/alerts/StockAlert';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { HeroMetrics } from '@/components/dashboard/HeroMetrics';
@@ -30,6 +31,7 @@ export const Dashboard = () => {
   const financeState = useFinance();
   const { currentMonth, setCurrentMonth, getMonthlyData, transactions, addTransaction, loading } = financeState;
   const { toast } = useToast();
+  const { hasPermission } = usePermissions();
   
   // Transaction form state
   const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
@@ -108,11 +110,16 @@ export const Dashboard = () => {
       subtitle="Visão geral completa das finanças do Studio Germano"
       onFabClick={handleOpenTransactionModal}
     >
-      {/* Migration Prompt */}
-      <MigrationPrompt />
-      
-      {/* Stock Alert */}
-      <StockAlert />
+      {/* Show financial metrics only for admins */}
+      {hasPermission('view_financial_metrics') && (
+        <>
+          {/* Migration Prompt */}
+          <MigrationPrompt />
+          
+          {/* Stock Alert */}
+          <StockAlert />
+        </>
+      )}
       
       {/* Dashboard Header */}
       <DashboardHeader 
@@ -121,90 +128,95 @@ export const Dashboard = () => {
         monthOptions={monthOptions}
       />
 
-      {/* Empty State or Hero Metrics */}
-      {currentData.transactions.length === 0 ? (
-        <div className="text-center py-8">
-          <h3 className="text-lg font-semibold text-muted-foreground mb-2">
-            Nenhuma transação encontrada para {monthOptions.find(m => m.value === currentMonth)?.label}
-          </h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            {availableMonths.length > 0 ? (
-              <>
-                Dados disponíveis em: {availableMonths.map(m => {
-                  const option = monthOptions.find(opt => opt.value === m.month);
-                  return option?.label;
-                }).join(', ')}
-              </>
-            ) : (
-              'Nenhum dado disponível. Adicione algumas transações primeiro.'
-            )}
-          </p>
-          {availableMonths.length > 0 && (
-            <button 
-              onClick={() => setCurrentMonth(availableMonths[0].month)}
-              className="text-primary hover:underline"
-            >
-              Ir para o mês mais recente com dados
-            </button>
-          )}
-        </div>
-      ) : (
-        <HeroMetrics
-          totalBruto={currentData.totalBruto}
-          totalLiquido={currentData.totalLiquido}
-          trends={{ bruto: trends.bruto, liquido: trends.liquido }}
-        />
-      )}
-
-      {/* Only show detailed metrics if there's data */}
-      {currentData.transactions.length > 0 && (
+      {/* Show financial metrics only for admins */}
+      {hasPermission('view_financial_metrics') && (
         <>
-          {/* Payment Methods */}
-          <PaymentMethodsGrid
-            totalBruto={currentData.totalBruto}
-            totalDinheiro={currentData.totalDinheiro}
-            totalPix={currentData.totalPix}
-            totalDebito={currentData.totalDebito}
-            totalCredito={currentData.totalCredito}
-            trends={{
-              dinheiro: trends.dinheiro,
-              pix: trends.pix,
-              debito: trends.debito,
-              credito: trends.credito
-            }}
-          />
+          {/* Empty State or Hero Metrics */}
+          {currentData.transactions.length === 0 ? (
+            <div className="text-center py-8">
+              <h3 className="text-lg font-semibold text-muted-foreground mb-2">
+                Nenhuma transação encontrada para {monthOptions.find(m => m.value === currentMonth)?.label}
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                {availableMonths.length > 0 ? (
+                  <>
+                    Dados disponíveis em: {availableMonths.map(m => {
+                      const option = monthOptions.find(opt => opt.value === m.month);
+                      return option?.label;
+                    }).join(', ')}
+                  </>
+                ) : (
+                  'Nenhum dado disponível. Adicione algumas transações primeiro.'
+                )}
+              </p>
+              {availableMonths.length > 0 && (
+                <button 
+                  onClick={() => setCurrentMonth(availableMonths[0].month)}
+                  className="text-primary hover:underline"
+                >
+                  Ir para o mês mais recente com dados
+                </button>
+              )}
+            </div>
+          ) : (
+            <HeroMetrics
+              totalBruto={currentData.totalBruto}
+              totalLiquido={currentData.totalLiquido}
+              trends={{ bruto: trends.bruto, liquido: trends.liquido }}
+            />
+          )}
 
-          {/* Distribution and Fees */}
-          <DistributionGrid
-            totalStudio={currentData.totalStudio}
-            totalEdu={currentData.totalEdu}
-            totalKam={currentData.totalKam}
-            totalTaxas={currentData.totalTaxas}
-            trends={{
-              studio: trends.studio,
-              edu: trends.edu,
-              kam: trends.kam,
-              taxas: trends.taxas
-            }}
-          />
+          {/* Only show detailed metrics if there's data */}
+          {currentData.transactions.length > 0 && (
+            <>
+              {/* Payment Methods */}
+              <PaymentMethodsGrid
+                totalBruto={currentData.totalBruto}
+                totalDinheiro={currentData.totalDinheiro}
+                totalPix={currentData.totalPix}
+                totalDebito={currentData.totalDebito}
+                totalCredito={currentData.totalCredito}
+                trends={{
+                  dinheiro: trends.dinheiro,
+                  pix: trends.pix,
+                  debito: trends.debito,
+                  credito: trends.credito
+                }}
+              />
 
-          {/* Transaction Charts */}
-          <TransactionCharts
-            transactionCountData={transactionCountData}
-            biWeeklyData={biWeeklyData}
-            paymentMethodsData={paymentMethodsData}
-          />
+              {/* Distribution and Fees */}
+              <DistributionGrid
+                totalStudio={currentData.totalStudio}
+                totalEdu={currentData.totalEdu}
+                totalKam={currentData.totalKam}
+                totalTaxas={currentData.totalTaxas}
+                trends={{
+                  studio: trends.studio,
+                  edu: trends.edu,
+                  kam: trends.kam,
+                  taxas: trends.taxas
+                }}
+              />
 
-          {/* Insights */}
-          <DashboardInsights 
-            transactions={currentData.transactions} 
-            currentMonth={currentMonth} 
-          />
+              {/* Transaction Charts */}
+              <TransactionCharts
+                transactionCountData={transactionCountData}
+                biWeeklyData={biWeeklyData}
+                paymentMethodsData={paymentMethodsData}
+              />
 
-          {/* Footer */}
-          <DashboardFooter transactions={currentData.transactions} />
+              {/* Insights */}
+              <DashboardInsights 
+                transactions={currentData.transactions} 
+                currentMonth={currentMonth} 
+              />
+            </>
+          )}
         </>
       )}
+
+      {/* Always show recent transactions for all users */}
+      <DashboardFooter transactions={currentData.transactions} />
 
       {/* Transaction Form Modal */}
       <Dialog open={isTransactionModalOpen} onOpenChange={setIsTransactionModalOpen}>
