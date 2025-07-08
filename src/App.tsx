@@ -43,9 +43,21 @@ const App = () => (
                   <Analysis />
                 </ProtectedPage>
               } />
-              <Route path="arquivo" element={<Archive />} />
-              <Route path="custos-fixos" element={<CustosFixos />} />
-              <Route path="estoque" element={<Estoque />} />
+              <Route path="arquivo" element={
+                <ProtectedPage permission="view_archive">
+                  <Archive />
+                </ProtectedPage>
+              } />
+              <Route path="custos-fixos" element={
+                <ProtectedPage permission="view_fixed_costs">
+                  <CustosFixos />
+                </ProtectedPage>
+              } />
+              <Route path="estoque" element={
+                <ProtectedPage permission="view_stock">
+                  <Estoque />
+                </ProtectedPage>
+              } />
               <Route path="investimentos" element={
                 <ProtectedPage permission="view_investments">
                   <Investimentos />

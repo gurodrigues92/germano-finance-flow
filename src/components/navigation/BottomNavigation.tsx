@@ -38,11 +38,14 @@ export const BottomNavigation = () => {
   const { logout } = useAuth();
   const { hasPermission } = usePermissions();
   
-  const mainNavItems = [
-    { icon: Home, label: 'Dashboard', href: '/' },
-    { icon: DollarSign, label: 'Transações', href: '/transacoes' },
-    { icon: Package, label: 'Estoque', href: '/estoque' },
+  const allMainNavItems = [
+    { icon: Home, label: 'Dashboard', href: '/', permission: 'view_dashboard' },
+    { icon: DollarSign, label: 'Transações', href: '/transacoes', permission: 'view_transactions' },
+    { icon: Package, label: 'Estoque', href: '/estoque', permission: 'view_stock' },
   ];
+
+  // Filtrar itens principais baseado nas permissões
+  const mainNavItems = allMainNavItems.filter(item => hasPermission(item.permission));
 
   const allMenuItems = [
     { label: 'Metas Financeiras', href: '/metas', icon: Target, permission: 'view_goals' },
@@ -105,9 +108,13 @@ export const BottomNavigation = () => {
     </Sheet>
   );
 
+  // Calcular número de colunas baseado na quantidade de itens + botão "Mais"
+  const totalItems = mainNavItems.length + 1; // +1 para o botão "Mais"
+  const gridCols = totalItems <= 2 ? 'grid-cols-2' : totalItems === 3 ? 'grid-cols-3' : 'grid-cols-4';
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 glass-strong border-t border-purple-100 z-50 shadow-lg pb-safe">
-      <div className="grid grid-cols-4 h-20">
+      <div className={`grid ${gridCols} h-20`}>
         {mainNavItems.map((item) => (
           <NavItem
             key={item.href}
