@@ -33,13 +33,17 @@ export const calculateTransaction = (
   const eduRate = customRates ? customRates.eduRate / 100 : EDU_SHARE;
   const kamRate = customRates ? customRates.kamRate / 100 : KAM_SHARE;
   
+  const studioShare = totalLiquido * studioRate;
+  const eduShare = totalLiquido * eduRate;
+  const kamShare = eduShare * kamRate; // KAM recebe 10% do valor do EDU
+  
   return {
     totalBruto,
     taxaDebito,
     taxaCredito,
     totalLiquido,
-    studioShare: totalLiquido * studioRate,
-    eduShare: totalLiquido * eduRate,
-    kamShare: totalLiquido * kamRate
+    studioShare,
+    eduShare,
+    kamShare
   };
 };

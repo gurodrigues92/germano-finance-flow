@@ -50,4 +50,4 @@ export const DEBIT_TAX_RATE = 0.0161; // 1.61%
 export const CREDIT_TAX_RATE = 0.0351; // 3.51%
 export const STUDIO_SHARE = 0.6; // 60%
 export const EDU_SHARE = 0.4; // 40%
-export const KAM_SHARE = 0.1; // 10%
+export const KAM_SHARE = 0.1; // 10% do valor do EDU (não do total líquido)

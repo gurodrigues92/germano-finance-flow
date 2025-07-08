@@ -84,7 +84,7 @@ const createTransaction = (
   const totalLiquido = totalBruto - taxaDebito - taxaCredito;
   const studioShare = totalLiquido * STUDIO_SHARE;
   const eduShare = totalLiquido * EDU_SHARE;
-  const kamShare = totalLiquido * KAM_SHARE;
+  const kamShare = eduShare * KAM_SHARE; // KAM recebe 10% do valor do EDU
   
   return {
     id,
