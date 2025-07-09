@@ -74,8 +74,8 @@ export const MonthlyReportCard = ({ currentMonth, currentData, monthOptions }: M
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Edu (40%):</span>
-                <span className="font-medium text-finance-edu">
+                <span className="text-muted-foreground">Profissional (40%):</span>
+                <span className="font-medium text-finance-profissional">
                   {currentData.totalEdu.toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL'
@@ -83,8 +83,8 @@ export const MonthlyReportCard = ({ currentMonth, currentData, monthOptions }: M
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Kam (10%):</span>
-                <span className="font-medium text-finance-kam">
+                <span className="text-muted-foreground">Assistente (4%):</span>
+                <span className="font-medium text-finance-assistente">
                   {currentData.totalKam.toLocaleString('pt-BR', {
                     style: 'currency',
                     currency: 'BRL'

@@ -165,14 +165,14 @@ export const TransactionMobileCard = ({ transaction, onEdit, onDelete }: Transac
                   </span>
                 </div>
                 <div className="flex justify-between items-center p-2 bg-muted/50 rounded">
-                  <span>Edu (40%):</span>
-                  <span className="font-semibold text-finance-edu">
+                  <span>Profissional (40%):</span>
+                  <span className="font-semibold text-finance-profissional">
                     {formatCurrency(transaction.eduShare)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center p-2 bg-muted/50 rounded">
-                  <span>Kam (10%):</span>
-                  <span className="font-semibold text-finance-kam">
+                  <span>Assistente (4%):</span>
+                  <span className="font-semibold text-finance-assistente">
                     {formatCurrency(transaction.kamShare)}
                   </span>
                 </div>

@@ -62,7 +62,7 @@ export const DistributionGrid = ({
           title={`${getShareLabel('edu_share')} (40%)`}
           value={totalEdu}
           icon={User}
-          colorClass="bg-finance-edu"
+          colorClass="bg-finance-profissional"
           trend={{
             value: trends.edu,
             isPositive: trends.edu >= 0
@@ -71,15 +71,15 @@ export const DistributionGrid = ({
         />
         
         <MetricCard
-          title={`${getShareLabel('kam_share')} (10%)`}
+          title={`${getShareLabel('kam_share')} (4%)`}
           value={totalKam}
           icon={User}
-          colorClass="bg-finance-kam"
+          colorClass="bg-finance-assistente"
           trend={{
             value: trends.kam,
             isPositive: trends.kam >= 0
           }}
-          subtitle="Cabeleireiro"
+          subtitle="Assistente"
         />
         
         <MetricCard

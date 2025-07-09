@@ -58,8 +58,8 @@ export const TransactionTable = ({ transactions, onEdit, onDelete }: Transaction
                 <TableHead>Taxas</TableHead>
                 <TableHead>Total Líquido</TableHead>
                 <TableHead>Studio (60%)</TableHead>
-                <TableHead>Edu (40%)</TableHead>
-                <TableHead>Kam (10%)</TableHead>
+                <TableHead>Profissional (40%)</TableHead>
+                <TableHead>Assistente (4%)</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -133,13 +133,13 @@ export const TransactionTable = ({ transactions, onEdit, onDelete }: Transaction
                       currency: 'BRL'
                     })}
                   </TableCell>
-                  <TableCell className="text-finance-edu">
+                  <TableCell className="text-finance-profissional">
                     {transaction.eduShare.toLocaleString('pt-BR', {
                       style: 'currency',
                       currency: 'BRL'
                     })}
                   </TableCell>
-                  <TableCell className="text-finance-kam">
+                  <TableCell className="text-finance-assistente">
                     {transaction.kamShare.toLocaleString('pt-BR', {
                       style: 'currency',
                       currency: 'BRL'

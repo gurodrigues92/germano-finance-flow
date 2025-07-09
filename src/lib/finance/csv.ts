@@ -79,8 +79,8 @@ export const exportTransactionsToCSV = (transactions: Transaction[], month: stri
       'Taxa Crédito',
       'Total Líquido',
       'Studio (60%)',
-      'Edu (40%)',
-      'Kam (10%)'
+      'Profissional (40%)',
+      'Assistente (4%)'
     ];
 
     const csvContent = [

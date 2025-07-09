@@ -82,10 +82,10 @@ export default {
 					'studio-foreground': 'hsl(var(--finance-studio-foreground))',
 					fees: 'hsl(var(--finance-fees))',
 					'fees-foreground': 'hsl(var(--finance-fees-foreground))',
-					edu: 'hsl(var(--finance-edu))',
-					'edu-foreground': 'hsl(var(--finance-edu-foreground))',
-					kam: 'hsl(var(--finance-kam))',
-					'kam-foreground': 'hsl(var(--finance-kam-foreground))'
+					profissional: 'hsl(var(--finance-profissional))',
+					'profissional-foreground': 'hsl(var(--finance-profissional-foreground))',
+					assistente: 'hsl(var(--finance-assistente))',
+					'assistente-foreground': 'hsl(var(--finance-assistente-foreground))'
 				}
 			},
 			borderRadius: {

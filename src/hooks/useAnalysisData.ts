@@ -112,16 +112,16 @@ export const useAnalysisData = (currentMonth: string) => {
       percentage: 60
     },
     { 
-      name: 'Edu (40%)', 
+      name: 'Profissional (40%)', 
       value: currentData.totalEdu, 
-      color: 'hsl(var(--finance-edu))',
+      color: 'hsl(var(--finance-profissional))',
       percentage: 40
     },
     { 
-      name: 'Kam (10%)', 
+      name: 'Assistente (4%)', 
       value: currentData.totalKam, 
-      color: 'hsl(var(--finance-kam))',
-      percentage: 10
+      color: 'hsl(var(--finance-assistente))',
+      percentage: 4
     }
   ];
 

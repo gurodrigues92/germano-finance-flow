@@ -57,10 +57,10 @@ All colors MUST be HSL. Based on purple/orange gradient theme.
     --finance-studio-foreground: 0 0% 100%;
     --finance-fees: 0 65% 51%;
     --finance-fees-foreground: 0 0% 100%;
-    --finance-edu: 39 35% 55%;
-    --finance-edu-foreground: 0 0% 100%;
-    --finance-kam: 280 45% 45%;
-    --finance-kam-foreground: 0 0% 100%;
+    --finance-profissional: 39 35% 55%;
+    --finance-profissional-foreground: 0 0% 100%;
+    --finance-assistente: 280 45% 45%;
+    --finance-assistente-foreground: 0 0% 100%;
 
     /* Chart colors for data visualization */
     --chart-1: 217 45% 50%;
