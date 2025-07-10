@@ -14,6 +14,7 @@ export interface CustomRates {
   studioRate: number;
   eduRate: number;
   kamRate: number;
+  assistenteCalculationMode?: 'percentage_of_profissional' | 'percentage_of_total';
 }
 
 export const calculateTransaction = (
@@ -35,7 +36,14 @@ export const calculateTransaction = (
   
   const studioShare = totalLiquido * studioRate;
   const eduShare = totalLiquido * eduRate;
-  const kamShare = eduShare * kamRate; // KAM recebe 10% do valor do EDU
+  
+  // Calcular assistente baseado no modo selecionado
+  let kamShare: number;
+  if (customRates?.assistenteCalculationMode === 'percentage_of_total') {
+    kamShare = totalLiquido * kamRate; // % do total líquido
+  } else {
+    kamShare = eduShare * kamRate; // % do valor do profissional (padrão)
+  }
   
   return {
     totalBruto,

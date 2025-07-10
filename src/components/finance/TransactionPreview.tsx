@@ -48,7 +48,12 @@ export const TransactionPreview = ({ calculations }: TransactionPreviewProps) =>
           </span>
         </div>
         <div className="col-span-2">
-          <span className="text-muted-foreground">{NOMENCLATURE.ASSISTENTE_LABEL} ({calculations.kamRate.toFixed(0)}%):</span>
+          <span className="text-muted-foreground">
+            {NOMENCLATURE.ASSISTENTE_LABEL} ({calculations.kamRate.toFixed(0)}%
+            {calculations.assistenteCalculationMode === 'percentage_of_total' 
+              ? ' do total' 
+              : ` do ${NOMENCLATURE.PROFISSIONAL_LABEL}`}):
+          </span>
           <span className="ml-2 font-medium text-finance-kam">
             {calculations.kamShare.toLocaleString('pt-BR', {
               style: 'currency',

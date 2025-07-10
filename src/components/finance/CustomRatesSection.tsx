@@ -2,7 +2,7 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Settings } from 'lucide-react';
+import { Settings, Info } from 'lucide-react';
 import { NOMENCLATURE } from '@/lib/finance/nomenclature';
 import { CustomRates } from '@/lib/finance/calculations';
 
@@ -52,6 +52,52 @@ export const CustomRatesSection = ({
             Definir Taxas Personalizadas
           </h4>
           
+          {/* Modo de Cálculo do Assistente */}
+          <div className="bg-muted/20 border border-muted rounded-lg p-3 space-y-3">
+            <div className="flex items-center gap-2">
+              <Info className="w-4 h-4 text-muted-foreground" />
+              <Label className="text-sm font-medium">Modo de Cálculo do {NOMENCLATURE.ASSISTENTE_LABEL}</Label>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-2">
+              <button
+                type="button"
+                onClick={() => onUpdateCustomRates({
+                  ...customRates!,
+                  assistenteCalculationMode: 'percentage_of_profissional'
+                })}
+                className={`flex-1 px-3 py-2 text-xs rounded-md transition-colors ${
+                  (customRates?.assistenteCalculationMode || 'percentage_of_profissional') === 'percentage_of_profissional'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                }`}
+              >
+                % do {NOMENCLATURE.PROFISSIONAL_LABEL}
+              </button>
+              <button
+                type="button"
+                onClick={() => onUpdateCustomRates({
+                  ...customRates!,
+                  assistenteCalculationMode: 'percentage_of_total'
+                })}
+                className={`flex-1 px-3 py-2 text-xs rounded-md transition-colors ${
+                  customRates?.assistenteCalculationMode === 'percentage_of_total'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                }`}
+              >
+                % do Total Líquido
+              </button>
+            </div>
+            
+            <p className="text-xs text-muted-foreground">
+              {(customRates?.assistenteCalculationMode || 'percentage_of_profissional') === 'percentage_of_profissional'
+                ? `${NOMENCLATURE.ASSISTENTE_LABEL} receberá uma porcentagem do valor do ${NOMENCLATURE.PROFISSIONAL_LABEL}`
+                : `${NOMENCLATURE.ASSISTENTE_LABEL} receberá uma porcentagem do total líquido`
+              }
+            </p>
+          </div>
+          
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             <div className="space-y-2 sm:space-y-3">
               <Label className="text-xs sm:text-sm font-medium">Studio (%)</Label>
@@ -92,7 +138,13 @@ export const CustomRatesSection = ({
             </div>
             
             <div className="space-y-2 sm:space-y-3">
-              <Label className="text-xs sm:text-sm font-medium">{NOMENCLATURE.ASSISTENTE_LABEL} (%)</Label>
+              <Label className="text-xs sm:text-sm font-medium">
+                {NOMENCLATURE.ASSISTENTE_LABEL} (
+                {(customRates?.assistenteCalculationMode || 'percentage_of_profissional') === 'percentage_of_profissional'
+                  ? `% do ${NOMENCLATURE.PROFISSIONAL_LABEL}`
+                  : '% do Total'
+                })
+              </Label>
               <Input
                 type="number"
                 min="0"
@@ -112,15 +164,37 @@ export const CustomRatesSection = ({
           </div>
           
           {customRates && (
-            <div className="text-xs">
+            <div className="text-xs space-y-1">
               {(() => {
-                const total = (customRates.studioRate || 0) + 
-                              (customRates.eduRate || 0) + 
-                              (customRates.kamRate || 0);
-                if (total === 100) {
-                  return <span className="text-green-600">✓ Total: 100% (válido)</span>;
+                const mode = customRates.assistenteCalculationMode || 'percentage_of_profissional';
+                
+                if (mode === 'percentage_of_total') {
+                  // Modo: % do Total - Studio + Profissional + Assistente = 100%
+                  const total = (customRates.studioRate || 0) + 
+                                (customRates.eduRate || 0) + 
+                                (customRates.kamRate || 0);
+                  if (total === 100) {
+                    return <span className="text-green-600">✓ Total: 100% (válido)</span>;
+                  } else {
+                    return <span className="text-destructive">⚠ Total: {total}% (deve somar 100%)</span>;
+                  }
                 } else {
-                  return <span className="text-destructive">⚠ Total: {total}% (deve somar 100%)</span>;
+                  // Modo: % do Profissional - Studio + Profissional = 100%
+                  const baseTotal = (customRates.studioRate || 0) + (customRates.eduRate || 0);
+                  const assistenteReal = ((customRates.eduRate || 0) * (customRates.kamRate || 0)) / 100;
+                  
+                  return (
+                    <div className="space-y-1">
+                      {baseTotal === 100 ? (
+                        <span className="text-green-600">✓ Studio + {NOMENCLATURE.PROFISSIONAL_LABEL}: 100% (válido)</span>
+                      ) : (
+                        <span className="text-destructive">⚠ Studio + {NOMENCLATURE.PROFISSIONAL_LABEL}: {baseTotal}% (deve somar 100%)</span>
+                      )}
+                      <div className="text-muted-foreground">
+                        {NOMENCLATURE.ASSISTENTE_LABEL} receberá {assistenteReal.toFixed(1)}% do total líquido
+                      </div>
+                    </div>
+                  );
                 }
               })()}
             </div>

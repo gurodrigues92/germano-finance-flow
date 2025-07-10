@@ -11,6 +11,7 @@ export interface TransactionCalculationResult {
   studioRate: number;
   eduRate: number;
   kamRate: number;
+  assistenteCalculationMode: 'percentage_of_profissional' | 'percentage_of_total';
 }
 
 export const calculateTransactionPreview = (
@@ -44,7 +45,14 @@ export const calculateTransactionPreview = (
   
   const studioShare = totalLiquido * studioRate;
   const eduShare = totalLiquido * eduRate;
-  const kamShare = eduShare * kamRate; // KAM recebe 10% do valor do EDU
+  
+  // Calcular assistente baseado no modo selecionado
+  let kamShare: number;
+  if (useCustomRates && customRates?.assistenteCalculationMode === 'percentage_of_total') {
+    kamShare = totalLiquido * kamRate; // % do total líquido
+  } else {
+    kamShare = eduShare * kamRate; // % do valor do profissional (padrão)
+  }
   
   return {
     totalBruto,
@@ -56,6 +64,7 @@ export const calculateTransactionPreview = (
     kamShare,
     studioRate: studioRate * 100,
     eduRate: eduRate * 100,
-    kamRate: kamRate * 100
+    kamRate: kamRate * 100,
+    assistenteCalculationMode: (useCustomRates && customRates?.assistenteCalculationMode) || 'percentage_of_profissional'
   };
 };

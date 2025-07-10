@@ -54,7 +54,12 @@ export const useTransactionForm = ({
     setFormData(prev => ({ 
       ...prev, 
       useCustomRates: checked,
-      customRates: checked ? { studioRate: 60, eduRate: 40, kamRate: 10 } : undefined
+      customRates: checked ? { 
+        studioRate: 60, 
+        eduRate: 40, 
+        kamRate: 10,
+        assistenteCalculationMode: 'percentage_of_profissional'
+      } : undefined
     }));
   };
 
