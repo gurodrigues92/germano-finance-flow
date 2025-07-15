@@ -22,7 +22,7 @@ export const TransactionSummary = ({ transactions }: TransactionSummaryProps) =>
           <CardTitle className="text-sm text-muted-foreground">Total Bruto</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-finance-income">
+          <div className="text-2xl font-bold text-finance-income" style={{ color: '#059669' }}>
             {totals.bruto.toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL'
@@ -36,7 +36,7 @@ export const TransactionSummary = ({ transactions }: TransactionSummaryProps) =>
           <CardTitle className="text-sm text-muted-foreground">Total Líquido</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-finance-net">
+          <div className="text-2xl font-bold text-finance-net" style={{ color: '#2563eb' }}>
             {totals.liquido.toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL'
@@ -50,7 +50,7 @@ export const TransactionSummary = ({ transactions }: TransactionSummaryProps) =>
           <CardTitle className="text-sm text-muted-foreground">Total Taxas</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-finance-fees">
+          <div className="text-2xl font-bold text-finance-fees" style={{ color: '#dc2626' }}>
             {totals.taxas.toLocaleString('pt-BR', {
               style: 'currency',
               currency: 'BRL'

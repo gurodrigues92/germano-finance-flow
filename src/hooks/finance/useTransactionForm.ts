@@ -33,6 +33,8 @@ export const useTransactionForm = ({
     useCustomRates: false
   });
 
+  const [initialFormData, setInitialFormData] = useState<TransactionFormData | null>(null);
+
   const resetForm = () => {
     setFormData({
       date: getLocalDateString(),
@@ -74,7 +76,7 @@ export const useTransactionForm = ({
   // Set form data when editing
   useEffect(() => {
     if (editingTransaction) {
-      setFormData({
+      const editingData = {
         date: formatDateForInput(editingTransaction.date),
         dinheiro: editingTransaction.dinheiro.toString(),
         pix: editingTransaction.pix.toString(),
@@ -82,18 +84,33 @@ export const useTransactionForm = ({
         credito: editingTransaction.credito.toString(),
         useCustomRates: !!editingTransaction.customRates,
         customRates: editingTransaction.customRates
-      });
+      };
+      setFormData(editingData);
+      setInitialFormData(editingData);
     } else {
-      resetForm();
+      const defaultData = {
+        date: getLocalDateString(),
+        dinheiro: '',
+        pix: '',
+        debito: '',
+        credito: '',
+        useCustomRates: false
+      };
+      setFormData(defaultData);
+      setInitialFormData(defaultData);
     }
   }, [editingTransaction]);
 
   const hasValues = formData.dinheiro || formData.pix || formData.debito || formData.credito;
+  
+  // Check if form has changes from initial state
+  const hasChanges = initialFormData && JSON.stringify(formData) !== JSON.stringify(initialFormData);
 
   return {
     formData,
     setFormData,
     hasValues,
+    hasChanges: !!hasChanges,
     handleSubmit,
     handleToggleCustomRates,
     handleUpdateCustomRates,

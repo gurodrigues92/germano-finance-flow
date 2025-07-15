@@ -11,9 +11,21 @@ interface TransactionTableProps {
   transactions: Transaction[];
   onEdit: (transaction: Transaction) => void;
   onDelete: (id: string) => void;
+  onLongPress?: (transactionId: string) => void;
+  isSelectionMode?: boolean;
+  selectedIds?: string[];
+  onToggleSelection?: (id: string) => void;
 }
 
-export const TransactionTable = ({ transactions, onEdit, onDelete }: TransactionTableProps) => {
+export const TransactionTable = ({ 
+  transactions, 
+  onEdit, 
+  onDelete, 
+  onLongPress,
+  isSelectionMode = false,
+  selectedIds = [],
+  onToggleSelection
+}: TransactionTableProps) => {
   const isMobile = useIsMobile();
   
   const handleDelete = (id: string) => {
@@ -39,7 +51,11 @@ export const TransactionTable = ({ transactions, onEdit, onDelete }: Transaction
               key={transaction.id}
               transaction={transaction}
               onEdit={onEdit}
-              onDelete={onDelete}
+              onDelete={handleDelete}
+              onLongPress={onLongPress}
+              isSelectionMode={isSelectionMode}
+              isSelected={selectedIds.includes(transaction.id)}
+              onToggleSelection={onToggleSelection}
             />
           ))}
         </div>

@@ -4,6 +4,8 @@ import { TransactionFormFields } from './TransactionFormFields';
 import { CustomRatesSection } from './CustomRatesSection';
 import { TransactionPreview } from './TransactionPreview';
 import { TransactionFormDialog } from './TransactionFormDialog';
+import { SaveChangesButton } from './SaveChangesButton';
+import { TaxaCard } from './TaxaCard';
 import { useTransactionForm, TransactionFormData } from '@/hooks/finance/useTransactionForm';
 import { calculateTransactionPreview } from '@/lib/finance/transactionCalculations';
 
@@ -26,6 +28,7 @@ export const TransactionForm = ({
     formData,
     setFormData,
     hasValues,
+    hasChanges,
     handleSubmit,
     handleToggleCustomRates,
     handleUpdateCustomRates
@@ -61,8 +64,35 @@ export const TransactionForm = ({
       />
 
       {hasValues && (
-        <TransactionPreview calculations={calculations} />
+        <>
+          <TransactionPreview calculations={calculations} />
+          
+          {/* Tax breakdown cards */}
+          <div className="space-y-2 mt-4">
+            <TaxaCard
+              taxaName="Débito"
+              percentage={1.61}
+              baseValue={parseFloat(formData.debito) || 0}
+              taxaValue={calculations.taxaDebito}
+              type="debito"
+            />
+            <TaxaCard
+              taxaName="Crédito"
+              percentage={2.84}
+              baseValue={parseFloat(formData.credito) || 0}
+              taxaValue={calculations.taxaCredito}
+              type="credito"
+            />
+          </div>
+        </>
       )}
+
+      {/* Floating save button */}
+      <SaveChangesButton
+        hasChanges={hasChanges}
+        onSave={() => handleSubmit({ preventDefault: () => {} } as React.FormEvent)}
+        loading={loading}
+      />
     </TransactionFormDialog>
   );
 };

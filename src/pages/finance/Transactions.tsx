@@ -8,8 +8,13 @@ import { TransactionForm } from '@/components/finance/TransactionForm';
 import { TransactionTable } from '@/components/finance/TransactionTable';
 import { TransactionSummary } from '@/components/finance/TransactionSummary';
 import { TransactionActions } from '@/components/finance/TransactionActions';
+import { SearchAndFilter } from '@/components/finance/SearchAndFilter';
+import { BulkActionBar } from '@/components/finance/BulkActionBar';
+import { DeleteConfirmModal } from '@/components/finance/DeleteConfirmModal';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { PageLayout } from '@/components/layout/PageLayout';
+import { useTransactionFilters } from '@/hooks/finance/useTransactionFilters';
+import { useBulkSelection } from '@/hooks/finance/useBulkSelection';
 import { Plus } from 'lucide-react';
 
 interface TransactionFormData {
@@ -47,9 +52,37 @@ export const Transactions = () => {
     currentYear,
     archivedData
   });
+
+  // Filter transactions to current month being viewed
+  const currentMonthTransactions = transactions.filter(t => t.month === currentMonth);
+  
+  // Search and filter functionality
+  const {
+    filters,
+    setFilters,
+    filteredTransactions,
+    totalFiltered
+  } = useTransactionFilters(currentMonthTransactions);
+
+  // Bulk selection functionality
+  const transactionIds = filteredTransactions.map(t => t.id);
+  const {
+    selectedIds,
+    isSelectionMode,
+    selectedCount,
+    hasSelection,
+    isSelected,
+    toggleSelection,
+    selectAll,
+    clearSelection,
+    enterSelectionMode,
+    exitSelectionMode
+  } = useBulkSelection(transactionIds);
   
   const [isOpen, setIsOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [pendingDeleteIds, setPendingDeleteIds] = useState<string[]>([]);
 
   const resetForm = () => {
     setEditingTransaction(null);
@@ -92,8 +125,45 @@ export const Transactions = () => {
     resetForm();
   };
 
-  // Filter transactions to current month being viewed
-  const currentMonthTransactions = transactions.filter(t => t.month === currentMonth);
+  const handleDelete = (id: string) => {
+    setPendingDeleteIds([id]);
+    setDeleteModalOpen(true);
+  };
+
+  const handleBulkDelete = () => {
+    setPendingDeleteIds(selectedIds);
+    setDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      for (const id of pendingDeleteIds) {
+        await deleteTransaction(id);
+      }
+      
+      toast({
+        title: "Sucesso",
+        description: `${pendingDeleteIds.length === 1 ? 'Transação excluída' : `${pendingDeleteIds.length} transações excluídas`} com sucesso`,
+      });
+      
+      exitSelectionMode();
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Erro ao excluir transação(ões)",
+        variant: "destructive"
+      });
+    } finally {
+      setDeleteModalOpen(false);
+      setPendingDeleteIds([]);
+    }
+  };
+
+  const handleLongPress = (transactionId: string) => {
+    if (!isSelectionMode) {
+      enterSelectionMode(transactionId);
+    }
+  };
 
   return (
     <PageLayout 
@@ -124,14 +194,46 @@ export const Transactions = () => {
         </Dialog>
       </div>
 
+      {/* Search and Filters */}
+      <SearchAndFilter
+        filters={filters}
+        onFiltersChange={setFilters}
+        totalResults={totalFiltered}
+      />
+
       {/* Monthly Summary */}
-      <TransactionSummary transactions={currentMonthTransactions} />
+      <TransactionSummary transactions={filteredTransactions} />
 
       {/* Transactions Table */}
       <TransactionTable
-        transactions={currentMonthTransactions}
+        transactions={filteredTransactions}
         onEdit={handleEdit}
-        onDelete={deleteTransaction}
+        onDelete={handleDelete}
+        onLongPress={handleLongPress}
+        isSelectionMode={isSelectionMode}
+        selectedIds={selectedIds}
+        onToggleSelection={toggleSelection}
+      />
+
+      {/* Bulk Action Bar */}
+      {isSelectionMode && (
+        <BulkActionBar
+          selectedCount={selectedCount}
+          totalItems={filteredTransactions.length}
+          onSelectAll={selectAll}
+          onClearSelection={clearSelection}
+          onBulkDelete={handleBulkDelete}
+          onCancel={exitSelectionMode}
+        />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={deleteModalOpen}
+        onOpenChange={setDeleteModalOpen}
+        onConfirm={confirmDelete}
+        count={pendingDeleteIds.length}
+        loading={loading}
       />
     </PageLayout>
   );

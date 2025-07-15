@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Transaction } from '@/types/finance';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Edit, Trash2, ChevronDown, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -11,14 +12,47 @@ interface TransactionMobileCardProps {
   transaction: Transaction;
   onEdit: (transaction: Transaction) => void;
   onDelete: (id: string) => void;
+  onLongPress?: (transactionId: string) => void;
+  isSelectionMode?: boolean;
+  isSelected?: boolean;
+  onToggleSelection?: (id: string) => void;
 }
 
-export const TransactionMobileCard = ({ transaction, onEdit, onDelete }: TransactionMobileCardProps) => {
+export const TransactionMobileCard = ({ 
+  transaction, 
+  onEdit, 
+  onDelete, 
+  onLongPress,
+  isSelectionMode = false,
+  isSelected = false,
+  onToggleSelection
+}: TransactionMobileCardProps) => {
   const [expanded, setExpanded] = useState(false);
+  const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null);
 
   const handleDelete = () => {
-    if (confirm('Tem certeza que deseja excluir esta transação?')) {
-      onDelete(transaction.id);
+    onDelete(transaction.id);
+  };
+
+  const handleTouchStart = useCallback(() => {
+    if (!isSelectionMode && onLongPress) {
+      const timer = setTimeout(() => {
+        onLongPress(transaction.id);
+      }, 500); // 500ms long press
+      setLongPressTimer(timer);
+    }
+  }, [isSelectionMode, onLongPress, transaction.id]);
+
+  const handleTouchEnd = useCallback(() => {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      setLongPressTimer(null);
+    }
+  }, [longPressTimer]);
+
+  const handleCardClick = () => {
+    if (isSelectionMode && onToggleSelection) {
+      onToggleSelection(transaction.id);
     }
   };
 
@@ -39,10 +73,37 @@ export const TransactionMobileCard = ({ transaction, onEdit, onDelete }: Transac
   };
 
   return (
-    <Card className="transition-all duration-200 hover:shadow-md">
+    <Card 
+      className={cn(
+        "transition-all duration-200 hover:shadow-md cursor-pointer",
+        isSelected && "ring-2 ring-primary bg-primary/5",
+        isSelectionMode && "hover:bg-muted/50"
+      )}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onMouseDown={handleTouchStart}
+      onMouseUp={handleTouchEnd}
+      onMouseLeave={handleTouchEnd}
+      onClick={handleCardClick}
+    >
       <CardContent className="p-4">
         {/* Header - Always visible */}
         <div className="flex justify-between items-start mb-3">
+          {/* Selection checkbox */}
+          {isSelectionMode && (
+            <div className="mr-3 pt-1">
+              <Checkbox
+                checked={isSelected}
+                onCheckedChange={(checked) => {
+                  if (onToggleSelection) {
+                    onToggleSelection(transaction.id);
+                  }
+                }}
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          )}
+          
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
               <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -55,25 +116,33 @@ export const TransactionMobileCard = ({ transaction, onEdit, onDelete }: Transac
             </div>
           </div>
           
-          {/* Action Buttons */}
-          <div className="flex gap-2 ml-4">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => onEdit(transaction)}
-              className="h-9 w-9 p-0"
-            >
-              <Edit className="h-4 w-4" />
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={handleDelete}
-              className="h-9 w-9 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
+          {/* Action Buttons - Hidden in selection mode */}
+          {!isSelectionMode && (
+            <div className="flex gap-2 ml-4">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit(transaction);
+                }}
+                className="h-9 w-9 p-0"
+              >
+                <Edit className="h-4 w-4" />
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete();
+                }}
+                className="h-9 w-9 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Payment Methods */}
