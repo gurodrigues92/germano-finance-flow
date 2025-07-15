@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, Filter, X } from 'lucide-react';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Search, Filter, X, SlidersHorizontal } from 'lucide-react';
 
 export interface FilterState {
   searchText: string;
@@ -26,6 +27,8 @@ export const SearchAndFilter = ({
   onFiltersChange,
   totalResults
 }: SearchAndFilterProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const handleSearchChange = (value: string) => {
     onFiltersChange({
       ...filters,
@@ -91,109 +94,156 @@ export const SearchAndFilter = ({
     { value: 'credito', label: 'Crédito', color: 'bg-amber-100 text-amber-800' }
   ];
 
+  const quickFilters = [
+    { value: 'today', label: 'Hoje' },
+    { value: 'week', label: 'Semana' },
+    { value: 'month', label: 'Mês' }
+  ];
+
   console.log('[Financeiro] SearchAndFilter filters:', filters);
 
   return (
-    <div className="bg-card rounded-lg border p-4 space-y-4 mb-4">
-      <div className="flex items-center justify-between">
-        <h3 className="font-semibold text-foreground flex items-center gap-2">
-          <Filter className="h-4 w-4" />
-          Busca e Filtros
-        </h3>
-        {hasActiveFilters && (
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={clearAllFilters}
-            className="text-muted-foreground hover:text-foreground"
+    <div className="space-y-3 mb-4">
+      {/* Sticky Search Bar */}
+      <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm p-3 -mx-3 border-b">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Buscar transações..."
+            value={filters.searchText}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="pl-10 pr-12 h-11"
+          />
+          {/* Filter Toggle for Mobile */}
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0"
+              >
+                <SlidersHorizontal className={`h-4 w-4 ${hasActiveFilters ? 'text-primary' : 'text-muted-foreground'}`} />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="max-h-[80vh]">
+              <SheetHeader className="mb-4">
+                <SheetTitle>Filtros Avançados</SheetTitle>
+              </SheetHeader>
+              
+              <div className="space-y-6 pb-6">
+                {/* Date Range Filter */}
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground mb-3 block">
+                    Período
+                  </label>
+                  <Select value={filters.dateRange} onValueChange={handleDateRangeChange}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {dateRangeOptions.map(option => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Value Range Filter */}
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground mb-3 block">
+                    Faixa de Valor
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Input
+                      placeholder="Valor mínimo"
+                      type="number"
+                      inputMode="numeric"
+                      value={filters.valueRange.min}
+                      onChange={(e) => handleValueRangeChange('min', e.target.value)}
+                      className="text-sm"
+                    />
+                    <Input
+                      placeholder="Valor máximo"
+                      type="number"
+                      inputMode="numeric"
+                      value={filters.valueRange.max}
+                      onChange={(e) => handleValueRangeChange('max', e.target.value)}
+                      className="text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* Payment Methods Filter */}
+                <div>
+                  <label className="text-sm font-medium text-muted-foreground mb-3 block">
+                    Métodos de Pagamento
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {paymentMethodOptions.map(method => (
+                      <Badge
+                        key={method.value}
+                        variant={filters.paymentMethods.includes(method.value) ? "default" : "outline"}
+                        className={`cursor-pointer transition-all hover:scale-105 justify-center p-3 h-auto ${
+                          filters.paymentMethods.includes(method.value) 
+                            ? method.color 
+                            : 'hover:bg-muted'
+                        }`}
+                        onClick={() => handlePaymentMethodToggle(method.value)}
+                      >
+                        {method.label}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Clear Filters */}
+                {hasActiveFilters && (
+                  <Button 
+                    variant="outline" 
+                    onClick={clearAllFilters}
+                    className="w-full"
+                  >
+                    <X className="h-4 w-4 mr-2" />
+                    Limpar Filtros
+                  </Button>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+      </div>
+
+      {/* Quick Filters - Horizontal Chips */}
+      <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
+        {quickFilters.map(filter => (
+          <Button
+            key={filter.value}
+            variant={filters.dateRange === filter.value ? "default" : "outline"}
+            size="sm"
+            className="whitespace-nowrap h-8 px-3 text-xs flex-shrink-0"
+            onClick={() => handleDateRangeChange(filter.value)}
           >
-            <X className="h-4 w-4 mr-1" />
+            {filter.label}
+          </Button>
+        ))}
+        {hasActiveFilters && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="whitespace-nowrap h-8 px-3 text-xs flex-shrink-0 text-muted-foreground"
+            onClick={clearAllFilters}
+          >
+            <X className="h-3 w-3 mr-1" />
             Limpar
           </Button>
         )}
       </div>
 
-      {/* Search Input */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Buscar por data, valor ou observações..."
-          value={filters.searchText}
-          onChange={(e) => handleSearchChange(e.target.value)}
-          className="pl-10"
-        />
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* Date Range Filter */}
-        <div>
-          <label className="text-sm font-medium text-muted-foreground mb-2 block">
-            Período
-          </label>
-          <Select value={filters.dateRange} onValueChange={handleDateRangeChange}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {dateRangeOptions.map(option => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Value Range Filter */}
-        <div className="sm:col-span-2 lg:col-span-1">
-          <label className="text-sm font-medium text-muted-foreground mb-2 block">
-            Faixa de Valor
-          </label>
-          <div className="flex gap-2">
-            <Input
-              placeholder="Min"
-              type="number"
-              value={filters.valueRange.min}
-              onChange={(e) => handleValueRangeChange('min', e.target.value)}
-              className="text-sm"
-            />
-            <Input
-              placeholder="Max"
-              type="number"
-              value={filters.valueRange.max}
-              onChange={(e) => handleValueRangeChange('max', e.target.value)}
-              className="text-sm"
-            />
-          </div>
-        </div>
-
-        {/* Payment Methods Filter */}
-        <div className="sm:col-span-2 lg:col-span-1">
-          <label className="text-sm font-medium text-muted-foreground mb-2 block">
-            Métodos de Pagamento
-          </label>
-          <div className="flex flex-wrap gap-2">
-            {paymentMethodOptions.map(method => (
-              <Badge
-                key={method.value}
-                variant={filters.paymentMethods.includes(method.value) ? "default" : "outline"}
-                className={`cursor-pointer transition-all hover:scale-105 ${
-                  filters.paymentMethods.includes(method.value) 
-                    ? method.color 
-                    : 'hover:bg-muted'
-                }`}
-                onClick={() => handlePaymentMethodToggle(method.value)}
-              >
-                {method.label}
-              </Badge>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* Results Count */}
       {hasActiveFilters && (
-        <div className="text-sm text-muted-foreground pt-2 border-t">
+        <div className="text-xs text-muted-foreground px-1">
           {totalResults} {totalResults === 1 ? 'transação encontrada' : 'transações encontradas'}
         </div>
       )}

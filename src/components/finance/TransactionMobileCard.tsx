@@ -75,7 +75,7 @@ export const TransactionMobileCard = ({
   return (
     <Card 
       className={cn(
-        "transition-all duration-200 hover:shadow-md cursor-pointer",
+        "transition-all duration-200 hover:shadow-md cursor-pointer mb-2",
         isSelected && "ring-2 ring-primary bg-primary/5",
         isSelectionMode && "hover:bg-muted/50"
       )}
@@ -86,12 +86,12 @@ export const TransactionMobileCard = ({
       onMouseLeave={handleTouchEnd}
       onClick={handleCardClick}
     >
-      <CardContent className="p-4">
-        {/* Header - Always visible */}
-        <div className="flex justify-between items-start mb-3">
+      <CardContent className="p-3">
+        {/* Compact Header */}
+        <div className="flex items-center justify-between mb-2">
           {/* Selection checkbox */}
           {isSelectionMode && (
-            <div className="mr-3 pt-1">
+            <div className="mr-2">
               <Checkbox
                 checked={isSelected}
                 onCheckedChange={(checked) => {
@@ -104,67 +104,72 @@ export const TransactionMobileCard = ({
             </div>
           )}
           
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium text-muted-foreground">
-                {new Date(transaction.date).toLocaleDateString('pt-BR')}
-              </span>
-            </div>
-            <div className="text-2xl font-bold text-primary mb-2">
-              {formatCurrency(transaction.totalBruto)}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5">
+                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-xs font-medium text-muted-foreground">
+                  {new Date(transaction.date).toLocaleDateString('pt-BR', { 
+                    day: '2-digit', 
+                    month: '2-digit' 
+                  })}
+                </span>
+              </div>
+              <div className="text-lg font-bold text-primary">
+                {formatCurrency(transaction.totalBruto)}
+              </div>
             </div>
           </div>
           
           {/* Action Buttons - Hidden in selection mode */}
           {!isSelectionMode && (
-            <div className="flex gap-2 ml-4">
+            <div className="flex gap-1 ml-2">
               <Button
                 size="sm"
-                variant="outline"
+                variant="ghost"
                 onClick={(e) => {
                   e.stopPropagation();
                   onEdit(transaction);
                 }}
-                className="h-9 w-9 p-0"
+                className="h-8 w-8 p-0"
               >
-                <Edit className="h-4 w-4" />
+                <Edit className="h-3.5 w-3.5" />
               </Button>
               <Button
                 size="sm"
-                variant="outline"
+                variant="ghost"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleDelete();
                 }}
-                className="h-9 w-9 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-3.5 w-3.5" />
               </Button>
             </div>
           )}
         </div>
 
-        {/* Payment Methods */}
-        <div className="flex flex-wrap gap-2 mb-3">
+        {/* Compact Payment Methods */}
+        <div className="flex flex-wrap gap-1 mb-2">
           {getPaymentMethods().map((method) => (
-            <Badge key={method.label} variant="secondary" className="text-xs">
+            <Badge key={method.label} variant="secondary" className="text-xs px-1.5 py-0.5">
               {method.label}: {formatCurrency(method.value)}
             </Badge>
           ))}
         </div>
 
-        {/* Quick Summary */}
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div>
-            <span className="text-muted-foreground">Total Líquido:</span>
-            <div className="font-semibold text-finance-net">
+        {/* Compact Summary */}
+        <div className="grid grid-cols-2 gap-2 text-sm">
+          <div className="text-center p-2 bg-muted/30 rounded">
+            <div className="text-xs text-muted-foreground">Líquido</div>
+            <div className="font-semibold text-finance-net text-sm">
               {formatCurrency(transaction.totalLiquido)}
             </div>
           </div>
-          <div>
-            <span className="text-muted-foreground">Taxas:</span>
-            <div className="font-semibold text-finance-fees">
+          <div className="text-center p-2 bg-muted/30 rounded">
+            <div className="text-xs text-muted-foreground">Taxas</div>
+            <div className="font-semibold text-finance-fees text-sm">
               {formatCurrency(transaction.taxaDebito + transaction.taxaCredito)}
             </div>
           </div>
@@ -175,12 +180,12 @@ export const TransactionMobileCard = ({
           <CollapsibleTrigger asChild>
             <Button
               variant="ghost"
-              className="w-full justify-between p-0 h-auto mt-3 text-sm font-normal"
+              className="w-full justify-between p-1 h-auto mt-2 text-xs font-normal"
             >
-              <span>Ver distribuição detalhada</span>
+              <span>Detalhes</span>
               <ChevronDown
                 className={cn(
-                  "h-4 w-4 transition-transform duration-200",
+                  "h-3.5 w-3.5 transition-transform duration-200",
                   expanded && "transform rotate-180"
                 )}
               />

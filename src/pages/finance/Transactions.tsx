@@ -13,6 +13,7 @@ import { BulkActionBar } from '@/components/finance/BulkActionBar';
 import { DeleteConfirmModal } from '@/components/finance/DeleteConfirmModal';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { PageLayout } from '@/components/layout/PageLayout';
+import { PullToRefresh } from '@/components/ui/pull-to-refresh';
 import { useTransactionFilters } from '@/hooks/finance/useTransactionFilters';
 import { useBulkSelection } from '@/hooks/finance/useBulkSelection';
 import { Plus } from 'lucide-react';
@@ -165,6 +166,16 @@ export const Transactions = () => {
     }
   };
 
+  const handleRefresh = async () => {
+    console.log('[Financeiro] Pull to refresh triggered');
+    // Add haptic feedback if available
+    if ('vibrate' in navigator) {
+      navigator.vibrate(50);
+    }
+    // Simulate refresh delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  };
+
   return (
     <PageLayout 
       title="Gestão de Transações"
@@ -201,19 +212,22 @@ export const Transactions = () => {
         totalResults={totalFiltered}
       />
 
-      {/* Monthly Summary */}
-      <TransactionSummary transactions={filteredTransactions} />
+      {/* Pull to Refresh Content */}
+      <PullToRefresh onRefresh={handleRefresh} className="min-h-[400px]">
+        {/* Monthly Summary */}
+        <TransactionSummary transactions={filteredTransactions} />
 
-      {/* Transactions Table */}
-      <TransactionTable
-        transactions={filteredTransactions}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onLongPress={handleLongPress}
-        isSelectionMode={isSelectionMode}
-        selectedIds={selectedIds}
-        onToggleSelection={toggleSelection}
-      />
+        {/* Transactions Table */}
+        <TransactionTable
+          transactions={filteredTransactions}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onLongPress={handleLongPress}
+          isSelectionMode={isSelectionMode}
+          selectedIds={selectedIds}
+          onToggleSelection={toggleSelection}
+        />
+      </PullToRefresh>
 
       {/* Bulk Action Bar */}
       {isSelectionMode && (
