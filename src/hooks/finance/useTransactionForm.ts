@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Transaction } from '@/types/finance';
 import { CustomRates } from '@/lib/finance/calculations';
+import { getLocalDateString, formatDateForInput } from '@/lib/dateUtils';
 
 export interface TransactionFormData {
   date: string;
@@ -24,7 +25,7 @@ export const useTransactionForm = ({
   onOpenChange 
 }: UseTransactionFormProps) => {
   const [formData, setFormData] = useState<TransactionFormData>({
-    date: new Date().toISOString().split('T')[0],
+    date: getLocalDateString(),
     dinheiro: '',
     pix: '',
     debito: '',
@@ -34,7 +35,7 @@ export const useTransactionForm = ({
 
   const resetForm = () => {
     setFormData({
-      date: new Date().toISOString().split('T')[0],
+      date: getLocalDateString(),
       dinheiro: '',
       pix: '',
       debito: '',
@@ -74,7 +75,7 @@ export const useTransactionForm = ({
   useEffect(() => {
     if (editingTransaction) {
       setFormData({
-        date: editingTransaction.date,
+        date: formatDateForInput(editingTransaction.date),
         dinheiro: editingTransaction.dinheiro.toString(),
         pix: editingTransaction.pix.toString(),
         debito: editingTransaction.debito.toString(),
