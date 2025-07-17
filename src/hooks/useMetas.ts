@@ -29,7 +29,7 @@ export const useMetas = () => {
     try {
       const { data, error } = await supabase
         .from('metas_financeiras')
-        .insert([metaData])
+        .insert([{ ...metaData, user_id: (await supabase.auth.getUser()).data.user?.id }])
         .select();
 
       if (error) throw error;

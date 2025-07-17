@@ -62,7 +62,7 @@ export function useReservaEmergencia() {
         // Cria nova entrada
         const { data, error } = await supabase
           .from('reserva_emergencia')
-          .insert([reserva])
+          .insert([{ ...reserva, user_id: (await supabase.auth.getUser()).data.user?.id }])
           .select()
           .single();
 

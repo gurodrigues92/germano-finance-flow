@@ -41,7 +41,7 @@ export function useMovimentacaoEstoque(produtoId?: string) {
     try {
       const { data, error } = await supabase
         .from('movimentacao_estoque')
-        .insert([movimentacao])
+        .insert([{ ...movimentacao, user_id: (await supabase.auth.getUser()).data.user?.id }])
         .select()
         .single();
 

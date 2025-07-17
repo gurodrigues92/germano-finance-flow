@@ -42,7 +42,7 @@ export function useCustosFixos(mesReferencia?: string) {
     try {
       const { data, error } = await supabase
         .from('custos_fixos')
-        .insert([custo])
+        .insert([{ ...custo, user_id: (await supabase.auth.getUser()).data.user?.id }])
         .select()
         .single();
 

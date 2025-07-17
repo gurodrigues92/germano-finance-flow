@@ -34,7 +34,7 @@ export function useProdutos() {
     try {
       const { data, error } = await supabase
         .from('produtos')
-        .insert([produto])
+        .insert([{ ...produto, user_id: (await supabase.auth.getUser()).data.user?.id }])
         .select()
         .single();
 
