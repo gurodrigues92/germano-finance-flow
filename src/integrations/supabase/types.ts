@@ -23,6 +23,7 @@ export type Database = {
           observacoes: string | null
           subcategoria: string
           updated_at: string
+          user_id: string | null
           valor: number
         }
         Insert: {
@@ -33,6 +34,7 @@ export type Database = {
           observacoes?: string | null
           subcategoria: string
           updated_at?: string
+          user_id?: string | null
           valor: number
         }
         Update: {
@@ -43,6 +45,7 @@ export type Database = {
           observacoes?: string | null
           subcategoria?: string
           updated_at?: string
+          user_id?: string | null
           valor?: number
         }
         Relationships: []
@@ -59,6 +62,7 @@ export type Database = {
           observacoes: string | null
           subcategoria: string
           updated_at: string
+          user_id: string | null
           valor: number
         }
         Insert: {
@@ -72,6 +76,7 @@ export type Database = {
           observacoes?: string | null
           subcategoria: string
           updated_at?: string
+          user_id?: string | null
           valor: number
         }
         Update: {
@@ -85,6 +90,7 @@ export type Database = {
           observacoes?: string | null
           subcategoria?: string
           updated_at?: string
+          user_id?: string | null
           valor?: number
         }
         Relationships: []
@@ -101,6 +107,7 @@ export type Database = {
           tipo: string
           titulo: string
           updated_at: string
+          user_id: string | null
           valor_atual: number | null
           valor_meta: number
         }
@@ -115,6 +122,7 @@ export type Database = {
           tipo: string
           titulo: string
           updated_at?: string
+          user_id?: string | null
           valor_atual?: number | null
           valor_meta: number
         }
@@ -129,6 +137,7 @@ export type Database = {
           tipo?: string
           titulo?: string
           updated_at?: string
+          user_id?: string | null
           valor_atual?: number | null
           valor_meta?: number
         }
@@ -144,6 +153,7 @@ export type Database = {
           produto_id: string | null
           quantidade: number
           tipo: string
+          user_id: string | null
           valor_total: number | null
         }
         Insert: {
@@ -155,6 +165,7 @@ export type Database = {
           produto_id?: string | null
           quantidade: number
           tipo: string
+          user_id?: string | null
           valor_total?: number | null
         }
         Update: {
@@ -166,6 +177,7 @@ export type Database = {
           produto_id?: string | null
           quantidade?: number
           tipo?: string
+          user_id?: string | null
           valor_total?: number | null
         }
         Relationships: [
@@ -188,6 +200,7 @@ export type Database = {
           nome: string
           unidade_medida: string
           updated_at: string
+          user_id: string | null
           valor_unitario: number | null
         }
         Insert: {
@@ -199,6 +212,7 @@ export type Database = {
           nome: string
           unidade_medida: string
           updated_at?: string
+          user_id?: string | null
           valor_unitario?: number | null
         }
         Update: {
@@ -210,6 +224,7 @@ export type Database = {
           nome?: string
           unidade_medida?: string
           updated_at?: string
+          user_id?: string | null
           valor_unitario?: number | null
         }
         Relationships: []
@@ -254,6 +269,7 @@ export type Database = {
           nome: string
           tipo: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           configuracao: Json
@@ -264,6 +280,7 @@ export type Database = {
           nome: string
           tipo: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           configuracao?: Json
@@ -274,6 +291,7 @@ export type Database = {
           nome?: string
           tipo?: string
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -284,6 +302,7 @@ export type Database = {
           mes_referencia: string
           meta_valor: number
           updated_at: string
+          user_id: string | null
           valor_atual: number
         }
         Insert: {
@@ -292,6 +311,7 @@ export type Database = {
           mes_referencia: string
           meta_valor: number
           updated_at?: string
+          user_id?: string | null
           valor_atual: number
         }
         Update: {
@@ -300,6 +320,7 @@ export type Database = {
           mes_referencia?: string
           meta_valor?: number
           updated_at?: string
+          user_id?: string | null
           valor_atual?: number
         }
         Relationships: []
