@@ -1,6 +1,7 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { DatePicker } from './DatePicker';
 
 interface TransactionFormFieldsProps {
   formData: {
@@ -18,13 +19,10 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
     <>
       <div className="space-y-2">
         <Label htmlFor="date">Data</Label>
-        <Input
-          id="date"
-          type="date"
+        <DatePicker
           value={formData.date}
-          onChange={(e) => setFormData((prev: any) => ({ ...prev, date: e.target.value }))}
-          required
-          className="text-base sm:text-lg p-2 sm:p-3"
+          onChange={(date) => setFormData((prev: any) => ({ ...prev, date }))}
+          placeholder="Selecione a data da transação"
         />
       </div>
       
