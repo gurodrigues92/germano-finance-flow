@@ -38,7 +38,7 @@ export const useSupabaseTransactions = () => {
         month: t.mes_referencia,
         year: t.ano,
         createdAt: t.created_at,
-        customRates: t.custom_rates as { studioRate: number; eduRate: number; kamRate: number; assistenteCalculationMode?: 'percentage_of_profissional' | 'percentage_of_total'; } | undefined
+        customRates: t.custom_rates as { studioRate: number; eduRate: number; kamRate: number; } | undefined
       }));
 
       setTransactions(convertedTransactions);
@@ -66,7 +66,6 @@ export const useSupabaseTransactions = () => {
       studioRate: number;
       eduRate: number;
       kamRate: number;
-      assistenteCalculationMode?: 'percentage_of_profissional' | 'percentage_of_total';
     };
   }) => {
     try {
@@ -143,7 +142,6 @@ export const useSupabaseTransactions = () => {
       studioRate: number;
       eduRate: number;
       kamRate: number;
-      assistenteCalculationMode?: 'percentage_of_profissional' | 'percentage_of_total';
     };
   }) => {
     try {

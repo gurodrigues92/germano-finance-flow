@@ -52,7 +52,6 @@ export const useFinance = () => {
       studioRate: number;
       eduRate: number;
       kamRate: number;
-      assistenteCalculationMode?: 'percentage_of_profissional' | 'percentage_of_total';
     };
   }) => {
     if (isUsingSupabase) {
@@ -73,7 +72,6 @@ export const useFinance = () => {
       studioRate: number;
       eduRate: number;
       kamRate: number;
-      assistenteCalculationMode?: 'percentage_of_profissional' | 'percentage_of_total';
     };
   }) => {
     if (isUsingSupabase) {
