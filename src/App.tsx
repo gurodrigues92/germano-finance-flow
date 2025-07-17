@@ -6,6 +6,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { UserProfileProvider } from "@/contexts/UserProfileContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
+import NetworkStatus from "@/components/NetworkStatus";
+import { usePWA } from "@/hooks/usePWA";
 import Login from "@/pages/Login";
 import NotFound from "./pages/NotFound";
 import { FinanceLayout } from "./components/finance/FinanceLayout";
@@ -21,13 +24,18 @@ import { Metas } from "./pages/Metas";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const App = () => {
+  const { isOnline } = usePWA();
+
+  return (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
       <AuthProvider>
         <UserProfileProvider>
+          <PWAInstallPrompt />
+          <NetworkStatus />
           <BrowserRouter>
           <Routes>
             <Route path="/login" element={<Login />} />
@@ -77,6 +85,7 @@ const App = () => (
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
