@@ -131,9 +131,9 @@ export const TransactionMobileCard = ({
                   e.stopPropagation();
                   onEdit(transaction);
                 }}
-                className="h-8 w-8 p-0"
+                className="h-10 w-10 p-0"
               >
-                <Edit className="h-3.5 w-3.5" />
+                <Edit className="h-4 w-4" />
               </Button>
               <Button
                 size="sm"
@@ -142,9 +142,9 @@ export const TransactionMobileCard = ({
                   e.stopPropagation();
                   handleDelete();
                 }}
-                className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                className="h-10 w-10 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
               >
-                <Trash2 className="h-3.5 w-3.5" />
+                <Trash2 className="h-4 w-4" />
               </Button>
             </div>
           )}

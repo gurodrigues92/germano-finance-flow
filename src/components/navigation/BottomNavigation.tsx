@@ -113,7 +113,7 @@ export const BottomNavigation = () => {
   const gridCols = totalItems <= 2 ? 'grid-cols-2' : totalItems === 3 ? 'grid-cols-3' : 'grid-cols-4';
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 glass-strong border-t border-purple-100 z-50 shadow-lg pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 glass-strong border-t border-purple-100 z-50 shadow-lg pb-safe" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom, 1rem))' }}>
       <div className={`grid ${gridCols} h-20`}>
         {mainNavItems.map((item) => (
           <NavItem
