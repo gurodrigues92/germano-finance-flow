@@ -48,6 +48,17 @@ export const useTransactionForm = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validar data não pode ser futura
+    const selectedDate = new Date(formData.date);
+    const today = new Date();
+    today.setHours(23, 59, 59, 999); // Set to end of today
+    
+    if (selectedDate > today) {
+      alert('A data não pode ser futura. Por favor, selecione uma data válida.');
+      return;
+    }
+    
     onSubmit(formData, !!editingTransaction);
     resetForm();
     onOpenChange(false);
@@ -60,8 +71,7 @@ export const useTransactionForm = ({
       customRates: checked ? { 
         studioRate: 60, 
         eduRate: 40, 
-        kamRate: 10,
-        assistenteCalculationMode: 'percentage_of_profissional'
+        kamRate: 10
       } : undefined
     }));
   };

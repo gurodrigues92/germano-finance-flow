@@ -29,9 +29,7 @@ export const TransactionTable = ({
   const isMobile = useIsMobile();
   
   const handleDelete = (id: string) => {
-    if (confirm('Tem certeza que deseja excluir esta transação?')) {
-      onDelete(id);
-    }
+    onDelete(id);
   };
 
   return (
