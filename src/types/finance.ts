@@ -20,6 +20,7 @@ export interface Transaction {
     studioRate: number;
     eduRate: number;
     kamRate: number;
+    assistenteCalculationMode?: 'percentage_of_profissional' | 'percentage_of_total';
   };
 }
 

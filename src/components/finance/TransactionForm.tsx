@@ -78,7 +78,7 @@ export const TransactionForm = ({
             />
             <TaxaCard
               taxaName="Crédito"
-              percentage={2.84}
+              percentage={3.51}
               baseValue={parseFloat(formData.credito) || 0}
               taxaValue={calculations.taxaCredito}
               type="credito"

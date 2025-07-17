@@ -48,6 +48,12 @@ export const useFinance = () => {
     pix: number;
     debito: number;
     credito: number;
+    customRates?: {
+      studioRate: number;
+      eduRate: number;
+      kamRate: number;
+      assistenteCalculationMode?: 'percentage_of_profissional' | 'percentage_of_total';
+    };
   }) => {
     if (isUsingSupabase) {
       return await addToSupabase(transactionData);
@@ -63,6 +69,12 @@ export const useFinance = () => {
     pix: number;
     debito: number;
     credito: number;
+    customRates?: {
+      studioRate: number;
+      eduRate: number;
+      kamRate: number;
+      assistenteCalculationMode?: 'percentage_of_profissional' | 'percentage_of_total';
+    };
   }) => {
     if (isUsingSupabase) {
       return await updateInSupabase(id, transactionData);

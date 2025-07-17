@@ -37,7 +37,8 @@ export const useSupabaseTransactions = () => {
         kamShare: Number(t.kam_share),
         month: t.mes_referencia,
         year: t.ano,
-        createdAt: t.created_at
+        createdAt: t.created_at,
+        customRates: t.custom_rates as { studioRate: number; eduRate: number; kamRate: number; assistenteCalculationMode?: 'percentage_of_profissional' | 'percentage_of_total'; } | undefined
       }));
 
       setTransactions(convertedTransactions);
@@ -61,6 +62,12 @@ export const useSupabaseTransactions = () => {
     pix: number;
     debito: number;
     credito: number;
+    customRates?: {
+      studioRate: number;
+      eduRate: number;
+      kamRate: number;
+      assistenteCalculationMode?: 'percentage_of_profissional' | 'percentage_of_total';
+    };
   }) => {
     try {
       setLoading(true);
@@ -70,7 +77,8 @@ export const useSupabaseTransactions = () => {
         transactionInput.dinheiro,
         transactionInput.pix,
         transactionInput.debito,
-        transactionInput.credito
+        transactionInput.credito,
+        transactionInput.customRates
       );
 
       const date = parseDateBrazil(transactionInput.date);
@@ -93,7 +101,8 @@ export const useSupabaseTransactions = () => {
           edu_share: calculations.eduShare,
           kam_share: calculations.kamShare,
           mes_referencia: month,
-          ano: year
+          ano: year,
+          custom_rates: transactionInput.customRates || null
         })
         .select()
         .single();
@@ -130,6 +139,12 @@ export const useSupabaseTransactions = () => {
     pix: number;
     debito: number;
     credito: number;
+    customRates?: {
+      studioRate: number;
+      eduRate: number;
+      kamRate: number;
+      assistenteCalculationMode?: 'percentage_of_profissional' | 'percentage_of_total';
+    };
   }) => {
     try {
       setLoading(true);
@@ -139,7 +154,8 @@ export const useSupabaseTransactions = () => {
         transactionInput.dinheiro,
         transactionInput.pix,
         transactionInput.debito,
-        transactionInput.credito
+        transactionInput.credito,
+        transactionInput.customRates
       );
 
       const date = parseDateBrazil(transactionInput.date);
@@ -160,7 +176,8 @@ export const useSupabaseTransactions = () => {
         edu_share: calculations.eduShare,
         kam_share: calculations.kamShare,
         mes_referencia: month,
-        ano: year
+        ano: year,
+        custom_rates: transactionInput.customRates || null
       };
 
       const { error } = await supabase

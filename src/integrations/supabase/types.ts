@@ -309,6 +309,7 @@ export type Database = {
           ano: number
           created_at: string
           credito: number
+          custom_rates: Json | null
           data: string
           debito: number
           dinheiro: number
@@ -328,6 +329,7 @@ export type Database = {
           ano: number
           created_at?: string
           credito?: number
+          custom_rates?: Json | null
           data: string
           debito?: number
           dinheiro?: number
@@ -347,6 +349,7 @@ export type Database = {
           ano?: number
           created_at?: string
           credito?: number
+          custom_rates?: Json | null
           data?: string
           debito?: number
           dinheiro?: number
