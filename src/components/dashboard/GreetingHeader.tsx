@@ -14,11 +14,11 @@ export const GreetingHeader = () => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-finance-studio to-finance-edu rounded-2xl p-6 text-white">
+    <div className="bg-gradient-to-r from-finance-studio to-finance-edu rounded-2xl p-6 text-finance-studio-foreground">
       <h2 className="text-xl font-semibold mb-1">
         {greeting()}, Studio Germano! 👋
       </h2>
-      <p className="text-white/80 text-sm">
+      <p className="text-finance-studio-foreground/80 text-sm">
         {currentDate} • Dashboard Financeiro
       </p>
     </div>

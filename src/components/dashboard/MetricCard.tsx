@@ -28,7 +28,7 @@ export const MetricCard = ({ title, value, icon: Icon, colorClass, trend, subtit
       <div className="flex items-center justify-between mb-3">
         <span className={`${isMobile ? 'text-xs' : 'text-sm'} text-muted-foreground font-medium`}>{title}</span>
         <div className={`p-2 rounded-lg ${colorClass} shadow-sm`}>
-          <Icon className="w-4 h-4 text-white" />
+          <Icon className="w-4 h-4 text-primary-foreground" />
         </div>
       </div>
       

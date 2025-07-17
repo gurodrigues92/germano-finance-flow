@@ -22,8 +22,10 @@ export const MigrationPrompt = () => {
       const success = await migrateFromLocalStorage();
       if (success) {
         setMigrationComplete(true);
-        // Recarregar página após migração para usar dados do Supabase
-        setTimeout(() => window.location.reload(), 2000);
+        // Dispatch event for components to refetch data
+        setTimeout(() => {
+          window.dispatchEvent(new Event('migrationComplete'));
+        }, 2000);
       }
     } catch (error) {
       console.error('Erro na migração:', error);

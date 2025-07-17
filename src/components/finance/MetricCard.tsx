@@ -49,7 +49,7 @@ export const MetricCard = ({
           "p-2 rounded-lg",
           colorClass
         )}>
-          <Icon className="h-4 w-4 text-white" />
+          <Icon className="h-4 w-4 text-primary-foreground" />
         </div>
       </CardHeader>
       <CardContent>

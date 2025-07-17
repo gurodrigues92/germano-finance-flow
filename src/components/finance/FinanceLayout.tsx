@@ -21,7 +21,7 @@ export const FinanceLayout = () => {
               <div className="flex items-center gap-2 min-w-0 overflow-hidden">
                 <SidebarTrigger />
                 <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Scissors className="w-5 h-5 text-white" />
+                  <Scissors className="w-5 h-5 text-primary-foreground" />
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 min-w-0">
                   <h1 className="text-lg sm:text-xl font-semibold text-foreground truncate">Studio Germano</h1>

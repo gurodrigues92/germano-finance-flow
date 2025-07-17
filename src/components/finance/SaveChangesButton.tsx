@@ -22,7 +22,7 @@ export const SaveChangesButton = ({
       <Button
         onClick={onSave}
         disabled={loading}
-        className="bg-green-500 hover:bg-green-600 text-white shadow-lg rounded-xl px-6 py-3 font-medium transition-all duration-200 hover:scale-105 hover:shadow-xl"
+        className="bg-finance-income hover:bg-finance-income/80 text-finance-income-foreground shadow-lg rounded-xl px-6 py-3 font-medium transition-all duration-200 hover:scale-105 hover:shadow-xl"
       >
         {loading ? (
           <Loader2 className="h-4 w-4 mr-2 animate-spin" />

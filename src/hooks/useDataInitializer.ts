@@ -127,8 +127,10 @@ export const useDataInitializer = () => {
         description: "Sistema restaurado para dados originais do Studio Germano",
       });
 
-      // Recarregar página para aplicar mudanças
-      window.location.reload();
+      // Refetch data instead of reloading
+      setTimeout(() => {
+        window.dispatchEvent(new Event('dataReset'));
+      }, 500);
     } catch (error) {
       console.error('[DataInitializer] Erro ao resetar dados:', error);
       toast({
@@ -160,8 +162,10 @@ export const useDataInitializer = () => {
         description: "Seus dados anteriores foram restaurados",
       });
 
-      // Recarregar página para aplicar mudanças
-      window.location.reload();
+      // Refetch data instead of reloading
+      setTimeout(() => {
+        window.dispatchEvent(new Event('backupRestored'));
+      }, 500);
     } catch (error) {
       console.error('[DataInitializer] Erro ao restaurar backup:', error);
       toast({

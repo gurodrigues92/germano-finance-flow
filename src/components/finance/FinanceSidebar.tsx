@@ -107,7 +107,7 @@ export const FinanceSidebar = () => {
   const getNavClasses = (path: string) => {
     const active = isActive(path);
     return active 
-      ? "!bg-gradient-to-r !from-purple-600 !to-orange-500 !text-white font-semibold [&>*]:!text-white glass shadow-lg hover:shadow-xl transform hover:scale-[1.02]" 
+      ? "!bg-gradient-to-r !from-primary !to-secondary !text-primary-foreground font-semibold [&>*]:!text-primary-foreground glass shadow-lg hover:shadow-xl transform hover:scale-[1.02]" 
       : "!text-gray-900 dark:!text-gray-100 hover:!bg-purple-50 dark:hover:!bg-purple-900/20 [&>*]:!text-gray-900 dark:[&>*]:!text-gray-100 hover:shadow-md transform hover:scale-[1.01]";
   };
 
