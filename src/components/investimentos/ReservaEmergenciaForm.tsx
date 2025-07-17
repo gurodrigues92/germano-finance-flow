@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { ReservaEmergenciaInput } from "@/types/investimentos";
 import { format } from "date-fns";
 import { PiggyBank, Target } from "lucide-react";
+import { DatePicker } from "@/components/finance/DatePicker";
 
 interface ReservaEmergenciaFormProps {
   onSubmit: (reserva: ReservaEmergenciaInput) => Promise<void>;
@@ -99,12 +100,10 @@ export function ReservaEmergenciaForm({
 
             <div className="space-y-2">
               <Label htmlFor="mes_referencia">Mês de Referência</Label>
-              <Input
-                id="mes_referencia"
-                type="date"
+              <DatePicker
                 value={mesReferencia}
-                onChange={(e) => setMesReferencia(e.target.value)}
-                required
+                onChange={setMesReferencia}
+                placeholder="Selecione o mês de referência"
               />
             </div>
 

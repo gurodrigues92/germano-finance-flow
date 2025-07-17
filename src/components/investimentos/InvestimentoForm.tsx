@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { InvestimentoInput, CATEGORIAS_INVESTIMENTOS, CategoriaInvestimento } from "@/types/investimentos";
 import { format } from "date-fns";
+import { DatePicker } from "@/components/finance/DatePicker";
 
 interface InvestimentoFormProps {
   onSubmit: (investimento: InvestimentoInput) => Promise<void>;
@@ -134,12 +135,10 @@ export function InvestimentoForm({ onSubmit, initialData, isEdit = false }: Inve
 
             <div className="space-y-2">
               <Label htmlFor="data_compra">Data da Compra</Label>
-              <Input
-                id="data_compra"
-                type="date"
+              <DatePicker
                 value={dataCompra}
-                onChange={(e) => setDataCompra(e.target.value)}
-                required
+                onChange={setDataCompra}
+                placeholder="Selecione a data da compra"
               />
             </div>
 

@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MovimentacaoInput, Produto, MOTIVOS_SAIDA } from "@/types/estoque";
 import { format } from "date-fns";
 import { ArrowDown, ArrowUp } from "lucide-react";
+import { DatePicker } from "@/components/finance/DatePicker";
 
 interface MovimentacaoTabsProps {
   produtos: Produto[];
@@ -80,12 +81,10 @@ export function MovimentacaoTabs({ produtos, onSubmit }: MovimentacaoTabsProps) 
 
           <div className="space-y-2">
             <Label htmlFor="data_movimentacao">Data da Movimentação</Label>
-            <Input
-              id="data_movimentacao"
-              type="date"
+            <DatePicker
               value={dataMovimentacao}
-              onChange={(e) => setDataMovimentacao(e.target.value)}
-              required
+              onChange={setDataMovimentacao}
+              placeholder="Selecione a data da movimentação"
             />
           </div>
         </div>

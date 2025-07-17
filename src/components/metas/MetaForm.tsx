@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MetaFinanceira, MetaFinanceiraInput, TIPOS_META } from '@/types/metas';
 import { format } from 'date-fns';
+import { DatePicker } from '@/components/finance/DatePicker';
 
 interface MetaFormProps {
   meta?: MetaFinanceira;
@@ -142,23 +143,19 @@ export const MetaForm = ({ meta, onSubmit, onCancel }: MetaFormProps) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="data_inicio">Data de Início</Label>
-              <Input
-                id="data_inicio"
-                type="date"
+              <DatePicker
                 value={formData.data_inicio}
-                onChange={(e) => handleChange('data_inicio', e.target.value)}
-                required
+                onChange={(date) => handleChange('data_inicio', date)}
+                placeholder="Selecione a data de início"
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="data_fim">Data de Conclusão</Label>
-              <Input
-                id="data_fim"
-                type="date"
+              <DatePicker
                 value={formData.data_fim}
-                onChange={(e) => handleChange('data_fim', e.target.value)}
-                required
+                onChange={(date) => handleChange('data_fim', date)}
+                placeholder="Selecione a data de conclusão"
               />
             </div>
           </div>
