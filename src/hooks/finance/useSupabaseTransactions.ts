@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Transaction } from '@/types/finance';
-import { parseDateBrazil } from '@/lib/dateUtils';
+
 
 export const useSupabaseTransactions = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -80,9 +80,8 @@ export const useSupabaseTransactions = () => {
         transactionInput.customRates
       );
 
-      const date = parseDateBrazil(transactionInput.date);
       const month = transactionInput.date.slice(0, 7); // YYYY-MM format
-      const year = date.getFullYear();
+      const year = parseInt(transactionInput.date.slice(0, 4)); // Extract year from date string
       
       const { data, error } = await supabase
         .from('transacoes')
@@ -156,9 +155,8 @@ export const useSupabaseTransactions = () => {
         transactionInput.customRates
       );
 
-      const date = parseDateBrazil(transactionInput.date);
       const month = transactionInput.date.slice(0, 7); // YYYY-MM format
-      const year = date.getFullYear();
+      const year = parseInt(transactionInput.date.slice(0, 4)); // Extract year from date string
 
       const updateData = {
         data: transactionInput.date,

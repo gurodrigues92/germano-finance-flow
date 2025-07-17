@@ -16,7 +16,7 @@ interface DatePickerProps {
 
 export const DatePicker = ({ value, onChange, placeholder = "Selecione uma data", className }: DatePickerProps) => {
   // Convert string date to Date object
-  const dateValue = value ? new Date(value + 'T00:00:00') : undefined;
+  const dateValue = value ? new Date(value) : undefined;
 
   const handleSelect = (date: Date | undefined) => {
     if (date) {

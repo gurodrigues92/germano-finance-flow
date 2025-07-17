@@ -50,7 +50,7 @@ export const useTransactionForm = ({
     e.preventDefault();
     
     // Validar data não pode ser futura
-    const selectedDate = new Date(formData.date);
+    const selectedDate = new Date(formData.date + 'T00:00:00');
     const today = new Date();
     today.setHours(23, 59, 59, 999); // Set to end of today
     
