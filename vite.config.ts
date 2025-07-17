@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => ({
     mode === 'development' && componentTagger(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      includeAssets: ['favicon.ico', 'icons/icon-180x180.png', 'icons/icon-512x512.png'],
       manifest: {
         name: 'Studio Germano - Sistema Financeiro',
         short_name: 'Studio Germano',

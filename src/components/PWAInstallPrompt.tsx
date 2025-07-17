@@ -69,7 +69,7 @@ const PWAInstallPrompt: React.FC = () => {
   if (!showInstallPrompt) return null;
 
   return (
-    <div className="fixed top-4 left-4 right-4 bg-gradient-to-r from-purple-600 to-violet-600 text-white p-4 rounded-xl shadow-xl z-50 animate-slide-down">
+    <div className="fixed top-4 left-4 right-4 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground p-4 rounded-xl shadow-xl z-[50] animate-slide-down">
       <div className="flex items-start justify-between">
         <div className="flex items-center space-x-3">
           <div className="bg-white/20 p-2 rounded-lg">
