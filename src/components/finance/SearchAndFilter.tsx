@@ -14,11 +14,14 @@ export interface FilterState {
     min: string;
     max: string;
   };
+  customDateStart: string;
+  customDateEnd: string;
+  isCustomDateActive: boolean;
 }
 
 interface SearchAndFilterProps {
   filters: FilterState;
-  onFiltersChange: (filters: FilterState) => void;
+  onFiltersChange: React.Dispatch<React.SetStateAction<FilterState>>;
   totalResults: number;
 }
 
@@ -30,17 +33,18 @@ export const SearchAndFilter = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSearchChange = (value: string) => {
-    onFiltersChange({
-      ...filters,
+    onFiltersChange(prev => ({
+      ...prev,
       searchText: value
-    });
+    }));
   };
 
   const handleDateRangeChange = (value: string) => {
-    onFiltersChange({
-      ...filters,
-      dateRange: value as FilterState['dateRange']
-    });
+    onFiltersChange(prev => ({
+      ...prev,
+      dateRange: value as FilterState['dateRange'],
+      isCustomDateActive: false // Reset custom date when using standard range
+    }));
   };
 
   const handlePaymentMethodToggle = (method: string) => {
@@ -48,36 +52,41 @@ export const SearchAndFilter = ({
       ? filters.paymentMethods.filter(m => m !== method)
       : [...filters.paymentMethods, method];
     
-    onFiltersChange({
-      ...filters,
+    onFiltersChange(prev => ({
+      ...prev,
       paymentMethods: newMethods
-    });
+    }));
   };
 
   const handleValueRangeChange = (field: 'min' | 'max', value: string) => {
-    onFiltersChange({
-      ...filters,
+    onFiltersChange(prev => ({
+      ...prev,
       valueRange: {
-        ...filters.valueRange,
+        ...prev.valueRange,
         [field]: value
       }
-    });
+    }));
   };
 
   const clearAllFilters = () => {
-    onFiltersChange({
+    onFiltersChange(prev => ({
+      ...prev,
       searchText: '',
       dateRange: 'all',
       paymentMethods: [],
-      valueRange: { min: '', max: '' }
-    });
+      valueRange: { min: '', max: '' },
+      customDateStart: '',
+      customDateEnd: '',
+      isCustomDateActive: false
+    }));
   };
 
   const hasActiveFilters = filters.searchText || 
     filters.dateRange !== 'all' || 
     filters.paymentMethods.length > 0 ||
     filters.valueRange.min ||
-    filters.valueRange.max;
+    filters.valueRange.max ||
+    filters.isCustomDateActive;
 
   const dateRangeOptions = [
     { value: 'all', label: 'Todas' },

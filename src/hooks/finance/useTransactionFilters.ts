@@ -11,6 +11,9 @@ export interface FilterState {
     min: string;
     max: string;
   };
+  customDateStart: string;
+  customDateEnd: string;
+  isCustomDateActive: boolean;
 }
 
 const BRAZIL_TIMEZONE = 'America/Sao_Paulo';
@@ -20,7 +23,10 @@ export const useTransactionFilters = (transactions: Transaction[]) => {
     searchText: '',
     dateRange: 'all',
     paymentMethods: [],
-    valueRange: { min: '', max: '' }
+    valueRange: { min: '', max: '' },
+    customDateStart: '',
+    customDateEnd: '',
+    isCustomDateActive: false
   });
 
   const filteredTransactions = useMemo(() => {
@@ -44,8 +50,13 @@ export const useTransactionFilters = (transactions: Transaction[]) => {
       });
     }
 
-    // Date range filter
-    if (filters.dateRange !== 'all') {
+    // Custom date range filter (takes priority over standard date range)
+    if (filters.isCustomDateActive && filters.customDateStart && filters.customDateEnd) {
+      filtered = filtered.filter(transaction => {
+        return transaction.date >= filters.customDateStart && transaction.date <= filters.customDateEnd;
+      });
+    } else if (filters.dateRange !== 'all') {
+      // Standard date range filter
       const now = toZonedTime(new Date(), BRAZIL_TIMEZONE);
       let startDate: Date;
       let endDate: Date;

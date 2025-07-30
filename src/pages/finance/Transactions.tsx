@@ -16,6 +16,8 @@ import { PageLayout } from '@/components/layout/PageLayout';
 import { PullToRefresh } from '@/components/ui/pull-to-refresh';
 import { useTransactionFilters } from '@/hooks/finance/useTransactionFilters';
 import { useBulkSelection } from '@/hooks/finance/useBulkSelection';
+import { CustomDateFilter } from '@/components/finance/CustomDateFilter';
+import { PeriodSummary } from '@/components/finance/PeriodSummary';
 import { Plus } from 'lucide-react';
 
 interface TransactionFormData {
@@ -204,6 +206,20 @@ export const Transactions = () => {
           />
         </Dialog>
       </div>
+
+      {/* Custom Date Filter */}
+      <CustomDateFilter
+        filters={filters}
+        onFiltersChange={setFilters}
+      />
+
+      {/* Period Summary */}
+      <PeriodSummary
+        transactions={filteredTransactions}
+        dateStart={filters.customDateStart}
+        dateEnd={filters.customDateEnd}
+        isActive={filters.isCustomDateActive}
+      />
 
       {/* Search and Filters */}
       <SearchAndFilter

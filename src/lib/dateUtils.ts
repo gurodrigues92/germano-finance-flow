@@ -119,3 +119,62 @@ export const isValidDateString = (dateString: string): boolean => {
     return false;
   }
 };
+
+/**
+ * Gets the first half of the current month (1st to 15th)
+ */
+export const getFirstHalfMonth = (): { start: string; end: string } => {
+  const brazilDate = getCurrentBrazilDate();
+  const year = brazilDate.getFullYear();
+  const month = brazilDate.getMonth() + 1;
+  
+  const start = `${year}-${month.toString().padStart(2, '0')}-01`;
+  const end = `${year}-${month.toString().padStart(2, '0')}-15`;
+  
+  return { start, end };
+};
+
+/**
+ * Gets the second half of the current month (16th to last day)
+ */
+export const getSecondHalfMonth = (): { start: string; end: string } => {
+  const brazilDate = getCurrentBrazilDate();
+  const year = brazilDate.getFullYear();
+  const month = brazilDate.getMonth() + 1;
+  
+  // Get last day of month
+  const lastDay = new Date(year, month, 0).getDate();
+  
+  const start = `${year}-${month.toString().padStart(2, '0')}-16`;
+  const end = `${year}-${month.toString().padStart(2, '0')}-${lastDay.toString().padStart(2, '0')}`;
+  
+  return { start, end };
+};
+
+/**
+ * Gets the last N days from today
+ */
+export const getLastNDays = (days: number): { start: string; end: string } => {
+  const brazilDate = getCurrentBrazilDate();
+  const endDate = format(brazilDate, 'yyyy-MM-dd');
+  
+  const startDate = new Date(brazilDate);
+  startDate.setDate(startDate.getDate() - (days - 1));
+  const start = format(startDate, 'yyyy-MM-dd');
+  
+  return { start, end: endDate };
+};
+
+/**
+ * Formats a date range for display
+ */
+export const formatDateRange = (start: string, end: string): string => {
+  if (start === end) {
+    return formatDateDisplay(start);
+  }
+  
+  const startFormatted = formatDateDisplay(start);
+  const endFormatted = formatDateDisplay(end);
+  
+  return `${startFormatted} a ${endFormatted}`;
+};
