@@ -51,15 +51,18 @@ export const Analysis = () => {
       subtitle="Dashboard analítico com insights automatizados e previsões"
     >
       {/* Month Selector */}
-      <div className="mb-6">
+      <div className={`mb-6 ${isMobile ? 'px-1' : ''}`}>
         <select 
           value={currentMonth} 
           onChange={(e) => setCurrentMonth(e.target.value)}
-          className="border rounded-lg px-3 py-2 bg-background"
+          className={`border rounded-lg ${isMobile ? 'px-2 py-1 text-sm w-full' : 'px-3 py-2'} bg-background`}
         >
           {monthOptions.map(option => (
             <option key={option.value} value={option.value}>
-              {option.label} {option.hasData && `(${option.count} transações)`}
+              {isMobile ? 
+                `${option.label} ${option.hasData ? `(${option.count})` : ''}` :
+                `${option.label} ${option.hasData ? `(${option.count} transações)` : ''}`
+              }
             </option>
           ))}
         </select>
@@ -89,8 +92,10 @@ export const Analysis = () => {
       </div>
 
       {/* Gráficos Operacionais (por último) */}
-      <div className="mt-8">
-        <h3 className="text-lg font-semibold mb-4 text-muted-foreground">Análise Operacional</h3>
+      <div className={`mt-8 ${isMobile ? 'px-1' : ''}`}>
+        <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold mb-4 text-muted-foreground`}>
+          Análise Operacional
+        </h3>
         <OperationalChartsGrid
           custosData={custosData}
           investimentosData={investimentosData}

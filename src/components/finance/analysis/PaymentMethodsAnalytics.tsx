@@ -57,10 +57,10 @@ export const PaymentMethodsAnalytics = ({ data }: PaymentMethodsAnalyticsProps) 
             <TableHeader>
               <TableRow>
                 <TableHead>Método</TableHead>
-                <TableHead className="text-right">Valor Total</TableHead>
-                <TableHead className="text-right">Transações</TableHead>
-                <TableHead className="text-right">Ticket Médio</TableHead>
-                <TableHead className="text-right">Participação</TableHead>
+                {!isMobile && <TableHead className="text-right">Valor Total</TableHead>}
+                <TableHead className="text-right">{isMobile ? 'Trans.' : 'Transações'}</TableHead>
+                {!isMobile && <TableHead className="text-right">Ticket Médio</TableHead>}
+                <TableHead className="text-right">{isMobile ? '%' : 'Participação'}</TableHead>
                 <TableHead className="text-right">Tendência</TableHead>
                 {!isMobile && <TableHead className="text-right">Status</TableHead>}
               </TableRow>
@@ -81,21 +81,32 @@ export const PaymentMethodsAnalytics = ({ data }: PaymentMethodsAnalyticsProps) 
                           className="w-3 h-3 rounded-full" 
                           style={{ backgroundColor: method.color }}
                         />
-                        <span className="font-medium">{method.name}</span>
+                        <span className={`font-medium ${isMobile ? 'text-sm' : ''}`}>{method.name}</span>
                       </div>
                     </TableCell>
                     
-                    <TableCell className="text-right font-mono">
-                      {formatCompactCurrency(method.value, isMobile)}
-                    </TableCell>
+                    {!isMobile && (
+                      <TableCell className="text-right font-mono">
+                        {formatCompactCurrency(method.value, isMobile)}
+                      </TableCell>
+                    )}
                     
                     <TableCell className="text-right">
-                      {method.count}
+                      {isMobile ? (
+                        <div className="text-center">
+                          <div className="font-mono text-sm">{formatCompactCurrency(method.value, true)}</div>
+                          <div className="text-xs text-muted-foreground">{method.count} tx</div>
+                        </div>
+                      ) : (
+                        method.count
+                      )}
                     </TableCell>
                     
-                    <TableCell className="text-right font-mono">
-                      {formatCompactCurrency(method.ticketMedio, isMobile)}
-                    </TableCell>
+                    {!isMobile && (
+                      <TableCell className="text-right font-mono">
+                        {formatCompactCurrency(method.ticketMedio, isMobile)}
+                      </TableCell>
+                    )}
                     
                     <TableCell className="text-right">
                       <Badge variant="outline">
@@ -104,16 +115,25 @@ export const PaymentMethodsAnalytics = ({ data }: PaymentMethodsAnalyticsProps) 
                     </TableCell>
                     
                     <TableCell className="text-right">
-                      <div className="flex flex-col gap-1">
-                        <Badge variant={valueBadge.variant} className="text-xs">
-                          {valueBadge.icon && <valueBadge.icon className="w-3 h-3 mr-1" />}
-                          Valor: {valueBadge.text}
-                        </Badge>
-                        <Badge variant={countBadge.variant} className="text-xs">
-                          {countBadge.icon && <countBadge.icon className="w-3 h-3 mr-1" />}
-                          Qtd: {countBadge.text}
-                        </Badge>
-                      </div>
+                      {isMobile ? (
+                        <div className="flex flex-col gap-1">
+                          <Badge variant={valueBadge.variant} className="text-xs">
+                            {valueBadge.icon && <valueBadge.icon className="w-3 h-3 mr-1" />}
+                            {valueBadge.text}
+                          </Badge>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col gap-1">
+                          <Badge variant={valueBadge.variant} className="text-xs">
+                            {valueBadge.icon && <valueBadge.icon className="w-3 h-3 mr-1" />}
+                            Valor: {valueBadge.text}
+                          </Badge>
+                          <Badge variant={countBadge.variant} className="text-xs">
+                            {countBadge.icon && <countBadge.icon className="w-3 h-3 mr-1" />}
+                            Qtd: {countBadge.text}
+                          </Badge>
+                        </div>
+                      )}
                     </TableCell>
                     
                     {!isMobile && (

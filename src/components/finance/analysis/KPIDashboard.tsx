@@ -49,34 +49,34 @@ export const KPIDashboard = ({ kpis }: KPIDashboardProps) => {
   };
 
   return (
-    <div className={`grid gap-3 mb-6 ${isMobile ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-3'}`}>
+    <div className={`grid gap-3 mb-6 ${isMobile ? 'grid-cols-2' : 'grid-cols-2 lg:grid-cols-3'}`}>
       {kpis.map((kpi, index) => (
         <Card key={index} className="relative overflow-hidden hover:shadow-lg transition-shadow duration-200">
-          <CardContent className="p-4">
+          <CardContent className={`${isMobile ? 'p-3' : 'p-4'}`}>
             {/* Badge */}
-            <div className="absolute top-2 right-2">
-              <span className={`text-xs px-2 py-1 rounded-full font-medium ${kpi.badge.color} ${kpi.badge.textColor}`}>
+            <div className={`absolute ${isMobile ? 'top-1 right-1' : 'top-2 right-2'}`}>
+              <span className={`${isMobile ? 'text-xs px-1.5 py-0.5' : 'text-xs px-2 py-1'} rounded-full font-medium ${kpi.badge.color} ${kpi.badge.textColor}`}>
                 {kpi.badge.label}
               </span>
             </div>
 
             {/* Content */}
-            <div className="space-y-2">
-              <h3 className="text-sm font-medium text-muted-foreground">{kpi.title}</h3>
+            <div className={`space-y-${isMobile ? '1' : '2'}`}>
+              <h3 className={`${isMobile ? 'text-xs' : 'text-sm'} font-medium text-muted-foreground`}>{kpi.title}</h3>
               
               <div className="space-y-1">
-                <p className={`font-bold ${isMobile ? 'text-xl' : 'text-2xl'}`} title={formatValue(kpi.value, kpi.format)}>
+                <p className={`font-bold ${isMobile ? 'text-lg' : 'text-2xl'}`} title={formatValue(kpi.value, kpi.format)}>
                   {formatValue(kpi.value, kpi.format)}
                 </p>
                 
                 {kpi.growth !== 0 && (
                   <div className="flex items-center gap-1">
                     {getTrendIcon(kpi.growth)}
-                    <span className={`text-xs font-medium ${
+                    <span className={`${isMobile ? 'text-xs' : 'text-xs'} font-medium ${
                       kpi.growth > 0 ? 'text-green-600' : 
                       kpi.growth < 0 ? 'text-red-600' : 'text-gray-500'
                     }`}>
-                      {formatGrowth(kpi.growth)} vs mês anterior
+                      {formatGrowth(kpi.growth)} {isMobile ? '' : 'vs mês anterior'}
                     </span>
                   </div>
                 )}

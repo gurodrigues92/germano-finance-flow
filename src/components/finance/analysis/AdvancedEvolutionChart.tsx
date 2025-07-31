@@ -75,28 +75,30 @@ export const AdvancedEvolutionChart = ({ data }: AdvancedEvolutionChartProps) =>
 
   return (
     <Card className="mb-6">
-      <CardHeader>
-        <div className="flex items-center justify-between">
+      <CardHeader className={`${isMobile ? 'pb-3' : ''}`}>
+        <div className={`flex ${isMobile ? 'flex-col space-y-3' : 'items-center justify-between'}`}>
           <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5" />
-            Evolução Temporal Avançada
+            <TrendingUp className={`${isMobile ? 'h-4 w-4' : 'h-5 w-5'}`} />
+            <span className={`${isMobile ? 'text-lg' : ''}`}>
+              {isMobile ? 'Evolução Temporal' : 'Evolução Temporal Avançada'}
+            </span>
           </CardTitle>
           <Select value={selectedMetric} onValueChange={setSelectedMetric}>
-            <SelectTrigger className={`${isMobile ? 'w-[160px]' : 'w-[200px]'}`}>
+            <SelectTrigger className={`${isMobile ? 'w-full' : 'w-[200px]'}`}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {metricOptions.map(option => (
                 <SelectItem key={option.value} value={option.value}>
-                  {option.label}
+                  {isMobile ? option.label.replace('Faturamento ', '') : option.label}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
       </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={chartConfig.areaChart.height}>
+      <CardContent className={`${isMobile ? 'p-3' : ''}`}>
+        <ResponsiveContainer width="100%" height={isMobile ? 300 : chartConfig.areaChart.height}>
           <AreaChart data={data}>
             <defs>
               <linearGradient id={`gradient-${selectedMetric}`} x1="0" y1="0" x2="0" y2="1">
@@ -153,13 +155,13 @@ export const AdvancedEvolutionChart = ({ data }: AdvancedEvolutionChartProps) =>
         </ResponsiveContainer>
         
         {/* Insights */}
-        <div className="mt-4 p-3 bg-muted/30 rounded-lg">
-          <p className="text-sm text-muted-foreground">
-            <strong>Insight:</strong> {currentMetric.label} mostra{' '}
+        <div className={`mt-4 ${isMobile ? 'p-2' : 'p-3'} bg-muted/30 rounded-lg`}>
+          <p className={`${isMobile ? 'text-xs' : 'text-sm'} text-muted-foreground`}>
+            <strong>Insight:</strong> {isMobile ? currentMetric.label.replace('Faturamento ', '') : currentMetric.label} mostra{' '}
             {trendData && trendData.length > 1 && 
               (trendData[trendData.length - 1].trend > trendData[0].trend ? 
                 'tendência de crescimento' : 'tendência de declínio')
-            } ao longo do período analisado.
+            } {isMobile ? '' : 'ao longo do período analisado'}.
           </p>
         </div>
       </CardContent>
