@@ -2,11 +2,13 @@ import { useFinance } from '@/hooks/useFinance';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useAnalysisData } from '@/hooks/useAnalysisData';
-import { AnalysisHeader } from '@/components/finance/analysis/AnalysisHeader';
-import { PaymentMethodsChart } from '@/components/finance/analysis/PaymentMethodsChart';
+import { useAnalyticsKPIs } from '@/hooks/useAnalyticsKPIs';
+import { useAdvancedAnalytics } from '@/hooks/useAdvancedAnalytics';
+import { KPIDashboard } from '@/components/finance/analysis/KPIDashboard';
+import { AdvancedEvolutionChart } from '@/components/finance/analysis/AdvancedEvolutionChart';
+import { PaymentMethodsAnalytics } from '@/components/finance/analysis/PaymentMethodsAnalytics';
 import { SharesDistributionChart } from '@/components/finance/analysis/SharesDistributionChart';
 import { OperationalChartsGrid } from '@/components/finance/analysis/OperationalChartsGrid';
-import { EvolutionChart } from '@/components/finance/analysis/EvolutionChart';
 import { MonthlyReportCard } from '@/components/finance/analysis/MonthlyReportCard';
 
 export const Analysis = () => {
@@ -25,22 +27,49 @@ export const Analysis = () => {
     estoqueData
   } = useAnalysisData(currentMonth);
 
+  const { 
+    currentData: advancedCurrentData, 
+    previousData, 
+    evolutionData: advancedEvolutionData,
+    paymentMethodsAnalytics
+  } = useAdvancedAnalytics(currentMonth);
+
+  const { kpis } = useAnalyticsKPIs({
+    transactions: advancedCurrentData,
+    previousMonthTransactions: previousData
+  });
+
   return (
     <PageLayout 
-      title="Análise Financeira"
-      subtitle="Relatórios detalhados e insights"
+      title="Análise Financeira Inteligente"
+      subtitle="Dashboard analítico com insights automatizados e previsões"
     >
-      <AnalysisHeader
-        currentMonth={currentMonth}
-        setCurrentMonth={setCurrentMonth}
-        monthOptions={monthOptions}
-        currentData={currentData}
-        growth={growth}
-      />
+      {/* Month Selector */}
+      <div className="mb-6">
+        <select 
+          value={currentMonth} 
+          onChange={(e) => setCurrentMonth(e.target.value)}
+          className="border rounded-lg px-3 py-2 bg-background"
+        >
+          {monthOptions.map(option => (
+            <option key={option.value} value={option.value}>
+              {option.label} {option.hasData && `(${option.count} transações)`}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* KPI Dashboard */}
+      <KPIDashboard kpis={kpis} />
+
+      {/* Advanced Evolution Chart */}
+      <AdvancedEvolutionChart data={advancedEvolutionData} />
+
+      {/* Payment Methods Analytics */}
+      <PaymentMethodsAnalytics data={paymentMethodsAnalytics} />
 
       {/* Charts Grid */}
       <div className={`card-grid ${isMobile ? 'grid-cols-1' : 'card-grid-2'}`}>
-        <PaymentMethodsChart paymentMethodsData={paymentMethodsData} />
         <SharesDistributionChart sharesData={sharesData} />
       </div>
 
@@ -50,9 +79,6 @@ export const Analysis = () => {
         investimentosData={investimentosData}
         estoqueData={estoqueData}
       />
-
-      {/* Evolution Chart */}
-      <EvolutionChart evolutionData={evolutionData} />
 
       {/* Detailed Monthly Report */}
       <MonthlyReportCard
