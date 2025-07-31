@@ -15,6 +15,15 @@ export const Analysis = () => {
   const { currentMonth, setCurrentMonth } = useFinance();
   const isMobile = useIsMobile();
   
+  // Use all hooks unconditionally
+  const analysisData = useAnalysisData(currentMonth);
+  const advancedAnalytics = useAdvancedAnalytics(currentMonth);
+  const analyticsKPIs = useAnalyticsKPIs({
+    transactions: advancedAnalytics.currentData,
+    previousMonthTransactions: advancedAnalytics.previousData
+  });
+
+  // Destructure after all hooks are called
   const {
     currentData,
     monthOptions,
@@ -25,19 +34,16 @@ export const Analysis = () => {
     custosData,
     investimentosData,
     estoqueData
-  } = useAnalysisData(currentMonth);
+  } = analysisData;
 
   const { 
     currentData: advancedCurrentData, 
     previousData, 
     evolutionData: advancedEvolutionData,
     paymentMethodsAnalytics
-  } = useAdvancedAnalytics(currentMonth);
+  } = advancedAnalytics;
 
-  const { kpis } = useAnalyticsKPIs({
-    transactions: advancedCurrentData,
-    previousMonthTransactions: previousData
-  });
+  const { kpis } = analyticsKPIs;
 
   return (
     <PageLayout 
