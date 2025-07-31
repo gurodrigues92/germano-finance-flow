@@ -29,13 +29,21 @@ export const usePullToRefresh = ({
   const handleTouchMove = useCallback((e: TouchEvent) => {
     if (!isPulling) return;
     
+    const container = containerRef.current;
+    if (!container) return;
+    
     currentY.current = e.touches[0].clientY;
     const deltaY = currentY.current - startY.current;
     
-    if (deltaY > 0) {
+    // Only prevent default and handle pull if we're at the top and pulling down
+    if (deltaY > 0 && container.scrollTop === 0) {
       e.preventDefault();
       const distance = Math.min(deltaY / resistance, threshold * 1.5);
       setPullDistance(distance);
+    } else if (deltaY <= 0) {
+      // Reset pull state if user starts scrolling up
+      setIsPulling(false);
+      setPullDistance(0);
     }
   }, [isPulling, resistance, threshold]);
 
