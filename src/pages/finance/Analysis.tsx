@@ -68,30 +68,35 @@ export const Analysis = () => {
       {/* KPI Dashboard */}
       <KPIDashboard kpis={kpis} />
 
+      {/* Comparativo dos Últimos 3 Meses */}
+      <div className="mb-6">
+        <MonthlyReportCard
+          currentMonth={currentMonth}
+          currentData={currentData}
+          monthOptions={monthOptions}
+        />
+      </div>
+
       {/* Advanced Evolution Chart */}
       <AdvancedEvolutionChart data={advancedEvolutionData} />
 
       {/* Payment Methods Analytics */}
       <PaymentMethodsAnalytics data={paymentMethodsAnalytics} />
 
-      {/* Charts Grid */}
-      <div className={`card-grid ${isMobile ? 'grid-cols-1' : 'card-grid-2'}`}>
+      {/* Distribuição de Participações */}
+      <div className={`card-grid ${isMobile ? 'grid-cols-1' : 'card-grid-2'} mb-6`}>
         <SharesDistributionChart sharesData={sharesData} />
       </div>
 
-      {/* Operational Charts Grid */}
-      <OperationalChartsGrid
-        custosData={custosData}
-        investimentosData={investimentosData}
-        estoqueData={estoqueData}
-      />
-
-      {/* Detailed Monthly Report */}
-      <MonthlyReportCard
-        currentMonth={currentMonth}
-        currentData={currentData}
-        monthOptions={monthOptions}
-      />
+      {/* Gráficos Operacionais (por último) */}
+      <div className="mt-8">
+        <h3 className="text-lg font-semibold mb-4 text-muted-foreground">Análise Operacional</h3>
+        <OperationalChartsGrid
+          custosData={custosData}
+          investimentosData={investimentosData}
+          estoqueData={estoqueData}
+        />
+      </div>
     </PageLayout>
   );
 };
