@@ -11,49 +11,54 @@ export const useAdvancedAnalytics = (currentMonth: string) => {
   const { investimentos } = useInvestimentos();
   const { produtos } = useProdutos();
 
-  return useMemo(() => {
-    // Get current month transactions
-    const currentData = transactions.filter(t => t.month === currentMonth);
-    
-    // Get previous month for comparison
+  // Get current month transactions
+  const currentData = useMemo(() => 
+    transactions.filter(t => t.month === currentMonth), 
+    [transactions, currentMonth]
+  );
+  
+  // Get previous month for comparison
+  const { previousData, currentDate } = useMemo(() => {
     const currentDate = new Date(currentMonth + '-01');
     const previousDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
     const previousMonth = previousDate.toISOString().slice(0, 7);
-    
     const previousData = transactions.filter(t => t.month === previousMonth);
+    
+    return { previousData, currentDate };
+  }, [currentMonth, transactions]);
 
-    // Enhanced evolution data with new metrics
-    const evolutionData = useMemo(() => {
-      const last12Months = [];
-      const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 11, 1);
+  // Enhanced evolution data with new metrics
+  const evolutionData = useMemo(() => {
+    const last12Months = [];
+    const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 11, 1);
+    
+    for (let i = 0; i < 12; i++) {
+      const monthDate = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
+      const monthStr = monthDate.toISOString().slice(0, 7);
+      const monthTransactions = transactions.filter(t => t.month === monthStr);
       
-      for (let i = 0; i < 12; i++) {
-        const monthDate = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
-        const monthStr = monthDate.toISOString().slice(0, 7);
-        const monthTransactions = transactions.filter(t => t.month === monthStr);
-        
-        const bruto = monthTransactions.reduce((sum, t) => sum + t.totalBruto, 0);
-        const liquido = monthTransactions.reduce((sum, t) => sum + t.totalLiquido, 0);
-        const transacoes = monthTransactions.length;
-        const ticketMedio = transacoes > 0 ? bruto / transacoes : 0;
-        const margem = bruto > 0 ? (liquido / bruto) * 100 : 0;
-        
-        last12Months.push({
-          month: monthStr,
-          fullMonth: monthDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }),
-          bruto,
-          liquido,
-          transacoes,
-          ticketMedio,
-          margem
-        });
-      }
+      const bruto = monthTransactions.reduce((sum, t) => sum + t.totalBruto, 0);
+      const liquido = monthTransactions.reduce((sum, t) => sum + t.totalLiquido, 0);
+      const transacoes = monthTransactions.length;
+      const ticketMedio = transacoes > 0 ? bruto / transacoes : 0;
+      const margem = bruto > 0 ? (liquido / bruto) * 100 : 0;
       
-      return last12Months;
-    }, [transactions, currentDate]);
+      last12Months.push({
+        month: monthStr,
+        fullMonth: monthDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }),
+        bruto,
+        liquido,
+        transacoes,
+        ticketMedio,
+        margem
+      });
+    }
+    
+    return last12Months;
+  }, [transactions, currentDate]);
 
-    // Enhanced payment methods analytics
-    const paymentMethodsAnalytics = useMemo(() => {
+  // Enhanced payment methods analytics
+  const paymentMethodsAnalytics = useMemo(() => {
       const calculateMethodData = (transactions: Transaction[]) => {
         return transactions.reduce((acc, t) => ({
           dinheiro: { value: acc.dinheiro.value + t.dinheiro, count: acc.dinheiro.count + (t.dinheiro > 0 ? 1 : 0) },
@@ -113,38 +118,37 @@ export const useAdvancedAnalytics = (currentMonth: string) => {
           previousCount: previousMethods.credito.count,
           color: '#ef4444'
         }
-      ].filter(method => method.value > 0);
-    }, [currentData, previousData]);
+     ].filter(method => method.value > 0);
+  }, [currentData, previousData]);
 
-    // Performance heatmap data
-    const performanceHeatmap = useMemo(() => {
-      const heatmapData = [];
-      const monthDate = new Date(currentMonth + '-01');
-      const daysInMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0).getDate();
+  // Performance heatmap data
+  const performanceHeatmap = useMemo(() => {
+    const heatmapData = [];
+    const monthDate = new Date(currentMonth + '-01');
+    const daysInMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0).getDate();
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = `${currentMonth}-${day.toString().padStart(2, '0')}`;
+      const dayTransactions = currentData.filter(t => t.date === dateStr);
+      const dayTotal = dayTransactions.reduce((sum, t) => sum + t.totalBruto, 0);
       
-      for (let day = 1; day <= daysInMonth; day++) {
-        const dateStr = `${currentMonth}-${day.toString().padStart(2, '0')}`;
-        const dayTransactions = currentData.filter(t => t.date === dateStr);
-        const dayTotal = dayTransactions.reduce((sum, t) => sum + t.totalBruto, 0);
-        
-        heatmapData.push({
-          day,
-          date: dateStr,
-          value: dayTotal,
-          count: dayTransactions.length,
-          weekday: new Date(dateStr).getDay()
-        });
-      }
-      
-      return heatmapData;
-    }, [currentData, currentMonth]);
+      heatmapData.push({
+        day,
+        date: dateStr,
+        value: dayTotal,
+        count: dayTransactions.length,
+        weekday: new Date(dateStr).getDay()
+      });
+    }
+    
+    return heatmapData;
+  }, [currentData, currentMonth]);
 
-    return {
-      currentData,
-      previousData,
-      evolutionData,
-      paymentMethodsAnalytics,
-      performanceHeatmap
-    };
-  }, [currentMonth, transactions]);
+  return {
+    currentData,
+    previousData,
+    evolutionData,
+    paymentMethodsAnalytics,
+    performanceHeatmap
+  };
 };
