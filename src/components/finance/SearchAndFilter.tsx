@@ -112,148 +112,140 @@ export const SearchAndFilter = ({
   console.log('[Financeiro] SearchAndFilter filters:', filters);
 
   return (
-    <div className="space-y-3 mb-4">
-      {/* Sticky Search Bar */}
-      <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm p-3 -mx-3 border-b">
-        <div className="relative">
+    <div className="space-y-3">
+      {/* Search Bar */}
+      <div className="flex gap-2">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
+            type="text"
             placeholder="Buscar transações..."
             value={filters.searchText}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="pl-10 pr-12 h-11"
+            className="pl-10 h-9"
           />
-          {/* Filter Toggle for Mobile */}
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0"
-              >
-                <SlidersHorizontal className={`h-4 w-4 ${hasActiveFilters ? 'text-primary' : 'text-muted-foreground'}`} />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="bottom" className="max-h-[80vh]">
-              <SheetHeader className="mb-4">
-                <SheetTitle>Filtros Avançados</SheetTitle>
-              </SheetHeader>
-              
-              <div className="space-y-6 pb-6">
-                {/* Date Range Filter */}
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground mb-3 block">
-                    Período
-                  </label>
-                  <Select value={filters.dateRange} onValueChange={handleDateRangeChange}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {dateRangeOptions.map(option => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Value Range Filter */}
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground mb-3 block">
-                    Faixa de Valor
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <Input
-                      placeholder="Valor mínimo"
-                      type="number"
-                      inputMode="numeric"
-                      value={filters.valueRange.min}
-                      onChange={(e) => handleValueRangeChange('min', e.target.value)}
-                      className="text-sm"
-                    />
-                    <Input
-                      placeholder="Valor máximo"
-                      type="number"
-                      inputMode="numeric"
-                      value={filters.valueRange.max}
-                      onChange={(e) => handleValueRangeChange('max', e.target.value)}
-                      className="text-sm"
-                    />
-                  </div>
-                </div>
-
-                {/* Payment Methods Filter */}
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground mb-3 block">
-                    Métodos de Pagamento
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {paymentMethodOptions.map(method => (
-                      <Badge
-                        key={method.value}
-                        variant={filters.paymentMethods.includes(method.value) ? "default" : "outline"}
-                        className={`cursor-pointer transition-all hover:scale-105 justify-center p-3 h-auto ${
-                          filters.paymentMethods.includes(method.value) 
-                            ? method.color 
-                            : 'hover:bg-muted'
-                        }`}
-                        onClick={() => handlePaymentMethodToggle(method.value)}
-                      >
-                        {method.label}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Clear Filters */}
-                {hasActiveFilters && (
-                  <Button 
-                    variant="outline" 
-                    onClick={clearAllFilters}
-                    className="w-full"
-                  >
-                    <X className="h-4 w-4 mr-2" />
-                    Limpar Filtros
-                  </Button>
-                )}
-              </div>
-            </SheetContent>
-          </Sheet>
         </div>
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            <Button variant="outline" size="sm" className="shrink-0 relative">
+              <Filter className="h-4 w-4" />
+              {hasActiveFilters && (
+                <div className="absolute -top-1 -right-1 h-4 w-4 bg-primary rounded-full flex items-center justify-center">
+                  <div className="h-2 w-2 bg-primary-foreground rounded-full" />
+                </div>
+              )}
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="bottom" className="h-[70vh] max-h-[500px]">
+            <SheetHeader className="text-left mb-4">
+              <SheetTitle>Filtros Avançados</SheetTitle>
+            </SheetHeader>
+            
+            <div className="space-y-4 overflow-y-auto max-h-[400px]">
+              {/* Date Range */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Período</label>
+                <Select value={filters.dateRange} onValueChange={handleDateRangeChange}>
+                  <SelectTrigger className="h-9">
+                    <SelectValue placeholder="Período" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {dateRangeOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Value Range */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Valor</label>
+                <div className="grid grid-cols-2 gap-2">
+                  <Input
+                    type="number"
+                    placeholder="Mín"
+                    value={filters.valueRange.min}
+                    onChange={(e) => handleValueRangeChange('min', e.target.value)}
+                    className="h-9"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Máx"
+                    value={filters.valueRange.max}
+                    onChange={(e) => handleValueRangeChange('max', e.target.value)}
+                    className="h-9"
+                  />
+                </div>
+              </div>
+
+              {/* Payment Methods */}
+              <div>
+                <label className="text-sm font-medium mb-2 block">Métodos</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {paymentMethodOptions.map((method) => (
+                    <label key={method.value} className="flex items-center space-x-2 cursor-pointer p-2 rounded border border-border hover:bg-accent">
+                      <input
+                        type="checkbox"
+                        checked={filters.paymentMethods.includes(method.value)}
+                        onChange={() => handlePaymentMethodToggle(method.value)}
+                        className="sr-only"
+                      />
+                      <div className={`w-4 h-4 border-2 rounded flex items-center justify-center ${
+                        filters.paymentMethods.includes(method.value) 
+                          ? 'bg-primary border-primary' 
+                          : 'border-border'
+                      }`}>
+                        {filters.paymentMethods.includes(method.value) && (
+                          <div className="w-2 h-2 bg-primary-foreground rounded-full" />
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className={`w-2 h-2 rounded-full ${method.color}`} />
+                        <span className="text-sm">{method.label}</span>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Clear Button */}
+              {hasActiveFilters && (
+                <Button 
+                  variant="outline" 
+                  onClick={clearAllFilters}
+                  className="w-full h-9"
+                >
+                  <X className="w-4 h-4 mr-2" />
+                  Limpar Filtros
+                </Button>
+              )}
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
 
-      {/* Quick Filters - Horizontal Chips */}
-      <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
-        {quickFilters.map(filter => (
-          <Button
-            key={filter.value}
-            variant={filters.dateRange === filter.value ? "default" : "outline"}
-            size="sm"
-            className="whitespace-nowrap h-8 px-3 text-xs flex-shrink-0"
-            onClick={() => handleDateRangeChange(filter.value)}
-          >
-            {filter.label}
-          </Button>
-        ))}
-        {hasActiveFilters && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="whitespace-nowrap h-8 px-3 text-xs flex-shrink-0 text-muted-foreground"
-            onClick={clearAllFilters}
-          >
-            <X className="h-3 w-3 mr-1" />
-            Limpar
-          </Button>
-        )}
-      </div>
+      {/* Quick Chips */}
+      {quickFilters.some(filter => filters.dateRange === filter.value) || hasActiveFilters ? (
+        <div className="flex flex-wrap gap-1">
+          {quickFilters.map((filter) => (
+            <Badge
+              key={filter.value}
+              variant={filters.dateRange === filter.value ? "default" : "outline"}
+              className="cursor-pointer text-xs h-6 px-2"
+              onClick={() => handleDateRangeChange(filter.value)}
+            >
+              {filter.label}
+            </Badge>
+          ))}
+        </div>
+      ) : null}
 
-      {/* Results Count */}
+      {/* Results */}
       {hasActiveFilters && (
-        <div className="text-xs text-muted-foreground px-1">
-          {totalResults} {totalResults === 1 ? 'transação encontrada' : 'transações encontradas'}
+        <div className="text-xs text-muted-foreground">
+          {totalResults} resultado{totalResults !== 1 ? 's' : ''}
         </div>
       )}
     </div>

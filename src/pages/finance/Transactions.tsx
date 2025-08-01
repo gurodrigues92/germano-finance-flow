@@ -180,60 +180,56 @@ export const Transactions = () => {
 
   return (
     <PageLayout 
-      title="Gestão de Transações"
-      subtitle={`Transações de ${monthOptions.find(m => m.value === currentMonth)?.label || currentMonth} - ${currentMonthTransactions.length} registros`}
+      title="Transações"
+      subtitle={`${monthOptions.find(m => m.value === currentMonth)?.label || currentMonth} • ${filteredTransactions.length} transações`}
       onFabClick={() => setIsOpen(true)}
     >
-      {/* Month Selection Header */}
-      <DashboardHeader
-        currentMonth={currentMonth}
-        setCurrentMonth={setCurrentMonth}
-        monthOptions={monthOptions}
-      />
-
-      <div className="header-actions">
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-          <TransactionActions
-            onNewTransaction={handleNewTransaction}
-          />
-          
-          <TransactionForm
-            isOpen={isOpen}
-            onOpenChange={setIsOpen}
-            editingTransaction={editingTransaction}
-            onSubmit={handleFormSubmit}
-            loading={loading}
-          />
-        </Dialog>
+      {/* Compact Header with Month Selection */}
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border/50 mb-4">
+        <DashboardHeader
+          currentMonth={currentMonth}
+          setCurrentMonth={setCurrentMonth}
+          monthOptions={monthOptions}
+        />
       </div>
 
-      {/* Custom Date Filter */}
-      <CustomDateFilter
-        filters={filters}
-        onFiltersChange={setFilters}
-      />
+      {/* Action Dialog */}
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <TransactionActions onNewTransaction={handleNewTransaction} />
+        <TransactionForm
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+          editingTransaction={editingTransaction}
+          onSubmit={handleFormSubmit}
+          loading={loading}
+        />
+      </Dialog>
 
-      {/* Period Summary */}
-      <PeriodSummary
+      {/* Filters Section */}
+      <div className="space-y-3 mb-4">
+        <SearchAndFilter
+          filters={filters}
+          onFiltersChange={setFilters}
+          totalResults={totalFiltered}
+        />
+        
+        <CustomDateFilter
+          filters={filters}
+          onFiltersChange={setFilters}
+        />
+      </div>
+
+      {/* Smart Summary */}
+      <TransactionSummary 
         transactions={filteredTransactions}
         dateStart={filters.customDateStart}
         dateEnd={filters.customDateEnd}
-        isActive={filters.isCustomDateActive}
+        isCustomPeriod={filters.isCustomDateActive}
+        totalTransactions={currentMonthTransactions.length}
       />
 
-      {/* Search and Filters */}
-      <SearchAndFilter
-        filters={filters}
-        onFiltersChange={setFilters}
-        totalResults={totalFiltered}
-      />
-
-      {/* Pull to Refresh Content */}
-      <PullToRefresh onRefresh={handleRefresh} className="min-h-[400px]">
-        {/* Monthly Summary */}
-        <TransactionSummary transactions={filteredTransactions} />
-
-        {/* Transactions Table */}
+      {/* Main Content */}
+      <PullToRefresh onRefresh={handleRefresh} className="min-h-[300px]">
         <TransactionTable
           transactions={filteredTransactions}
           onEdit={handleEdit}
@@ -245,7 +241,7 @@ export const Transactions = () => {
         />
       </PullToRefresh>
 
-      {/* Bulk Action Bar */}
+      {/* Bulk Actions */}
       {isSelectionMode && (
         <BulkActionBar
           selectedCount={selectedCount}
@@ -257,7 +253,7 @@ export const Transactions = () => {
         />
       )}
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Modal */}
       <DeleteConfirmModal
         isOpen={deleteModalOpen}
         onOpenChange={setDeleteModalOpen}

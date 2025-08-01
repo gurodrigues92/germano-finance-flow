@@ -1,11 +1,22 @@
 import { Transaction } from '@/types/finance';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 interface TransactionSummaryProps {
   transactions: Transaction[];
+  dateStart?: string;
+  dateEnd?: string;
+  isCustomPeriod?: boolean;
+  totalTransactions?: number;
 }
 
-export const TransactionSummary = ({ transactions }: TransactionSummaryProps) => {
+export const TransactionSummary = ({ 
+  transactions, 
+  dateStart, 
+  dateEnd, 
+  isCustomPeriod = false,
+  totalTransactions 
+}: TransactionSummaryProps) => {
   const totals = transactions.reduce(
     (acc, t) => ({
       bruto: acc.bruto + t.totalBruto,
@@ -21,74 +32,77 @@ export const TransactionSummary = ({ transactions }: TransactionSummaryProps) =>
   const formatCurrency = (value: number) => 
     value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-  return (
-    <div className="space-y-4">
-      {/* Main Financial Summary */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Total Bruto</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold" style={{ color: 'hsl(var(--chart-2))' }}>
-              {formatCurrency(totals.bruto)}
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Total Líquido</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold" style={{ color: 'hsl(var(--chart-1))' }}>
-              {formatCurrency(totals.liquido)}
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground">Total Taxas</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold" style={{ color: 'hsl(var(--destructive))' }}>
-              {formatCurrency(totals.taxas)}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+  // Context message
+  const getContextMessage = () => {
+    if (isCustomPeriod && dateStart && dateEnd) {
+      const start = new Date(dateStart).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+      const end = new Date(dateEnd).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+      return `Período: ${start} - ${end}`;
+    }
+    if (totalTransactions && transactions.length !== totalTransactions) {
+      return `${transactions.length} de ${totalTransactions} transações`;
+    }
+    return `${transactions.length} transações`;
+  };
 
-      {/* Commission Breakdown */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm text-muted-foreground">Distribuição de Comissões</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="text-center">
-              <div className="text-lg font-bold" style={{ color: 'hsl(var(--chart-3))' }}>
-                {formatCurrency(totals.studio)}
-              </div>
-              <div className="text-xs text-muted-foreground">Studio (60%)</div>
+  return (
+    <Card className="mb-4">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base">Resumo Financeiro</CardTitle>
+          <Badge variant="outline" className="text-xs">
+            {getContextMessage()}
+          </Badge>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Main Metrics */}
+        <div className="grid grid-cols-3 gap-4">
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground">Bruto</p>
+            <p className="text-lg font-bold text-primary">{formatCurrency(totals.bruto)}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground">Líquido</p>
+            <p className="text-lg font-bold text-emerald-600">{formatCurrency(totals.liquido)}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground">Taxas</p>
+            <p className="text-lg font-bold text-red-600">{formatCurrency(totals.taxas)}</p>
+            <p className="text-xs text-muted-foreground">
+              {totals.bruto > 0 ? ((totals.taxas / totals.bruto) * 100).toFixed(1) : 0}%
+            </p>
+          </div>
+        </div>
+
+        {/* Distribution */}
+        <div className="border-t border-border/50 pt-3">
+          <p className="text-sm font-medium text-muted-foreground mb-2">Distribuição</p>
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div>
+              <p className="text-xs text-muted-foreground">Studio</p>
+              <p className="text-sm font-semibold text-blue-600">{formatCurrency(totals.studio)}</p>
+              <p className="text-xs text-muted-foreground">
+                {totals.liquido > 0 ? ((totals.studio / totals.liquido) * 100).toFixed(0) : 0}%
+              </p>
             </div>
-            
-            <div className="text-center">
-              <div className="text-lg font-bold" style={{ color: 'hsl(var(--chart-4))' }}>
-                {formatCurrency(totals.edu)}
-              </div>
-              <div className="text-xs text-muted-foreground">Profissional (40%)</div>
+            <div>
+              <p className="text-xs text-muted-foreground">Prof</p>
+              <p className="text-sm font-semibold text-green-600">{formatCurrency(totals.edu)}</p>
+              <p className="text-xs text-muted-foreground">
+                {totals.liquido > 0 ? ((totals.edu / totals.liquido) * 100).toFixed(0) : 0}%
+              </p>
             </div>
-            
-            <div className="text-center">
-              <div className="text-lg font-bold" style={{ color: 'hsl(var(--chart-5))' }}>
-                {formatCurrency(totals.kam)}
-              </div>
-              <div className="text-xs text-muted-foreground">Assistente (4%)</div>
+            <div>
+              <p className="text-xs text-muted-foreground">Assist</p>
+              <p className="text-sm font-semibold text-purple-600">{formatCurrency(totals.kam)}</p>
+              <p className="text-xs text-muted-foreground">
+                {totals.liquido > 0 ? ((totals.kam / totals.liquido) * 100).toFixed(0) : 0}%
+              </p>
             </div>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
