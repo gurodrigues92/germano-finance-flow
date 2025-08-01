@@ -91,7 +91,9 @@ export const Transactions = () => {
     setEditingTransaction(null);
   };
 
-  const handleFormSubmit = (formData: TransactionFormData, isEditing: boolean) => {
+  const handleFormSubmit = async (formData: TransactionFormData, isEditing: boolean) => {
+    console.log('[Transactions] handleFormSubmit chamado com:', formData, 'isEditing:', isEditing);
+    
     const data = {
       date: formData.date,
       dinheiro: parseFloat(formData.dinheiro) || 0,
@@ -101,7 +103,10 @@ export const Transactions = () => {
       customRates: formData.useCustomRates ? formData.customRates : undefined
     };
 
+    console.log('[Transactions] Dados processados:', data);
+
     if (data.dinheiro + data.pix + data.debito + data.credito <= 0) {
+      console.log('[Transactions] Erro: Nenhum valor informado');
       toast({
         title: "Erro",
         description: "Informe pelo menos um valor para a transação",
@@ -110,12 +115,34 @@ export const Transactions = () => {
       return;
     }
 
-    console.log('[Financeiro] Submitting transaction:', data);
-    
-    if (isEditing && editingTransaction) {
-      updateTransaction(editingTransaction.id, data);
-    } else {
-      addTransaction(data);
+    try {
+      console.log('[Transactions] Tentando salvar transação...');
+      
+      let success = false;
+      if (isEditing && editingTransaction) {
+        console.log('[Transactions] Atualizando transação:', editingTransaction.id);
+        const result = await updateTransaction(editingTransaction.id, data);
+        success = typeof result === 'boolean' ? result : false;
+      } else {
+        console.log('[Transactions] Adicionando nova transação');
+        const result = await addTransaction(data);
+        success = typeof result === 'boolean' ? result : false;
+      }
+
+      if (success) {
+        console.log('[Transactions] Transação salva com sucesso, fechando modal');
+        setIsOpen(false);
+        resetForm();
+      } else {
+        console.log('[Transactions] Falha ao salvar transação');
+      }
+    } catch (error) {
+      console.error('[Transactions] Erro ao salvar transação:', error);
+      toast({
+        title: "Erro",
+        description: "Erro inesperado ao salvar transação",
+        variant: "destructive"
+      });
     }
   };
 

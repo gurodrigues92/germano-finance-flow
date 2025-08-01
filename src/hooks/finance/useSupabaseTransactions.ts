@@ -69,7 +69,23 @@ export const useSupabaseTransactions = () => {
     };
   }) => {
     try {
+      console.log('[Supabase] Iniciando adição de transação:', transactionInput);
       setLoading(true);
+      
+      // Verificar se o usuário está autenticado
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.log('[Supabase] Usuário não autenticado');
+        toast({
+          title: "Erro de Autenticação",
+          description: "Você precisa estar logado para adicionar transações",
+          variant: "destructive"
+        });
+        return false;
+      }
+
+      console.log('[Supabase] Usuário autenticado:', user.id);
+      
       // Importar os cálculos existentes
       const { calculateTransaction } = await import('@/lib/finance/calculations');
       const calculations = calculateTransaction(
@@ -80,32 +96,43 @@ export const useSupabaseTransactions = () => {
         transactionInput.customRates
       );
 
+      console.log('[Supabase] Cálculos realizados:', calculations);
+
       const month = transactionInput.date.slice(0, 7); // YYYY-MM format
       const year = parseInt(transactionInput.date.slice(0, 4)); // Extract year from date string
       
+      const insertData = {
+        data: transactionInput.date,
+        dinheiro: transactionInput.dinheiro,
+        pix: transactionInput.pix,
+        debito: transactionInput.debito,
+        credito: transactionInput.credito,
+        total_bruto: calculations.totalBruto,
+        taxa_debito: calculations.taxaDebito,
+        taxa_credito: calculations.taxaCredito,
+        total_liquido: calculations.totalLiquido,
+        studio_share: calculations.studioShare,
+        edu_share: calculations.eduShare,
+        kam_share: calculations.kamShare,
+        mes_referencia: month,
+        ano: year,
+        custom_rates: transactionInput.customRates || null
+      };
+
+      console.log('[Supabase] Dados para inserção:', insertData);
+      
       const { data, error } = await supabase
         .from('transacoes')
-        .insert({
-          data: transactionInput.date,
-          dinheiro: transactionInput.dinheiro,
-          pix: transactionInput.pix,
-          debito: transactionInput.debito,
-          credito: transactionInput.credito,
-          total_bruto: calculations.totalBruto,
-          taxa_debito: calculations.taxaDebito,
-          taxa_credito: calculations.taxaCredito,
-          total_liquido: calculations.totalLiquido,
-          studio_share: calculations.studioShare,
-          edu_share: calculations.eduShare,
-          kam_share: calculations.kamShare,
-          mes_referencia: month,
-          ano: year,
-          custom_rates: transactionInput.customRates || null
-        })
+        .insert(insertData)
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('[Supabase] Erro SQL:', error);
+        throw error;
+      }
+
+      console.log('[Supabase] Transação inserida no banco:', data);
 
       // Atualizar estado local
       await loadTransactions();
@@ -115,17 +142,19 @@ export const useSupabaseTransactions = () => {
         description: "Transação adicionada com sucesso!"
       });
 
-      console.log('[Supabase] Transação adicionada:', data);
+      console.log('[Supabase] Transação adicionada com sucesso');
       return true;
     } catch (error) {
-      console.error('[Supabase] Erro ao adicionar transação:', error);
+      console.error('[Supabase] Erro completo ao adicionar transação:', error);
+      const errorMessage = error?.message || 'Erro desconhecido';
       toast({
         title: "Erro",
-        description: "Erro ao adicionar transação",
+        description: `Erro ao adicionar transação: ${errorMessage}`,
         variant: "destructive"
       });
       return false;
     } finally {
+      console.log('[Supabase] Finalizando addTransaction, setLoading(false)');
       setLoading(false);
     }
   };

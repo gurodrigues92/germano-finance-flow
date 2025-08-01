@@ -49,19 +49,40 @@ export const useTransactionForm = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validar data não pode ser futura
-    const selectedDate = new Date(formData.date + 'T00:00:00');
-    const today = new Date();
-    today.setHours(23, 59, 59, 999); // Set to end of today
+    console.log('[TransactionForm] Iniciando submit com dados:', formData);
     
-    if (selectedDate > today) {
-      alert('A data não pode ser futura. Por favor, selecione uma data válida.');
+    // Validar se há pelo menos um valor
+    const hasValues = formData.dinheiro || formData.pix || formData.debito || formData.credito;
+    if (!hasValues) {
+      console.log('[TransactionForm] Erro: Nenhum valor informado');
+      alert('Informe pelo menos um valor para a transação.');
       return;
     }
     
+    // Validar data usando getCurrentBrazilDate para consistência
+    try {
+      const selectedDate = new Date(formData.date + 'T12:00:00'); // Use meio-dia para evitar problemas de timezone
+      const { getCurrentBrazilDate } = require('@/lib/dateUtils');
+      const today = getCurrentBrazilDate();
+      today.setHours(23, 59, 59, 999);
+      
+      if (selectedDate > today) {
+        console.log('[TransactionForm] Erro: Data futura selecionada');
+        alert('A data não pode ser futura. Por favor, selecione uma data válida.');
+        return;
+      }
+    } catch (error) {
+      console.error('[TransactionForm] Erro na validação de data:', error);
+      alert('Data inválida. Por favor, selecione uma data válida.');
+      return;
+    }
+    
+    console.log('[TransactionForm] Validações passaram, chamando onSubmit');
     onSubmit(formData, !!editingTransaction);
-    resetForm();
-    onOpenChange(false);
+    
+    if (!editingTransaction) {
+      resetForm();
+    }
   };
 
   const handleToggleCustomRates = (checked: boolean) => {
