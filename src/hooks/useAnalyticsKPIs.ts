@@ -61,7 +61,7 @@ export const useAnalyticsKPIs = ({ transactions, previousMonthTransactions }: An
           format: 'currency' as const
         },
         {
-          title: 'Ticket Médio',
+          title: 'Ticket Médio (por transação)',
           value: ticketMedio,
           growth: growthTicketMedio,
           badge: getPerformanceBadge(growthTicketMedio),

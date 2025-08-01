@@ -27,12 +27,18 @@ export const useAdvancedAnalytics = (currentMonth: string) => {
     return { previousData, currentDate };
   }, [currentMonth, transactions]);
 
-  // Enhanced evolution data with new metrics
+  // Enhanced evolution data with new metrics - starting from January 2025
   const evolutionData = useMemo(() => {
-    const last12Months = [];
-    const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 11, 1);
+    const months = [];
+    // Start from January 2025
+    const startDate = new Date(2025, 0, 1); // January 2025
+    const currentDate = new Date(currentMonth + '-01');
     
-    for (let i = 0; i < 12; i++) {
+    // Calculate how many months from Jan 2025 to current month
+    const monthsDiff = (currentDate.getFullYear() - startDate.getFullYear()) * 12 + 
+                      (currentDate.getMonth() - startDate.getMonth()) + 1;
+    
+    for (let i = 0; i < monthsDiff; i++) {
       const monthDate = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
       const monthStr = monthDate.toISOString().slice(0, 7);
       const monthTransactions = transactions.filter(t => t.month === monthStr);
@@ -43,9 +49,9 @@ export const useAdvancedAnalytics = (currentMonth: string) => {
       const ticketMedio = transacoes > 0 ? bruto / transacoes : 0;
       const margem = bruto > 0 ? (liquido / bruto) * 100 : 0;
       
-      last12Months.push({
+      months.push({
         month: monthStr,
-        fullMonth: monthDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }),
+        fullMonth: monthDate.toLocaleDateString('pt-BR', { month: 'short', year: '2-digit' }).replace('.', ''),
         bruto,
         liquido,
         transacoes,
@@ -54,8 +60,8 @@ export const useAdvancedAnalytics = (currentMonth: string) => {
       });
     }
     
-    return last12Months;
-  }, [transactions, currentDate]);
+    return months;
+  }, [transactions, currentMonth]);
 
   // Enhanced payment methods analytics
   const paymentMethodsAnalytics = useMemo(() => {

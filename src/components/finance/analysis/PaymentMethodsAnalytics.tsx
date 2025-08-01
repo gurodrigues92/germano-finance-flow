@@ -52,77 +52,120 @@ export const PaymentMethodsAnalytics = ({ data }: PaymentMethodsAnalyticsProps) 
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Método</TableHead>
-                {!isMobile && <TableHead className="text-right">Valor Total</TableHead>}
-                <TableHead className="text-right">{isMobile ? 'Trans.' : 'Transações'}</TableHead>
-                {!isMobile && <TableHead className="text-right">Ticket Médio</TableHead>}
-                <TableHead className="text-right">{isMobile ? '%' : 'Participação'}</TableHead>
-                <TableHead className="text-right">Tendência</TableHead>
-                {!isMobile && <TableHead className="text-right">Status</TableHead>}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data.map((method) => {
-                const valueGrowth = calculateGrowth(method.value, method.previousValue);
-                const countGrowth = calculateGrowth(method.count, method.previousCount);
-                const valueBadge = getGrowthBadge(valueGrowth);
-                const countBadge = getGrowthBadge(countGrowth);
-                const alertLevel = getAlertLevel(method);
-
-                return (
-                  <TableRow key={method.name}>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-3 h-3 rounded-full" 
-                          style={{ backgroundColor: method.color }}
-                        />
-                        <span className={`font-medium ${isMobile ? 'text-sm' : ''}`}>{method.name}</span>
+        {isMobile ? (
+          // Mobile: Card layout
+          <div className="space-y-3">
+            {data.map((method) => {
+              const valueGrowth = calculateGrowth(method.value, method.previousValue);
+              const countGrowth = calculateGrowth(method.count, method.previousCount);
+              const valueBadge = getGrowthBadge(valueGrowth);
+              const countBadge = getGrowthBadge(countGrowth);
+              const alertLevel = getAlertLevel(method);
+              
+              return (
+                <div key={method.name} className="border rounded-lg p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div 
+                        className="w-3 h-3 rounded-full" 
+                        style={{ backgroundColor: method.color }}
+                      />
+                      <span className="font-medium text-sm">{method.name}</span>
+                    </div>
+                    <Badge variant="outline" className="text-xs">
+                      {method.percentage.toFixed(1)}%
+                    </Badge>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <span className="text-muted-foreground block">Total:</span>
+                      <div className="font-semibold">
+                        {formatCompactCurrency(method.value, true)}
                       </div>
-                    </TableCell>
-                    
-                    {!isMobile && (
-                      <TableCell className="text-right font-mono">
-                        {formatCompactCurrency(method.value, isMobile)}
-                      </TableCell>
-                    )}
-                    
-                    <TableCell className="text-right">
-                      {isMobile ? (
-                        <div className="text-center">
-                          <div className="font-mono text-sm">{formatCompactCurrency(method.value, true)}</div>
-                          <div className="text-xs text-muted-foreground">{method.count} tx</div>
-                        </div>
-                      ) : (
-                        method.count
-                      )}
-                    </TableCell>
-                    
-                    {!isMobile && (
-                      <TableCell className="text-right font-mono">
-                        {formatCompactCurrency(method.ticketMedio, isMobile)}
-                      </TableCell>
-                    )}
-                    
-                    <TableCell className="text-right">
-                      <Badge variant="outline">
-                        {method.percentage.toFixed(1)}%
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground block">Transações:</span>
+                      <div className="font-semibold">{method.count}</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between text-xs">
+                    <div>
+                      <span className="text-muted-foreground">Ticket:</span>
+                      <span className="ml-1 font-medium">
+                        {formatCompactCurrency(method.ticketMedio, true)}
+                      </span>
+                    </div>
+                    <div className="flex gap-1">
+                      <Badge variant={valueBadge.variant} className="text-xs px-1 py-0">
+                        {valueBadge.text}
                       </Badge>
-                    </TableCell>
-                    
-                    <TableCell className="text-right">
-                      {isMobile ? (
-                        <div className="flex flex-col gap-1">
-                          <Badge variant={valueBadge.variant} className="text-xs">
-                            {valueBadge.icon && <valueBadge.icon className="w-3 h-3 mr-1" />}
-                            {valueBadge.text}
-                          </Badge>
+                      {alertLevel === 'high' && (
+                        <Badge variant="destructive" className="text-xs px-1 py-0">
+                          <AlertTriangle className="w-3 h-3" />
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          // Desktop: Table layout
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Método</TableHead>
+                  <TableHead className="text-right">Valor Total</TableHead>
+                  <TableHead className="text-right">Transações</TableHead>
+                  <TableHead className="text-right">Ticket Médio</TableHead>
+                  <TableHead className="text-right">Participação</TableHead>
+                  <TableHead className="text-right">Tendência</TableHead>
+                  <TableHead className="text-right">Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.map((method) => {
+                  const valueGrowth = calculateGrowth(method.value, method.previousValue);
+                  const countGrowth = calculateGrowth(method.count, method.previousCount);
+                  const valueBadge = getGrowthBadge(valueGrowth);
+                  const countBadge = getGrowthBadge(countGrowth);
+                  const alertLevel = getAlertLevel(method);
+
+                  return (
+                    <TableRow key={method.name}>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: method.color }}
+                          />
+                          <span className="font-medium">{method.name}</span>
                         </div>
-                      ) : (
+                      </TableCell>
+                      
+                      <TableCell className="text-right font-mono">
+                        {formatCompactCurrency(method.value, false)}
+                      </TableCell>
+                      
+                      <TableCell className="text-right">
+                        {method.count}
+                      </TableCell>
+                      
+                      <TableCell className="text-right font-mono">
+                        {formatCompactCurrency(method.ticketMedio, false)}
+                      </TableCell>
+                      
+                      <TableCell className="text-right">
+                        <Badge variant="outline">
+                          {method.percentage.toFixed(1)}%
+                        </Badge>
+                      </TableCell>
+                      
+                      <TableCell className="text-right">
                         <div className="flex flex-col gap-1">
                           <Badge variant={valueBadge.variant} className="text-xs">
                             {valueBadge.icon && <valueBadge.icon className="w-3 h-3 mr-1" />}
@@ -133,10 +176,8 @@ export const PaymentMethodsAnalytics = ({ data }: PaymentMethodsAnalyticsProps) 
                             Qtd: {countBadge.text}
                           </Badge>
                         </div>
-                      )}
-                    </TableCell>
-                    
-                    {!isMobile && (
+                      </TableCell>
+                      
                       <TableCell className="text-right">
                         {alertLevel === 'high' && (
                           <Badge variant="destructive" className="text-xs">
@@ -155,13 +196,13 @@ export const PaymentMethodsAnalytics = ({ data }: PaymentMethodsAnalyticsProps) 
                           </Badge>
                         )}
                       </TableCell>
-                    )}
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+        )}
 
         {/* Summary Insights */}
         <div className="mt-4 p-3 bg-muted/30 rounded-lg">
