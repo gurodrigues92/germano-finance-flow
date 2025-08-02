@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { PieChart as PieChartIcon } from 'lucide-react';
-import { useChartConfig, formatCompactCurrency } from '@/hooks/useChartConfig';
+import { useChartConfig, formatChartCurrency } from '@/hooks/useChartConfig';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface PaymentMethodsChartProps {
@@ -46,7 +46,7 @@ export const PaymentMethodsChart = ({ paymentMethodsData }: PaymentMethodsChartP
                   ))}
                 </Pie>
                 <Tooltip 
-                  formatter={(value) => formatCompactCurrency(Number(value))}
+                  formatter={(value) => formatChartCurrency(Number(value))}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -62,7 +62,7 @@ export const PaymentMethodsChart = ({ paymentMethodsData }: PaymentMethodsChartP
                     {item.name}
                   </span>
                   <div className="flex flex-col items-end">
-                    <span className="text-xs font-medium">{formatCompactCurrency(item.value)}</span>
+                    <span className="text-xs font-medium">{formatChartCurrency(item.value)}</span>
                     <Badge variant="secondary" className="text-xs">
                       {item.percentage.toFixed(1)}%
                     </Badge>

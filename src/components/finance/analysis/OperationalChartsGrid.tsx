@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { PieChart as PieChartIcon } from 'lucide-react';
-import { useChartConfig, formatCompactCurrency } from '@/hooks/useChartConfig';
+import { useChartConfig, formatChartCurrency } from '@/hooks/useChartConfig';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface OperationalChartsGridProps {
@@ -71,10 +71,10 @@ export const OperationalChartsGrid = ({ custosData, investimentosData, estoqueDa
                 <Tooltip 
                   formatter={(value, name, props) => 
                     includeCount ? [
-                      formatCompactCurrency(Number(value)),
+                      formatChartCurrency(Number(value)),
                       `${name} (${props.payload.count} produtos)`
                     ] : [
-                      formatCompactCurrency(Number(value)),
+                      formatChartCurrency(Number(value)),
                       name
                     ]
                   }

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { useChartConfig, formatCompactCurrency } from '@/hooks/useChartConfig';
+import { useChartConfig, formatChartCurrency } from '@/hooks/useChartConfig';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface EvolutionChartProps {
@@ -49,7 +49,7 @@ export const EvolutionChart = ({ evolutionData }: EvolutionChartProps) => {
               className="text-sm"
               tick={{ fontSize: isMobile ? 10 : 12 }}
               tickFormatter={(value) => 
-                isMobile ? formatCompactCurrency(value) :
+                isMobile ? formatChartCurrency(value) :
                 new Intl.NumberFormat('pt-BR', {
                   style: 'currency',
                   currency: 'BRL',
@@ -58,7 +58,7 @@ export const EvolutionChart = ({ evolutionData }: EvolutionChartProps) => {
               }
             />
             <Tooltip 
-              formatter={(value) => formatCompactCurrency(Number(value))}
+              formatter={(value) => formatChartCurrency(Number(value))}
               labelFormatter={(label, payload) => {
                 if (payload && payload[0]) {
                   return payload[0].payload.fullMonth;

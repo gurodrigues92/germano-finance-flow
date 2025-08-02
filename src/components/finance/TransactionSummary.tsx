@@ -1,6 +1,8 @@
 import { Transaction } from '@/types/finance';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { formatCompactCurrency } from '@/lib/formatUtils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface TransactionSummaryProps {
   transactions: Transaction[];
@@ -17,6 +19,7 @@ export const TransactionSummary = ({
   isCustomPeriod = false,
   totalTransactions 
 }: TransactionSummaryProps) => {
+  const isMobile = useIsMobile();
   const totals = transactions.reduce(
     (acc, t) => ({
       bruto: acc.bruto + t.totalBruto,
@@ -30,7 +33,7 @@ export const TransactionSummary = ({
   );
 
   const formatCurrency = (value: number) => 
-    value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    formatCompactCurrency(value, isMobile);
 
   // Context message
   const getContextMessage = () => {

@@ -7,7 +7,7 @@ import {
   ResponsiveContainer,
   Legend
 } from 'recharts';
-import { useChartConfig, formatCompactCurrency } from '@/hooks/useChartConfig';
+import { useChartConfig, formatChartCurrency } from '@/hooks/useChartConfig';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface TransactionChartsProps {
@@ -37,7 +37,7 @@ export const TransactionCharts = ({ transactionCountData, biWeeklyData, paymentM
               style={{ backgroundColor: entry.color }}
             />
             <span className="text-muted-foreground">
-              {entry.name}: {formatCompactCurrency(entry.value)} ({entry.percentage.toFixed(1)}%)
+              {entry.name}: {formatChartCurrency(entry.value)} ({entry.percentage.toFixed(1)}%)
             </span>
           </div>
         ))}

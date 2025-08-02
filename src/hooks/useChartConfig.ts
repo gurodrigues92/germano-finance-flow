@@ -1,4 +1,5 @@
 import { useIsMobile } from './use-mobile';
+import { formatCompactCurrency } from '@/lib/formatUtils';
 
 export const useChartConfig = () => {
   const isMobile = useIsMobile();
@@ -24,14 +25,6 @@ export const useChartConfig = () => {
   };
 };
 
-export const formatCompactCurrency = (value: number): string => {
-  if (value >= 1000000) {
-    return `R$ ${(value / 1000000).toFixed(1)}M`;
-  } else if (value >= 1000) {
-    return `R$ ${(value / 1000).toFixed(1)}K`;
-  }
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL'
-  }).format(value);
+export const formatChartCurrency = (value: number): string => {
+  return formatCompactCurrency(value, true);
 };

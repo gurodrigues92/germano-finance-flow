@@ -7,6 +7,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Edit, Trash2, ChevronDown, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { formatCompactCurrency } from '@/lib/formatUtils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface TransactionMobileCardProps {
   transaction: Transaction;
@@ -27,6 +29,7 @@ export const TransactionMobileCard = ({
   isSelected = false,
   onToggleSelection
 }: TransactionMobileCardProps) => {
+  const isMobile = useIsMobile();
   const [expanded, setExpanded] = useState(false);
   const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null);
 
@@ -57,10 +60,7 @@ export const TransactionMobileCard = ({
   };
 
   const formatCurrency = (value: number) => {
-    return value.toLocaleString('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    });
+    return formatCompactCurrency(value, isMobile);
   };
 
   const getPaymentMethods = () => {
@@ -109,7 +109,7 @@ export const TransactionMobileCard = ({
                   month: 'short' 
                 })}
               </p>
-              <p className="text-base font-semibold">
+              <p className="text-base font-semibold" title={formatCompactCurrency(transaction.totalBruto, false)}>
                 {formatCurrency(transaction.totalBruto)}
               </p>
             </div>
@@ -164,7 +164,9 @@ export const TransactionMobileCard = ({
         <div className="flex justify-between text-xs">
           <div>
             <span className="text-muted-foreground">Líq: </span>
-            <span className="font-medium">{formatCurrency(transaction.totalLiquido)}</span>
+            <span className="font-medium" title={formatCompactCurrency(transaction.totalLiquido, false)}>
+              {formatCurrency(transaction.totalLiquido)}
+            </span>
           </div>
           <div>
             <span className="text-muted-foreground">Taxa: </span>

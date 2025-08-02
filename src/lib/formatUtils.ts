@@ -1,5 +1,5 @@
 export const formatCompactCurrency = (value: number, isMobile: boolean = false) => {
-  if (!isMobile || value < 1000) {
+  if (!isMobile || value < 999) {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL'
@@ -13,11 +13,14 @@ export const formatCompactCurrency = (value: number, isMobile: boolean = false) 
     return `${sign}R$ ${(abs / 1_000_000_000).toFixed(1)}B`;
   } else if (abs >= 1_000_000) {
     return `${sign}R$ ${(abs / 1_000_000).toFixed(1)}M`;
-  } else if (abs >= 1_000) {
+  } else if (abs >= 999) {
     return `${sign}R$ ${(abs / 1_000).toFixed(1)}K`;
   }
   
-  return `${sign}R$ ${abs.toFixed(0)}`;
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  }).format(value);
 };
 
 export const formatCurrency = (value: number) => {
