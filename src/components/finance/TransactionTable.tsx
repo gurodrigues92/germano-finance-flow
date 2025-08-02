@@ -83,82 +83,52 @@ export const TransactionTable = ({
                   <TableCell>
                     {new Date(transaction.date).toLocaleDateString('pt-BR')}
                   </TableCell>
-                  <TableCell>
-                    {transaction.dinheiro > 0 && (
-                      <Badge variant="secondary">
-                        {transaction.dinheiro.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                        })}
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {transaction.pix > 0 && (
-                      <Badge variant="secondary">
-                        {transaction.pix.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                        })}
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {transaction.debito > 0 && (
-                      <Badge variant="secondary">
-                        {transaction.debito.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                        })}
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {transaction.credito > 0 && (
-                      <Badge variant="secondary">
-                        {transaction.credito.toLocaleString('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                        })}
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell className="font-medium">
-                    {transaction.totalBruto.toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL'
-                    })}
-                  </TableCell>
-                  <TableCell className="text-finance-fees">
-                    {(transaction.taxaDebito + transaction.taxaCredito).toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL'
-                    })}
-                  </TableCell>
-                  <TableCell className="font-medium text-finance-net">
-                    {transaction.totalLiquido.toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL'
-                    })}
-                  </TableCell>
-                  <TableCell className="text-finance-studio">
-                    {transaction.studioShare.toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL'
-                    })}
-                  </TableCell>
-                  <TableCell className="text-finance-profissional">
-                    {transaction.eduShare.toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL'
-                    })}
-                  </TableCell>
-                  <TableCell className="text-finance-assistente">
-                    {transaction.kamShare.toLocaleString('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL'
-                    })}
-                  </TableCell>
+                   <TableCell>
+                     {transaction.dinheiro > 0 && (
+                       <Badge variant="secondary">
+                         {transaction.dinheiro.toLocaleString('pt-BR')}
+                       </Badge>
+                     )}
+                   </TableCell>
+                   <TableCell>
+                     {transaction.pix > 0 && (
+                       <Badge variant="secondary">
+                         {transaction.pix.toLocaleString('pt-BR')}
+                       </Badge>
+                     )}
+                   </TableCell>
+                   <TableCell>
+                     {transaction.debito > 0 && (
+                       <Badge variant="secondary">
+                         {transaction.debito.toLocaleString('pt-BR')}
+                       </Badge>
+                     )}
+                   </TableCell>
+                   <TableCell>
+                     {transaction.credito > 0 && (
+                       <Badge variant="secondary">
+                         {transaction.credito.toLocaleString('pt-BR')}
+                       </Badge>
+                     )}
+                   </TableCell>
+                   <TableCell className="font-medium">
+                     {transaction.totalBruto.toLocaleString('pt-BR')}
+                   </TableCell>
+                   <TableCell className="text-finance-fees">
+                     {(transaction.taxaDebito + transaction.taxaCredito).toLocaleString('pt-BR')}
+                   </TableCell>
+                   <TableCell className="font-medium text-finance-net">
+                     {transaction.totalLiquido.toLocaleString('pt-BR')}
+                   </TableCell>
+                   <TableCell className="text-finance-studio">
+                     {transaction.studioShare.toLocaleString('pt-BR')}
+                   </TableCell>
+                   <TableCell className="text-finance-profissional">
+                     {transaction.eduShare.toLocaleString('pt-BR')}
+                   </TableCell>
+                   <TableCell className="text-finance-assistente">
+                     {transaction.kamShare.toLocaleString('pt-BR')}
+                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex gap-2 justify-end">
                       <Button

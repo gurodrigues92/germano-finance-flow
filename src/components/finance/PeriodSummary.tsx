@@ -29,7 +29,7 @@ export const PeriodSummary = ({ transactions, dateStart, dateEnd, isActive }: Pe
   );
 
   const formatCurrency = (value: number) => 
-    value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    value.toLocaleString('pt-BR');
 
   return (
     <Card className="mb-4 border-primary/20 bg-primary/5">

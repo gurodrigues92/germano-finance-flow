@@ -1,31 +1,40 @@
-export const formatCompactCurrency = (value: number, isMobile: boolean = false) => {
+export const formatCompactCurrency = (value: number, isMobile: boolean = false, showSymbol: boolean = false) => {
   if (!isMobile || value < 999) {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
-    }).format(value);
+    if (showSymbol) {
+      return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      }).format(value);
+    }
+    return new Intl.NumberFormat('pt-BR').format(value);
   }
 
   const abs = Math.abs(value);
   const sign = value < 0 ? '-' : '';
   
   if (abs >= 1_000_000_000) {
-    return `${sign}R$ ${(abs / 1_000_000_000).toFixed(1)}B`;
+    return `${sign}${(abs / 1_000_000_000).toFixed(1)}B`;
   } else if (abs >= 1_000_000) {
-    return `${sign}R$ ${(abs / 1_000_000).toFixed(1)}M`;
+    return `${sign}${(abs / 1_000_000).toFixed(1)}M`;
   } else if (abs >= 999) {
-    return `${sign}R$ ${(abs / 1_000).toFixed(1)}K`;
+    return `${sign}${(abs / 1_000).toFixed(1)}K`;
   }
   
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL'
-  }).format(value);
+  if (showSymbol) {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value);
+  }
+  return new Intl.NumberFormat('pt-BR').format(value);
 };
 
-export const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL'
-  }).format(value);
+export const formatCurrency = (value: number, showSymbol: boolean = false) => {
+  if (showSymbol) {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value);
+  }
+  return new Intl.NumberFormat('pt-BR').format(value);
 };

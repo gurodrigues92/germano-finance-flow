@@ -24,10 +24,7 @@ export const MetricCard = ({
 }: MetricCardProps) => {
   const formatValue = (val: number) => {
     if (format === 'currency') {
-      return new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-      }).format(val);
+      return new Intl.NumberFormat('pt-BR').format(val);
     }
     return `${val.toFixed(1)}%`;
   };
@@ -35,7 +32,7 @@ export const MetricCard = ({
   const formatTrend = (val: number) => {
     const prefix = val >= 0 ? '+' : '';
     return format === 'currency' 
-      ? `${prefix}${formatValue(val)}` 
+      ? `${prefix}${new Intl.NumberFormat('pt-BR').format(val)}` 
       : `${prefix}${val.toFixed(1)}%`;
   };
 
