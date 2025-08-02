@@ -134,8 +134,29 @@ export const useSupabaseTransactions = () => {
 
       console.log('[Supabase] Transação inserida no banco:', data);
 
-      // Atualizar estado local
-      await loadTransactions();
+      // Converter e adicionar ao estado local imediatamente para responsividade
+      const newTransaction: Transaction = {
+        id: data.id,
+        date: data.data,
+        dinheiro: Number(data.dinheiro),
+        pix: Number(data.pix),
+        debito: Number(data.debito),
+        credito: Number(data.credito),
+        totalBruto: Number(data.total_bruto),
+        taxaDebito: Number(data.taxa_debito),
+        taxaCredito: Number(data.taxa_credito),
+        totalLiquido: Number(data.total_liquido),
+        studioShare: Number(data.studio_share),
+        eduShare: Number(data.edu_share),
+        kamShare: Number(data.kam_share),
+        month: data.mes_referencia,
+        year: data.ano,
+        createdAt: data.created_at,
+        customRates: data.custom_rates as { studioRate: number; eduRate: number; kamRate: number; } | undefined
+      };
+
+      // Atualizar estado local imediatamente (otimistic update)
+      setTransactions(prev => [newTransaction, ...prev]);
       
       toast({
         title: "Sucesso",
@@ -212,8 +233,29 @@ export const useSupabaseTransactions = () => {
 
       if (error) throw error;
 
-      // Atualizar estado local
-      await loadTransactions();
+      // Atualizar estado local imediatamente para responsividade
+      const updatedTransaction: Transaction = {
+        id: id,
+        date: transactionInput.date,
+        dinheiro: transactionInput.dinheiro,
+        pix: transactionInput.pix,
+        debito: transactionInput.debito,
+        credito: transactionInput.credito,
+        totalBruto: calculations.totalBruto,
+        taxaDebito: calculations.taxaDebito,
+        taxaCredito: calculations.taxaCredito,
+        totalLiquido: calculations.totalLiquido,
+        studioShare: calculations.studioShare,
+        eduShare: calculations.eduShare,
+        kamShare: calculations.kamShare,
+        month: month,
+        year: year,
+        createdAt: transactions.find(t => t.id === id)?.createdAt || new Date().toISOString(),
+        customRates: transactionInput.customRates
+      };
+
+      // Otimistic update
+      setTransactions(prev => prev.map(t => t.id === id ? updatedTransaction : t));
       
       toast({
         title: "Sucesso",
@@ -247,8 +289,8 @@ export const useSupabaseTransactions = () => {
 
       if (error) throw error;
 
-      // Atualizar estado local
-      await loadTransactions();
+      // Atualizar estado local imediatamente (otimistic update)
+      setTransactions(prev => prev.filter(t => t.id !== id));
       
       toast({
         title: "Sucesso",
@@ -354,9 +396,84 @@ export const useSupabaseTransactions = () => {
     }
   };
 
-  // Carregar transações na inicialização
+  // Carregar transações na inicialização e configurar realtime
   useEffect(() => {
     loadTransactions();
+
+    // Configurar realtime subscriptions para sincronização automática
+    const channel = supabase
+      .channel('transacoes-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*', // escuta INSERT, UPDATE, DELETE
+          schema: 'public',
+          table: 'transacoes'
+        },
+        (payload) => {
+          console.log('[Supabase Realtime] Mudança detectada:', payload);
+          
+          if (payload.eventType === 'INSERT') {
+            const newTransaction: Transaction = {
+              id: payload.new.id,
+              date: payload.new.data,
+              dinheiro: Number(payload.new.dinheiro),
+              pix: Number(payload.new.pix),
+              debito: Number(payload.new.debito),
+              credito: Number(payload.new.credito),
+              totalBruto: Number(payload.new.total_bruto),
+              taxaDebito: Number(payload.new.taxa_debito),
+              taxaCredito: Number(payload.new.taxa_credito),
+              totalLiquido: Number(payload.new.total_liquido),
+              studioShare: Number(payload.new.studio_share),
+              eduShare: Number(payload.new.edu_share),
+              kamShare: Number(payload.new.kam_share),
+              month: payload.new.mes_referencia,
+              year: payload.new.ano,
+              createdAt: payload.new.created_at,
+              customRates: payload.new.custom_rates
+            };
+            
+            setTransactions(prev => {
+              const exists = prev.find(t => t.id === newTransaction.id);
+              if (!exists) {
+                return [newTransaction, ...prev];
+              }
+              return prev;
+            });
+          } else if (payload.eventType === 'UPDATE') {
+            const updatedTransaction: Transaction = {
+              id: payload.new.id,
+              date: payload.new.data,
+              dinheiro: Number(payload.new.dinheiro),
+              pix: Number(payload.new.pix),
+              debito: Number(payload.new.debito),
+              credito: Number(payload.new.credito),
+              totalBruto: Number(payload.new.total_bruto),
+              taxaDebito: Number(payload.new.taxa_debito),
+              taxaCredito: Number(payload.new.taxa_credito),
+              totalLiquido: Number(payload.new.total_liquido),
+              studioShare: Number(payload.new.studio_share),
+              eduShare: Number(payload.new.edu_share),
+              kamShare: Number(payload.new.kam_share),
+              month: payload.new.mes_referencia,
+              year: payload.new.ano,
+              createdAt: payload.new.created_at,
+              customRates: payload.new.custom_rates
+            };
+            
+            setTransactions(prev => prev.map(t => t.id === updatedTransaction.id ? updatedTransaction : t));
+          } else if (payload.eventType === 'DELETE') {
+            setTransactions(prev => prev.filter(t => t.id !== payload.old.id));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      console.log('[Supabase Realtime] Removendo subscription');
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return {
