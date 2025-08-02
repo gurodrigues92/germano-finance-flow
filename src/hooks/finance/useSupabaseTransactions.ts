@@ -9,6 +9,7 @@ import { auditLogger } from '@/lib/finance/auditLog';
 export const useSupabaseTransactions = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
+  const [initialLoadDone, setInitialLoadDone] = useState(false);
   const { toast } = useToast();
 
   // Carregar transações do Supabase
@@ -54,6 +55,7 @@ export const useSupabaseTransactions = () => {
       });
     } finally {
       setLoading(false);
+      setInitialLoadDone(true);
     }
   };
 
@@ -502,6 +504,7 @@ export const useSupabaseTransactions = () => {
   return {
     transactions,
     loading,
+    initialLoadDone,
     addTransaction,
     updateTransaction,
     deleteTransaction,

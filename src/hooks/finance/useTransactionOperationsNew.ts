@@ -4,6 +4,7 @@ export const useTransactionOperations = () => {
   const { 
     transactions,
     loading,
+    initialLoadDone,
     addTransaction,
     updateTransaction,
     deleteTransaction,
@@ -13,6 +14,7 @@ export const useTransactionOperations = () => {
   return {
     transactions,
     loading,
+    initialLoadDone,
     addTransaction,
     updateTransaction,
     deleteTransaction,

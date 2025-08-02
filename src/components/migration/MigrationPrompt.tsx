@@ -6,9 +6,12 @@ import { Database, Upload, AlertCircle, CheckCircle } from 'lucide-react';
 import { useFinance } from '@/hooks/useFinance';
 
 export const MigrationPrompt = () => {
-  const { migrateFromLocalStorage, isUsingSupabase, transactions } = useFinance();
+  const { migrateFromLocalStorage, isUsingSupabase, transactions, initialLoadDone } = useFinance();
   const [isMigrating, setIsMigrating] = useState(false);
   const [migrationComplete, setMigrationComplete] = useState(false);
+
+  // Se ainda não terminou de carregar do Supabase, não mostrar nada
+  if (!initialLoadDone) return null;
 
   // Se já está usando Supabase, não mostrar
   if (isUsingSupabase) return null;

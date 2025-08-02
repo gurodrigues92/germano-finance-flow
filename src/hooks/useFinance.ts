@@ -24,6 +24,7 @@ export const useFinance = () => {
   const {
     transactions: supabaseTransactions,
     loading: supabaseLoading,
+    initialLoadDone,
     addTransaction: addToSupabase,
     updateTransaction: updateInSupabase,
     deleteTransaction: deleteFromSupabase,
@@ -103,6 +104,7 @@ export const useFinance = () => {
     setCurrentMonth,
     setCurrentYear,
     migrateFromLocalStorage,
-    isUsingSupabase
+    isUsingSupabase,
+    initialLoadDone
   };
 };
