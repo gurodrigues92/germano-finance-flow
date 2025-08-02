@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Transaction } from '@/types/finance';
+import { validateTransaction, validateCalculationIntegrity, sanitizeTransactionData } from '@/lib/finance/validation';
+import { auditLogger } from '@/lib/finance/auditLog';
 
 
 export const useSupabaseTransactions = () => {
@@ -86,27 +88,44 @@ export const useSupabaseTransactions = () => {
 
       console.log('[Supabase] Usuário autenticado:', user.id);
       
+      // VALIDAÇÃO ROBUSTA DOS DADOS
+      const sanitizedData = sanitizeTransactionData(transactionInput);
+      const validation = validateTransaction(sanitizedData);
+      
+      if (!validation.isValid) {
+        console.log('[Supabase] Dados inválidos:', validation.errors);
+        toast({
+          title: "Dados Inválidos",
+          description: validation.errors.join(', '),
+          variant: "destructive"
+        });
+        return false;
+      }
+      
       // Importar os cálculos existentes
       const { calculateTransaction } = await import('@/lib/finance/calculations');
       const calculations = calculateTransaction(
-        transactionInput.dinheiro,
-        transactionInput.pix,
-        transactionInput.debito,
-        transactionInput.credito,
-        transactionInput.customRates
+        sanitizedData.dinheiro,
+        sanitizedData.pix,
+        sanitizedData.debito,
+        sanitizedData.credito,
+        sanitizedData.customRates
       );
 
-      console.log('[Supabase] Cálculos realizados:', calculations);
+      // VALIDAR INTEGRIDADE DOS CÁLCULOS
+      validateCalculationIntegrity(sanitizedData, calculations);
 
-      const month = transactionInput.date.slice(0, 7); // YYYY-MM format
-      const year = parseInt(transactionInput.date.slice(0, 4)); // Extract year from date string
+      console.log('[Supabase] Cálculos realizados e validados:', calculations);
+
+      const month = sanitizedData.date.slice(0, 7); // YYYY-MM format
+      const year = parseInt(sanitizedData.date.slice(0, 4)); // Extract year from date string
       
       const insertData = {
-        data: transactionInput.date,
-        dinheiro: transactionInput.dinheiro,
-        pix: transactionInput.pix,
-        debito: transactionInput.debito,
-        credito: transactionInput.credito,
+        data: sanitizedData.date,
+        dinheiro: sanitizedData.dinheiro,
+        pix: sanitizedData.pix,
+        debito: sanitizedData.debito,
+        credito: sanitizedData.credito,
         total_bruto: calculations.totalBruto,
         taxa_debito: calculations.taxaDebito,
         taxa_credito: calculations.taxaCredito,
@@ -116,7 +135,7 @@ export const useSupabaseTransactions = () => {
         kam_share: calculations.kamShare,
         mes_referencia: month,
         ano: year,
-        custom_rates: transactionInput.customRates || null
+        custom_rates: sanitizedData.customRates || null
       };
 
       console.log('[Supabase] Dados para inserção:', insertData);
@@ -158,6 +177,9 @@ export const useSupabaseTransactions = () => {
       // Atualizar estado local imediatamente (otimistic update)
       setTransactions(prev => [newTransaction, ...prev]);
       
+      // LOG DE AUDITORIA
+      await auditLogger.logTransaction('CREATE', data.id, null, newTransaction, user.id);
+      
       toast({
         title: "Sucesso",
         description: "Transação adicionada com sucesso!"
@@ -165,12 +187,13 @@ export const useSupabaseTransactions = () => {
 
       console.log('[Supabase] Transação adicionada com sucesso');
       return true;
-    } catch (error) {
+    } catch (error: any) {
       console.error('[Supabase] Erro completo ao adicionar transação:', error);
+      
       const errorMessage = error?.message || 'Erro desconhecido';
       toast({
-        title: "Erro",
-        description: `Erro ao adicionar transação: ${errorMessage}`,
+        title: "Erro Crítico",
+        description: `Falha ao adicionar transação: ${errorMessage}`,
         variant: "destructive"
       });
       return false;
