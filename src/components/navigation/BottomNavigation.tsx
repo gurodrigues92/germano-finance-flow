@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, DollarSign, Package, MoreHorizontal, LogOut, Target, Receipt, TrendingUp, BarChart3, Archive } from 'lucide-react';
+import { Home, DollarSign, Package, MoreHorizontal, LogOut, Target, Receipt, TrendingUp, BarChart3, Archive, Calendar, Calculator, Users, Scissors } from 'lucide-react';
 import { useState } from 'react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useAuth } from '@/contexts/AuthContext';
@@ -40,14 +40,19 @@ export const BottomNavigation = () => {
   
   const allMainNavItems = [
     { icon: Home, label: 'Dashboard', href: '/', permission: 'view_dashboard' },
+    { icon: Calendar, label: 'Agenda', href: '/agenda', permission: 'view_appointments' },
+    { icon: Calculator, label: 'Caixa', href: '/caixa', permission: 'manage_payments' },
     { icon: DollarSign, label: 'Transações', href: '/transacoes', permission: 'view_transactions' },
-    { icon: Package, label: 'Estoque', href: '/estoque', permission: 'view_stock' },
+    { icon: Users, label: 'Clientes', href: '/clientes', permission: 'view_clients' },
   ];
 
   // Filtrar itens principais baseado nas permissões
   const mainNavItems = allMainNavItems.filter(item => hasPermission(item.permission));
 
   const allMenuItems = [
+    { label: 'Profissionais', href: '/profissionais', icon: Scissors, permission: 'manage_professionals' },
+    { label: 'Serviços', href: '/servicos', icon: Receipt, permission: 'manage_services' },
+    { label: 'Estoque', href: '/estoque', icon: Package, permission: 'view_stock' },
     { label: 'Metas Financeiras', href: '/metas', icon: Target, permission: 'view_goals' },
     { label: 'Custos Fixos', href: '/custos-fixos', icon: Receipt, permission: 'view_fixed_costs' },
     { label: 'Investimentos', href: '/investimentos', icon: TrendingUp, permission: 'view_investments' },
@@ -109,8 +114,8 @@ export const BottomNavigation = () => {
   );
 
   // Calcular número de colunas baseado na quantidade de itens + botão "Mais"
-  const totalItems = mainNavItems.length + 1; // +1 para o botão "Mais"
-  const gridCols = totalItems <= 2 ? 'grid-cols-2' : totalItems === 3 ? 'grid-cols-3' : 'grid-cols-4';
+  const totalItems = Math.min(mainNavItems.length + 1, 5); // +1 para o botão "Mais", máximo 5
+  const gridCols = totalItems <= 2 ? 'grid-cols-2' : totalItems === 3 ? 'grid-cols-3' : totalItems === 4 ? 'grid-cols-4' : 'grid-cols-5';
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 glass-strong border-t border-purple-100 z-50 shadow-lg pb-safe" style={{ paddingBottom: 'max(1rem, env(safe-area-inset-bottom, 1rem))' }}>

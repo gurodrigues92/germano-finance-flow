@@ -28,6 +28,7 @@ interface UserProfileContextType {
 const UserProfileContext = createContext<UserProfileContextType | null>(null);
 
 const ADMIN_PERMISSIONS = [
+  // Financeiro (preservado)
   'view_dashboard',
   'view_transactions', 
   'view_analysis',
@@ -38,15 +39,32 @@ const ADMIN_PERMISSIONS = [
   'view_goals',
   'view_financial_distribution',
   'view_financial_metrics',
+  // Salão (novo)
+  'view_appointments',
+  'manage_appointments',
+  'view_clients',
+  'manage_clients',
+  'manage_professionals',
+  'manage_services',
+  'manage_payments',
+  'view_schedule',
   'manage_all'
 ];
 
 const ASSISTENTE_PERMISSIONS = [
+  // Financeiro (preservado)
   'view_dashboard',
   'view_transactions',
   'view_archive', 
   'view_fixed_costs',
-  'view_stock'
+  'view_stock',
+  // Salão (novo - operacional)
+  'view_appointments',
+  'manage_appointments',
+  'view_clients',
+  'manage_clients',
+  'manage_payments',
+  'view_schedule'
 ];
 
 export const UserProfileProvider = ({ children }: { children: ReactNode }) => {
