@@ -1,20 +1,32 @@
 import { PageLayout } from '@/components/layout/PageLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calculator, Plus, Receipt } from 'lucide-react';
+import { Calculator, Plus, Receipt, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useComandas } from '@/hooks/salon/useComandas';
+import { ComandaDetailsDialog } from '@/components/caixa/ComandaDetailsDialog';
+import { ComandaFormDialog } from '@/components/caixa/ComandaFormDialog';
+import { useState } from 'react';
+import { Comanda } from '@/types/salon';
 
 export default function Caixa() {
-  const { comandas, loading, createComanda } = useComandas();
+  const { comandas, loading, loadComandas } = useComandas();
+  const [selectedComanda, setSelectedComanda] = useState<Comanda | null>(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [showNewComanda, setShowNewComanda] = useState(false);
 
   const comandasAbertas = comandas.filter(c => c.status === 'aberta');
 
-  const handleNovaComanda = async () => {
-    try {
-      await createComanda({});
-    } catch (error) {
-      console.error('Erro ao criar comanda:', error);
-    }
+  const handleNovaComanda = () => {
+    setShowNewComanda(true);
+  };
+
+  const handleViewComanda = (comanda: Comanda) => {
+    setSelectedComanda(comanda);
+    setShowDetails(true);
+  };
+
+  const handleComandaCreated = () => {
+    loadComandas();
   };
 
   return (
@@ -53,7 +65,7 @@ export default function Caixa() {
             </Card>
           ) : (
             comandasAbertas.map((comanda) => (
-              <Card key={comanda.id} className="cursor-pointer hover:shadow-md transition-shadow">
+              <Card key={comanda.id} className="hover:shadow-md transition-shadow">
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center justify-between">
                     <span>Comanda #{comanda.numero_comanda}</span>
@@ -66,15 +78,25 @@ export default function Caixa() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-2">
-                    <p><strong>Cliente:</strong> {comanda.cliente?.nome || 'Não informado'}</p>
-                    <p><strong>Profissional:</strong> {comanda.profissional_principal?.nome || 'Não informado'}</p>
+                  <div className="space-y-3">
+                    <div className="space-y-1">
+                      <p><strong>Cliente:</strong> {comanda.cliente?.nome || 'Não informado'}</p>
+                      <p><strong>Profissional:</strong> {comanda.profissional_principal?.nome || 'Não informado'}</p>
+                    </div>
                     <div className="flex justify-between items-center pt-2 border-t">
                       <span><strong>Total:</strong></span>
                       <span className="text-lg font-semibold text-primary">
                         R$ {comanda.total_liquido.toFixed(2)}
                       </span>
                     </div>
+                    <Button 
+                      onClick={() => handleViewComanda(comanda)}
+                      className="w-full mt-3"
+                      variant="outline"
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      Visualizar Comanda
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -82,6 +104,18 @@ export default function Caixa() {
           )}
         </div>
       </div>
+
+      <ComandaDetailsDialog
+        comanda={selectedComanda}
+        isOpen={showDetails}
+        onOpenChange={setShowDetails}
+      />
+
+      <ComandaFormDialog
+        isOpen={showNewComanda}
+        onOpenChange={setShowNewComanda}
+        onComandaCreated={handleComandaCreated}
+      />
     </PageLayout>
   );
 }
