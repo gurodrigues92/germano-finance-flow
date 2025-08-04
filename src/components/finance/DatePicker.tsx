@@ -15,13 +15,19 @@ interface DatePickerProps {
 }
 
 export const DatePicker = ({ value, onChange, placeholder = "Selecione uma data", className }: DatePickerProps) => {
-  // Convert string date to Date object
-  const dateValue = value ? new Date(value) : undefined;
+  // Convert string date to Date object, avoiding timezone issues
+  const dateValue = value ? (() => {
+    const [year, month, day] = value.split('-').map(Number);
+    return new Date(year, month - 1, day); // month is 0-indexed
+  })() : undefined;
 
   const handleSelect = (date: Date | undefined) => {
     if (date) {
-      // Format date as YYYY-MM-DD for consistency with the form
-      const formattedDate = format(date, 'yyyy-MM-dd');
+      // Format date as YYYY-MM-DD using the local date components
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
       onChange(formattedDate);
     }
   };
