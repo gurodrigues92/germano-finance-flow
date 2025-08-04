@@ -17,6 +17,7 @@ import { DashboardFooter } from '@/components/dashboard/DashboardFooter';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { TransactionForm } from '@/components/finance/TransactionForm';
 import { Dialog } from '@/components/ui/dialog';
+import { useSampleSalonData } from '@/hooks/salon/useSampleSalonData';
 import { Transaction } from '@/types/finance';
 
 interface TransactionFormData {
@@ -39,6 +40,7 @@ export const Dashboard = () => {
   
   // Inicializar dados reais
   useDataInitializer();
+  useSampleSalonData(); // Initialize sample salon data
   
   const currentData = getMonthlyData(currentMonth);
   

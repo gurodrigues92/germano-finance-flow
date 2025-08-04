@@ -21,6 +21,12 @@ import { CustosFixos } from "./pages/CustosFixos";
 import { Estoque } from "./pages/Estoque";
 import { Investimentos } from "./pages/Investimentos";
 import { Metas } from "./pages/Metas";
+// Salon pages
+import Agenda from "./pages/Agenda";
+import Caixa from "./pages/Caixa";
+import Clientes from "./pages/Clientes";
+import Profissionais from "./pages/Profissionais";
+import Servicos from "./pages/Servicos";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +51,33 @@ const App = () => {
               </ProtectedRoute>
             }>
               <Route index element={<Dashboard />} />
+              {/* Salon Routes */}
+              <Route path="agenda" element={
+                <ProtectedPage permission="view_appointments">
+                  <Agenda />
+                </ProtectedPage>
+              } />
+              <Route path="caixa" element={
+                <ProtectedPage permission="manage_payments">
+                  <Caixa />
+                </ProtectedPage>
+              } />
+              <Route path="clientes" element={
+                <ProtectedPage permission="view_clients">
+                  <Clientes />
+                </ProtectedPage>
+              } />
+              <Route path="profissionais" element={
+                <ProtectedPage permission="manage_professionals">
+                  <Profissionais />
+                </ProtectedPage>
+              } />
+              <Route path="servicos" element={
+                <ProtectedPage permission="manage_services">
+                  <Servicos />
+                </ProtectedPage>
+              } />
+              {/* Financial Routes (Preserved) */}
               <Route path="transacoes" element={<Transactions />} />
               <Route path="analise" element={
                 <ProtectedPage permission="view_analysis">

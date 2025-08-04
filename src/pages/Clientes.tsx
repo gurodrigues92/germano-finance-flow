@@ -1,17 +1,28 @@
+import { useState } from 'react';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Plus, Phone, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useClientes } from '@/hooks/salon/useClientes';
+import { ClienteForm } from '@/components/salon/ClienteForm';
 
 export default function Clientes() {
-  const { clientes, loading } = useClientes();
+  const { clientes, loading, addCliente } = useClientes();
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
+  const handleAddCliente = () => {
+    setIsFormOpen(true);
+  };
+
+  const handleSubmitCliente = async (data: any) => {
+    await addCliente(data);
+  };
 
   return (
     <PageLayout
       title="Clientes"
       subtitle="Gestão de clientes do salão"
-      onFabClick={() => {}}
+      onFabClick={handleAddCliente}
       fabIcon={<Plus className="w-6 h-6" />}
     >
       <div className="space-y-6">
@@ -21,7 +32,7 @@ export default function Clientes() {
             <Users className="w-6 h-6 text-primary" />
             <h2 className="text-xl font-semibold">Lista de Clientes</h2>
           </div>
-          <Button>
+          <Button onClick={handleAddCliente}>
             <Plus className="w-4 h-4 mr-2" />
             Novo Cliente
           </Button>
@@ -36,7 +47,7 @@ export default function Clientes() {
               <CardContent className="text-center py-8">
                 <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
                 <p className="text-muted-foreground">Nenhum cliente cadastrado</p>
-                <Button className="mt-4">
+                <Button onClick={handleAddCliente} className="mt-4">
                   Cadastrar primeiro cliente
                 </Button>
               </CardContent>
@@ -81,6 +92,13 @@ export default function Clientes() {
             ))
           )}
         </div>
+
+        {/* Cliente Form */}
+        <ClienteForm
+          open={isFormOpen}
+          onOpenChange={setIsFormOpen}
+          onSubmit={handleSubmitCliente}
+        />
       </div>
     </PageLayout>
   );
