@@ -2,13 +2,13 @@ import { useMemo } from 'react';
 import { Transaction } from '@/types/finance';
 import { useFinance } from '@/hooks/useFinance';
 import { useCustosFixos } from '@/hooks/useCustosFixos';
-import { useInvestimentos } from '@/hooks/useInvestimentos';
+
 import { useProdutos } from '@/hooks/useProdutos';
 
 export const useAdvancedAnalytics = (currentMonth: string) => {
   const { transactions, archivedData } = useFinance();
   const { custos } = useCustosFixos();
-  const { investimentos } = useInvestimentos();
+  
   const { produtos } = useProdutos();
 
   // Get current month transactions

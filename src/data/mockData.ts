@@ -29,18 +29,6 @@ export interface StockProduct {
   status: 'baixo' | 'normal' | 'alto';
 }
 
-export interface Investment {
-  id: string;
-  categoria: string;
-  subcategoria: string;
-  descricao: string;
-  valor: number;
-  dataCompra: string;
-  fornecedor: string;
-  garantiaMeses: number;
-  observacoes: string;
-}
-
 export interface FixedCost {
   id: string;
   categoria: string;
@@ -48,17 +36,6 @@ export interface FixedCost {
   valor: number;
   observacoes: string;
   mesReferencia: string;
-}
-
-export interface FinancialGoal {
-  id: string;
-  titulo: string;
-  valor: number;
-  valorAtual: number;
-  dataInicio: string;
-  dataFim: string;
-  status: 'ativa' | 'concluida' | 'pausada';
-  progresso: number;
 }
 
 // Taxas do sistema
@@ -275,64 +252,6 @@ export const stockProducts: StockProduct[] = [
   }
 ];
 
-// INVESTIMENTOS
-export const investments: Investment[] = [
-  {
-    id: "1",
-    categoria: "Equipamentos",
-    subcategoria: "Secadores",
-    descricao: "Secador Profissional Taiff 2000W",
-    valor: 450.00,
-    dataCompra: "2025-06-15",
-    fornecedor: "Distribuidora Beauty Pro",
-    garantiaMeses: 12,
-    observacoes: "Secador principal do salão"
-  },
-  {
-    id: "2",
-    categoria: "Mobiliário",
-    subcategoria: "Cadeiras",
-    descricao: "Cadeira Hidráulica para Corte",
-    valor: 890.00,
-    dataCompra: "2025-05-20",
-    fornecedor: "Móveis para Salão Ltda",
-    garantiaMeses: 24,
-    observacoes: "Cadeira nova para segunda posição"
-  },
-  {
-    id: "3",
-    categoria: "Desenvolvimento",
-    subcategoria: "Cursos",
-    descricao: "Curso de Coloração Avançada",
-    valor: 650.00,
-    dataCompra: "2025-06-01",
-    fornecedor: "Instituto de Beleza SP",
-    garantiaMeses: 0,
-    observacoes: "Capacitação para nova técnica"
-  },
-  {
-    id: "4",
-    categoria: "Equipamentos",
-    subcategoria: "Lavatórios",
-    descricao: "Lavatório com Massageador",
-    valor: 1200.00,
-    dataCompra: "2025-04-10",
-    fornecedor: "Equipamentos Pro",
-    garantiaMeses: 18,
-    observacoes: "Melhoria no conforto dos clientes"
-  },
-  {
-    id: "5",
-    categoria: "Tecnologia",
-    subcategoria: "Sistema",
-    descricao: "Sistema de Gestão Financeira",
-    valor: 580.00,
-    dataCompra: "2025-06-30",
-    fornecedor: "Lovable Development",
-    garantiaMeses: 12,
-    observacoes: "Automação dos processos financeiros"
-  }
-];
 
 // CUSTOS FIXOS
 export const fixedCosts: FixedCost[] = [
@@ -402,49 +321,6 @@ export const fixedCosts: FixedCost[] = [
   }
 ];
 
-// METAS FINANCEIRAS
-export const financialGoals: FinancialGoal[] = [
-  {
-    id: "1",
-    titulo: "Faturamento Mensal Julho",
-    valor: 50000.00,
-    valorAtual: 80605.00,
-    dataInicio: "2025-07-01",
-    dataFim: "2025-07-31",
-    status: "concluida",
-    progresso: 161.21
-  },
-  {
-    id: "2",
-    titulo: "Reserva de Emergência",
-    valor: 15000.00,
-    valorAtual: 12500.00,
-    dataInicio: "2025-01-01",
-    dataFim: "2025-12-31",
-    status: "ativa",
-    progresso: 83.33
-  },
-  {
-    id: "3",
-    titulo: "Investimento em Equipamentos",
-    valor: 5000.00,
-    valorAtual: 3770.00,
-    dataInicio: "2025-04-01",
-    dataFim: "2025-08-31",
-    status: "ativa",
-    progresso: 75.40
-  },
-  {
-    id: "4",
-    titulo: "Capacitação Profissional",
-    valor: 2000.00,
-    valorAtual: 650.00,
-    dataInicio: "2025-06-01",
-    dataFim: "2025-12-31",
-    status: "ativa",
-    progresso: 32.50
-  }
-];
 
 // FUNÇÕES UTILITÁRIAS
 export const calculateTotals = (transactions: RealTransaction[]) => {
@@ -479,8 +355,6 @@ export const calculateTotals = (transactions: RealTransaction[]) => {
 // Produtos com baixo estoque
 export const getLowStockProducts = () => stockProducts.filter(p => p.estoqueAtual <= p.estoqueMinimo);
 
-// Total investido
-export const getTotalInvested = () => investments.reduce((sum, inv) => sum + inv.valor, 0);
 
 // Total custos fixos
 export const getTotalFixedCosts = () => fixedCosts.reduce((sum, cost) => sum + cost.valor, 0);

@@ -3,9 +3,7 @@ import { useToast } from '@/hooks/use-toast';
 import { 
   realTransactions, 
   stockProducts, 
-  investments, 
   fixedCosts, 
-  financialGoals,
   DATA_INITIALIZED_KEY,
   BACKUP_DATA_KEY,
   type RealTransaction
@@ -83,9 +81,7 @@ export const useDataInitializer = () => {
         console.log('[DataInitializer] Dados reais inicializados com sucesso');
         console.log('- Transações:', convertedTransactions.length);
         console.log('- Produtos estoque:', stockProducts.length);
-        console.log('- Investimentos:', investments.length);
         console.log('- Custos fixos:', fixedCosts.length);
-        console.log('- Metas:', financialGoals.length);
 
         toast({
           title: "Sistema Inicializado",

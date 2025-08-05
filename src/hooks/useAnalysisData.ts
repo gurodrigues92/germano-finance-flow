@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 import { useFinance } from '@/hooks/useFinance';
 import { useCustosFixos } from '@/hooks/useCustosFixos';
-import { useInvestimentos } from '@/hooks/useInvestimentos';
+
 import { useProdutos } from '@/hooks/useProdutos';
 
 export const useAnalysisData = (currentMonth: string) => {
   const { getMonthlyData } = useFinance();
   const { totalPorCategoria: totalCustosPorCategoria, totalGeral: totalCustos } = useCustosFixos(currentMonth);
-  const { totalPorCategoria: totalInvestimentosPorCategoria, totalGeral: totalInvestimentos } = useInvestimentos();
+  
   const { produtos, valorTotalEstoque } = useProdutos();
   
   const currentData = getMonthlyData(currentMonth);
@@ -150,18 +150,8 @@ export const useAnalysisData = (currentMonth: string) => {
     }));
   }, [totalCustosPorCategoria, totalCustos]);
 
-  // Investments by Category
-  const investimentosData = useMemo(() => {
-    return Object.entries(totalInvestimentosPorCategoria).map(([categoria, valor]) => ({
-      name: categoria,
-      value: valor,
-      color: categoria === 'Equipamentos' ? 'hsl(var(--chart-1))' :
-             categoria === 'Mobiliário' ? 'hsl(var(--chart-2))' :
-             categoria === 'Desenvolvimento' ? 'hsl(var(--chart-3))' :
-             'hsl(var(--chart-4))',
-      percentage: totalInvestimentos > 0 ? (valor / totalInvestimentos * 100) : 0
-    }));
-  }, [totalInvestimentosPorCategoria, totalInvestimentos]);
+  // Investments by Category (removed)
+  const investimentosData = [];
 
   // Stock Status
   const estoqueData = useMemo(() => {

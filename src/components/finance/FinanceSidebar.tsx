@@ -7,9 +7,7 @@ import {
   Archive,
   TrendingUp,
   Receipt,
-  Package,
-  TrendingUp as TrendingUpIcon,
-  Target
+  Package
 } from 'lucide-react';
 import {
   Sidebar,
@@ -66,20 +64,6 @@ const allMenuItems = [
     description: 'Controle de produtos',
     permission: 'view_stock'
   },
-  {
-    title: 'Investimentos',
-    url: '/investimentos',
-    icon: TrendingUpIcon,
-    description: 'Investimentos e reserva',
-    permission: 'view_investments'
-  },
-  {
-    title: 'Metas',
-    url: '/metas',
-    icon: Target,
-    description: 'Metas e objetivos',
-    permission: 'view_goals'
-  }
 ];
 
 export const FinanceSidebar = () => {

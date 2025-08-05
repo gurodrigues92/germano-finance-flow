@@ -53,9 +53,7 @@ export const BottomNavigation = () => {
     { label: 'Profissionais', href: '/profissionais', icon: Scissors, permission: 'manage_professionals' },
     { label: 'Serviços', href: '/servicos', icon: Receipt, permission: 'manage_services' },
     { label: 'Estoque', href: '/estoque', icon: Package, permission: 'view_stock' },
-    { label: 'Metas Financeiras', href: '/metas', icon: Target, permission: 'view_goals' },
     { label: 'Custos Fixos', href: '/custos-fixos', icon: Receipt, permission: 'view_fixed_costs' },
-    { label: 'Investimentos', href: '/investimentos', icon: TrendingUp, permission: 'view_investments' },
     { label: 'Análise', href: '/analise', icon: BarChart3, permission: 'view_analysis' },
     { label: 'Arquivo', href: '/arquivo', icon: Archive, permission: 'view_archive' },
   ];

@@ -1,6 +1,24 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { RelatorioSalvo, RelatorioSalvoInput } from '@/types/metas';
+// Types moved inline since metas module was removed
+interface RelatorioSalvo {
+  id: string;
+  nome: string;
+  tipo: 'mensal' | 'trimestral' | 'anual' | 'personalizado';
+  configuracao: Record<string, any>;
+  data_inicio?: string;
+  data_fim?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface RelatorioSalvoInput {
+  nome: string;
+  tipo: 'mensal' | 'trimestral' | 'anual' | 'personalizado';
+  configuracao: Record<string, any>;
+  data_inicio?: string;
+  data_fim?: string;
+}
 
 export const useRelatorios = () => {
   const [relatorios, setRelatorios] = useState<RelatorioSalvo[]>([]);

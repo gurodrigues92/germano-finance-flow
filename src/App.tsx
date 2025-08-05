@@ -19,8 +19,6 @@ import { Archive } from "./pages/finance/Archive";
 import { ProtectedPage } from "./components/ProtectedPage";
 import { CustosFixos } from "./pages/CustosFixos";
 import { Estoque } from "./pages/Estoque";
-import { Investimentos } from "./pages/Investimentos";
-import { Metas } from "./pages/Metas";
 // Salon pages
 import Agenda from "./pages/Agenda";
 import Caixa from "./pages/Caixa";
@@ -97,16 +95,6 @@ const App = () => {
               <Route path="estoque" element={
                 <ProtectedPage permission="view_stock">
                   <Estoque />
-                </ProtectedPage>
-              } />
-              <Route path="investimentos" element={
-                <ProtectedPage permission="view_investments">
-                  <Investimentos />
-                </ProtectedPage>
-              } />
-              <Route path="metas" element={
-                <ProtectedPage permission="view_goals">
-                  <Metas />
                 </ProtectedPage>
               } />
             </Route>
