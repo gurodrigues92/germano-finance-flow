@@ -35,7 +35,16 @@ export const translations = {
     view: "Visualizar",
     details: "Detalhes",
     settings: "Configurações",
-    help: "Ajuda"
+    help: "Ajuda",
+    schedule: "Agendar",
+    start: "Iniciar",
+    finish: "Finalizar"
+  },
+
+  // Labels
+  labels: {
+    filters: "Filtros",
+    professional: "Profissional"
   },
 
   // Placeholders comuns

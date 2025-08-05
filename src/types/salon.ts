@@ -25,6 +25,7 @@ export interface Profissional {
   percentual_comissao: number;
   horario_trabalho?: HorarioTrabalho;
   cor_agenda: string;
+  especialidades?: string[];
   ativo: boolean;
   created_at: string;
   updated_at: string;
