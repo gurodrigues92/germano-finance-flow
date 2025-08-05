@@ -19,10 +19,11 @@ import { TransactionForm } from '@/components/finance/TransactionForm';
 import { Dialog } from '@/components/ui/dialog';
 import { useSampleSalonData } from '@/hooks/salon/useSampleSalonData';
 import { useSalonDashboard } from '@/hooks/useSalonDashboard';
-import { SalonMetrics } from '@/components/dashboard/SalonMetrics';
+import { useAgendamentosHoje } from '@/hooks/useAgendamentosHoje';
+import { SalonDashboard } from '@/components/dashboard/SalonDashboard';
+import { SalonQuickActions } from '@/components/dashboard/SalonQuickActions';
 import { ProfessionalPerformance } from '@/components/dashboard/ProfessionalPerformance';
 import { ServicePopularity } from '@/components/dashboard/ServicePopularity';
-import { QuickActions } from '@/components/navigation/QuickActions';
 import { Transaction } from '@/types/finance';
 
 interface TransactionFormData {
@@ -86,6 +87,7 @@ export const Dashboard = () => {
 
   // Get salon dashboard data
   const { salonMetrics, profissionalPerformance, servicoPopularidade } = useSalonDashboard(currentMonth);
+  const { agendamentosHoje, proximosAgendamentos } = useAgendamentosHoje();
 
   // Transaction form handlers
   const handleFormSubmit = (formData: TransactionFormData, isEditing: boolean) => {
@@ -225,11 +227,15 @@ export const Dashboard = () => {
         </>
       )}
 
-      {/* Salon Metrics - Always visible */}
-      <SalonMetrics metrics={salonMetrics} />
+      {/* Salon Dashboard - Always visible */}
+      <SalonDashboard 
+        metrics={salonMetrics} 
+        agendamentosHoje={agendamentosHoje}
+        proximosAgendamentos={proximosAgendamentos}
+      />
       
       {/* Quick Actions */}
-      <QuickActions />
+      <SalonQuickActions />
       
       {/* Professional Performance and Service Popularity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
