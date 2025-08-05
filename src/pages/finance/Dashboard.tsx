@@ -18,6 +18,11 @@ import { PageLayout } from '@/components/layout/PageLayout';
 import { TransactionForm } from '@/components/finance/TransactionForm';
 import { Dialog } from '@/components/ui/dialog';
 import { useSampleSalonData } from '@/hooks/salon/useSampleSalonData';
+import { useSalonDashboard } from '@/hooks/useSalonDashboard';
+import { SalonMetrics } from '@/components/dashboard/SalonMetrics';
+import { ProfessionalPerformance } from '@/components/dashboard/ProfessionalPerformance';
+import { ServicePopularity } from '@/components/dashboard/ServicePopularity';
+import { QuickActions } from '@/components/navigation/QuickActions';
 import { Transaction } from '@/types/finance';
 
 interface TransactionFormData {
@@ -78,6 +83,9 @@ export const Dashboard = () => {
   const { transactionCountData, paymentMethodsData, biWeeklyData } = useDashboardCharts({
     currentData
   });
+
+  // Get salon dashboard data
+  const { salonMetrics, profissionalPerformance, servicoPopularidade } = useSalonDashboard(currentMonth);
 
   // Transaction form handlers
   const handleFormSubmit = (formData: TransactionFormData, isEditing: boolean) => {
@@ -216,6 +224,18 @@ export const Dashboard = () => {
           )}
         </>
       )}
+
+      {/* Salon Metrics - Always visible */}
+      <SalonMetrics metrics={salonMetrics} />
+      
+      {/* Quick Actions */}
+      <QuickActions />
+      
+      {/* Professional Performance and Service Popularity */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <ProfessionalPerformance performance={profissionalPerformance} />
+        <ServicePopularity services={servicoPopularidade} />
+      </div>
 
       {/* Always show recent transactions for all users */}
       <DashboardFooter transactions={currentData.transactions} />

@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import { BottomNavigation } from '@/components/navigation/BottomNavigation';
 import { FloatingActionButton } from '@/components/navigation/FloatingActionButton';
+import { NavigationEnhancements } from '@/components/navigation/NavigationEnhancements';
 import { GreetingHeader } from '@/components/dashboard/GreetingHeader';
 interface PageLayoutProps {
   children: ReactNode;
@@ -22,8 +23,10 @@ export const PageLayout = ({
       {/* Header */}
       <header className="bg-card shadow-sm p-4 md:p-6 border-b border-border">
         <div className="max-w-7xl mx-auto">
-          <h1 className="page-title">{title}</h1>
-          <p className="page-subtitle">{subtitle || 'Sistema de Gestão Profissional'}</p>
+          <NavigationEnhancements>
+            <h1 className="page-title">{title}</h1>
+            <p className="page-subtitle">{subtitle || 'Sistema de Gestão Profissional'}</p>
+          </NavigationEnhancements>
         </div>
       </header>
 
