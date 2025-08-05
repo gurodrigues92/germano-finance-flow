@@ -86,6 +86,18 @@ export default {
 					'profissional-foreground': 'hsl(var(--finance-profissional-foreground))',
 					assistente: 'hsl(var(--finance-assistente))',
 					'assistente-foreground': 'hsl(var(--finance-assistente-foreground))'
+				},
+				status: {
+					normal: 'hsl(var(--success))',          /* Verde #28a745 */
+					'normal-foreground': 'hsl(var(--success-foreground))',
+					atencao: 'hsl(var(--warning))',         /* Amarelo #ffc107 */
+					'atencao-foreground': 'hsl(var(--warning-foreground))',
+					critico: 'hsl(var(--critical))',        /* Vermelho #dc3545 */
+					'critico-foreground': 'hsl(var(--critical-foreground))',
+					info: 'hsl(var(--info))',               /* Azul #007bff */
+					'info-foreground': 'hsl(var(--info-foreground))',
+					'lunch-time': 'hsl(var(--lunch-time))', /* Roxo #6f42c1 */
+					'lunch-time-foreground': 'hsl(var(--lunch-time-foreground))'
 				}
 			},
 			borderRadius: {

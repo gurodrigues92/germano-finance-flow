@@ -48,20 +48,26 @@ const getStatusColor = (status: string) => {
 
 const getBloqueioColor = (tipo: string) => {
   switch (tipo) {
-    case 'almoco': return 'bg-yellow-100 border-yellow-400 text-yellow-800';
-    case 'falta': return 'bg-red-100 border-red-400 text-red-800';
-    case 'indisponivel': return 'bg-gray-100 border-gray-400 text-gray-800';
-    case 'folga': return 'bg-green-100 border-green-400 text-green-800';
-    default: return 'bg-gray-100 border-gray-400 text-gray-800';
+    case 'lunch-time': return 'bg-status-lunch-time/20 border-status-lunch-time text-status-lunch-time';
+    case 'lack': return 'bg-status-critico/20 border-status-critico text-status-critico';
+    case 'unavailable': return 'bg-status-atencao/20 border-status-atencao text-status-atencao';
+    // Mantém compatibilidade com valores antigos
+    case 'almoco': return 'bg-status-lunch-time/20 border-status-lunch-time text-status-lunch-time';
+    case 'falta': return 'bg-status-critico/20 border-status-critico text-status-critico';
+    case 'indisponivel': return 'bg-status-atencao/20 border-status-atencao text-status-atencao';
+    default: return 'bg-muted border-muted-foreground text-muted-foreground';
   }
 };
 
 const getBloqueioLabel = (tipo: string) => {
   switch (tipo) {
-    case 'almoco': return 'Almoço';
-    case 'falta': return 'Falta';
-    case 'indisponivel': return 'Indisponível';
-    case 'folga': return 'Folga';
+    case 'lunch-time': return 'Lunch Time';
+    case 'lack': return 'Lack';
+    case 'unavailable': return 'Unavailable';
+    // Mantém compatibilidade com valores antigos
+    case 'almoco': return 'Lunch Time';
+    case 'falta': return 'Lack';
+    case 'indisponivel': return 'Unavailable';
     default: return tipo;
   }
 };

@@ -72,10 +72,11 @@ export const ClienteFilters = ({
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="todos">Todos os clientes</SelectItem>
-            <SelectItem value="com_credito">Com crédito</SelectItem>
-            <SelectItem value="em_debito">Em débito</SelectItem>
-            <SelectItem value="com_pacote">Com pacote</SelectItem>
+            <SelectItem value="todos">All clients</SelectItem>
+            <SelectItem value="agendados">Scheduled</SelectItem>
+            <SelectItem value="com_credito">Clients with credit</SelectItem>
+            <SelectItem value="em_debito">Clients in debt</SelectItem>
+            <SelectItem value="com_pacote">Clients with package</SelectItem>
           </SelectContent>
         </Select>
 
@@ -113,9 +114,10 @@ export const ClienteFilters = ({
           )}
           {filters.status && (
             <Badge variant="secondary">
-              {filters.status === 'com_credito' && 'Com crédito'}
-              {filters.status === 'em_debito' && 'Em débito'}
-              {filters.status === 'com_pacote' && 'Com pacote'}
+              {filters.status === 'agendados' && 'Scheduled'}
+              {filters.status === 'com_credito' && 'Clients with credit'}
+              {filters.status === 'em_debito' && 'Clients in debt'}
+              {filters.status === 'com_pacote' && 'Clients with package'}
             </Badge>
           )}
           {filters.ativo === false && (

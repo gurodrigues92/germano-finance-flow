@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Plus, Phone, Mail, Eye, Edit, DollarSign } from 'lucide-react';
+import { Users, Plus, Phone, Mail, Eye, Edit, DollarSign, Circle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { ActionButton } from '@/components/ui/action-button';
 import { useClientes } from '@/hooks/salon/useClientes';
 import { ClienteForm } from '@/components/salon/ClienteForm';
 import { ClienteDetailsDialog } from '@/components/salon/ClienteDetailsDialog';
@@ -35,6 +36,9 @@ export default function Clientes() {
       // Filtro de status
       if (filters.status) {
         switch (filters.status) {
+          case 'agendados':
+            // TODO: Implementar quando tiver integração com agenda
+            break;
           case 'com_credito':
             if (cliente.saldo <= 0) return false;
             break;
@@ -42,7 +46,7 @@ export default function Clientes() {
             if (cliente.saldo >= 0) return false;
             break;
           case 'com_pacote':
-            // Implementar quando tiver sistema de pacotes
+            // TODO: Implementar quando tiver sistema de pacotes
             break;
         }
       }
@@ -145,7 +149,16 @@ export default function Clientes() {
               <Card key={cliente.id} className="hover:shadow-md transition-shadow">
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center justify-between">
-                    <span className="truncate">{cliente.nome}</span>
+                    <div className="flex items-center gap-2">
+                      <Circle 
+                        className={`w-3 h-3 fill-current ${
+                          cliente.saldo > 0 ? 'text-status-normal' : 
+                          cliente.saldo < 0 ? 'text-status-critico' : 
+                          'text-muted-foreground'
+                        }`} 
+                      />
+                      <span className="truncate">{cliente.nome}</span>
+                    </div>
                     <div className="flex items-center gap-2">
                       {!cliente.ativo && (
                         <Badge variant="destructive" className="text-xs">Inativo</Badge>
@@ -178,20 +191,16 @@ export default function Clientes() {
                         Cliente desde {new Date(cliente.created_at).toLocaleDateString('pt-BR')}
                       </div>
                       <div className="flex gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
+                        <ActionButton
+                          icon={Eye}
+                          variant="view"
                           onClick={() => handleViewCliente(cliente)}
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
+                        />
+                        <ActionButton
+                          icon={Edit}
+                          variant="edit"
                           onClick={() => handleEditCliente(cliente)}
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button>
+                        />
                       </div>
                     </div>
                   </div>

@@ -71,7 +71,7 @@ export const DailySalesDashboard = ({ comandas, selectedDate = new Date() }: Dai
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Calendar className="w-5 h-5" />
-            Vendas de {format(selectedDate, "EEEE, dd/MM/yyyy", { locale: ptBR })}
+            Daily Sales - {format(selectedDate, "EEEE, dd/MM/yyyy", { locale: ptBR })}
           </CardTitle>
         </CardHeader>
       </Card>
@@ -85,7 +85,7 @@ export const DailySalesDashboard = ({ comandas, selectedDate = new Date() }: Dai
                 <TrendingUp className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Total de Vendas</p>
+                <p className="text-sm text-muted-foreground">Total Sales</p>
                 <p className="text-2xl font-bold text-primary">
                   {formatCurrency(dailyData.totalVendas, true)}
                 </p>
@@ -101,7 +101,7 @@ export const DailySalesDashboard = ({ comandas, selectedDate = new Date() }: Dai
                 <Users className="w-6 h-6 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Atendimentos</p>
+                <p className="text-sm text-muted-foreground">Total Tickets</p>
                 <p className="text-2xl font-bold">{dailyData.totalAtendimentos}</p>
               </div>
             </div>
@@ -115,7 +115,7 @@ export const DailySalesDashboard = ({ comandas, selectedDate = new Date() }: Dai
                 <Receipt className="w-6 h-6 text-green-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Ticket Médio</p>
+                <p className="text-sm text-muted-foreground">Average Ticket</p>
                 <p className="text-2xl font-bold">
                   {formatCurrency(dailyData.ticketMedio, true)}
                 </p>
@@ -128,7 +128,7 @@ export const DailySalesDashboard = ({ comandas, selectedDate = new Date() }: Dai
       {/* Performance por profissional */}
       <Card>
         <CardHeader>
-          <CardTitle>Performance por Profissional</CardTitle>
+          <CardTitle>Sales by Professional</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -160,14 +160,19 @@ export const DailySalesDashboard = ({ comandas, selectedDate = new Date() }: Dai
       {/* Métodos de pagamento */}
       <Card>
         <CardHeader>
-          <CardTitle>Breakdown por Método de Pagamento</CardTitle>
+          <CardTitle>Sales by Payment Method</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {Object.entries(dailyData.pagamentos).map(([metodo, valor]) => (
               <div key={metodo} className="text-center p-3 border rounded-lg">
-                <p className="text-sm text-muted-foreground capitalize">{metodo}</p>
-                <p className="text-lg font-semibold">
+                <p className="text-sm text-muted-foreground">
+                  {metodo === 'dinheiro' ? 'Cash' : 
+                   metodo === 'pix' ? 'PIX' : 
+                   metodo === 'debito' ? 'Debit' : 
+                   metodo === 'credito' ? 'Credit' : metodo}
+                </p>
+                <p className="text-lg font-semibold text-primary">
                   {formatCurrency(valor, true)}
                 </p>
               </div>
@@ -179,7 +184,7 @@ export const DailySalesDashboard = ({ comandas, selectedDate = new Date() }: Dai
       {/* Lista de comandas do dia */}
       <Card>
         <CardHeader>
-          <CardTitle>Comandas Fechadas Hoje</CardTitle>
+          <CardTitle>Today's Closed Tickets</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">

@@ -245,8 +245,7 @@ export const STATUS_AGENDAMENTO = [
 ];
 
 export const TIPOS_BLOQUEIO = [
-  { value: 'almoco', label: 'Almoço', color: '#F59E0B' },
-  { value: 'falta', label: 'Falta', color: '#EF4444' },
-  { value: 'indisponivel', label: 'Indisponível', color: '#6B7280' },
-  { value: 'folga', label: 'Folga', color: '#10B981' },
+  { value: 'lunch-time', label: 'Lunch Time', color: '#6f42c1', description: 'Horário de almoço' },
+  { value: 'lack', label: 'Lack', color: '#dc3545', description: 'Falta do profissional' },
+  { value: 'unavailable', label: 'Unavailable', color: '#ffc107', description: 'Indisponível temporariamente' },
 ];
