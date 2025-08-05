@@ -20,6 +20,8 @@ import { Dialog } from '@/components/ui/dialog';
 import { useSampleSalonData } from '@/hooks/salon/useSampleSalonData';
 import { useSalonDashboard } from '@/hooks/useSalonDashboard';
 import { useAgendamentosHoje } from '@/hooks/useAgendamentosHoje';
+import { useComandas } from '@/hooks/salon/useComandas';
+import { useProfissionais } from '@/hooks/salon/useProfissionais';
 import { SalonDashboard } from '@/components/dashboard/SalonDashboard';
 import { SalonQuickActions } from '@/components/dashboard/SalonQuickActions';
 import { ProfessionalPerformance } from '@/components/dashboard/ProfessionalPerformance';
@@ -86,7 +88,9 @@ export const Dashboard = () => {
   });
 
   // Get salon dashboard data
-  const { salonMetrics, profissionalPerformance, servicoPopularidade } = useSalonDashboard(currentMonth);
+  const { comandas } = useComandas();
+  const { profissionais } = useProfissionais();
+  const { salonMetrics, profissionalPerformance, servicoPopularidade } = useSalonDashboard({ comandas, profissionais });
   const { agendamentosHoje, proximosAgendamentos } = useAgendamentosHoje();
 
   // Transaction form handlers

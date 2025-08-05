@@ -5,19 +5,23 @@ import { useAgendamentos } from '@/hooks/salon/useAgendamentos';
 import { useProfissionais } from '@/hooks/salon/useProfissionais';
 import { useServicos } from '@/hooks/salon/useServicos';
 import { useBloqueiosAgenda } from '@/hooks/salon/useBloqueiosAgenda';
+import { useComandas } from '@/hooks/salon/useComandas';
 import { AgendaGrid } from '@/components/agenda/AgendaGrid';
 import { AgendaSubMenu } from '@/components/agenda/AgendaSubMenu';
 import { AgendamentoDialog } from '@/components/agenda/AgendamentoDialog';
 import { BloqueioDialog } from '@/components/agenda/BloqueioDialog';
 import { Agendamento } from '@/types/salon';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 export default function Agenda() {
-  const { agendamentos, loading, addAgendamento, loadAgendamentos } = useAgendamentos();
+  const { agendamentos, loading, addAgendamento, loadAgendamentos, updateStatusAgendamento } = useAgendamentos();
   const { profissionais } = useProfissionais();
   const { servicos } = useServicos();
   const { bloqueios, addBloqueio, loadBloqueios } = useBloqueiosAgenda();
+  const { createComanda } = useComandas();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Estados da interface
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -69,6 +73,47 @@ export default function Agenda() {
     setEditingAgendamento(agendamento);
     setNewAgendamentoData({});
     setAgendamentoDialogOpen(true);
+  };
+
+  // Iniciar atendimento - muda status e cria comanda
+  const handleIniciarAtendimento = async (agendamento: Agendamento) => {
+    try {
+      // Mudar status para em_atendimento
+      await updateStatusAgendamento(agendamento.id, 'em_atendimento');
+      
+      // Criar comanda automaticamente
+      const comandaData = {
+        cliente_id: agendamento.cliente_id,
+        profissional_principal_id: agendamento.profissional_id,
+        observacoes: `Comanda criada automaticamente a partir do agendamento ${agendamento.id}`
+      };
+      
+      const comanda = await createComanda(comandaData);
+      
+      toast({
+        title: "Atendimento iniciado",
+        description: `Comanda #${comanda.numero_comanda} criada automaticamente`
+      });
+      
+      // Navegar para o caixa para mostrar a comanda criada
+      navigate('/caixa');
+    } catch (error) {
+      console.error('Erro ao iniciar atendimento:', error);
+    }
+  };
+
+  // Finalizar atendimento
+  const handleFinalizarAtendimento = async (agendamento: Agendamento) => {
+    try {
+      await updateStatusAgendamento(agendamento.id, 'concluido');
+      
+      toast({
+        title: "Atendimento finalizado",
+        description: "Status do agendamento atualizado para concluído"
+      });
+    } catch (error) {
+      console.error('Erro ao finalizar atendimento:', error);
+    }
   };
 
   const handleSubmitAgendamento = async (agendamentoData: any) => {
@@ -137,6 +182,8 @@ export default function Agenda() {
             onDateChange={handleDateChange}
             onNewAgendamento={handleNewAgendamento}
             onEditAgendamento={handleEditAgendamento}
+            onIniciarAtendimento={handleIniciarAtendimento}
+            onFinalizarAtendimento={handleFinalizarAtendimento}
             selectedProfissional={selectedProfissional}
             onProfissionalChange={setSelectedProfissional}
           />

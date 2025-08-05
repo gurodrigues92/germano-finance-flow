@@ -17,6 +17,8 @@ interface AgendaGridProps {
   onDateChange: (date: Date) => void;
   onNewAgendamento: (data: string, hora: string, profissionalId?: string) => void;
   onEditAgendamento: (agendamento: Agendamento) => void;
+  onIniciarAtendimento?: (agendamento: Agendamento) => void;
+  onFinalizarAtendimento?: (agendamento: Agendamento) => void;
   selectedProfissional: string;
   onProfissionalChange: (profissionalId: string) => void;
 }
@@ -72,6 +74,8 @@ export const AgendaGrid = ({
   onDateChange,
   onNewAgendamento,
   onEditAgendamento,
+  onIniciarAtendimento,
+  onFinalizarAtendimento,
   selectedProfissional,
   onProfissionalChange 
 }: AgendaGridProps) => {
@@ -205,19 +209,47 @@ export const AgendaGrid = ({
                           // Mostrar agendamento
                           <div 
                             className={cn(
-                              "p-2 rounded border-l-4 cursor-pointer hover:shadow-sm transition-shadow",
+                              "p-2 rounded border-l-4 transition-shadow relative",
                               getStatusColor(agendamento.status)
                             )}
-                            onClick={() => onEditAgendamento(agendamento)}
                           >
-                            <div className="text-sm font-medium">
-                              {agendamento.cliente?.nome}
+                            <div 
+                              className="cursor-pointer"
+                              onClick={() => onEditAgendamento(agendamento)}
+                            >
+                              <div className="text-sm font-medium">
+                                {agendamento.cliente?.nome}
+                              </div>
+                              <div className="text-xs opacity-75">
+                                {agendamento.servico?.nome}
+                              </div>
+                              <div className="text-xs opacity-75">
+                                {agendamento.hora_inicio} - {agendamento.hora_fim}
+                              </div>
                             </div>
-                            <div className="text-xs opacity-75">
-                              {agendamento.servico?.nome}
-                            </div>
-                            <div className="text-xs opacity-75">
-                              {agendamento.hora_inicio} - {agendamento.hora_fim}
+                            
+                            {/* Botões de ação baseados no status */}
+                            <div className="mt-2 flex gap-1">
+                              {(agendamento.status === 'agendado' || agendamento.status === 'confirmado') && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => onIniciarAtendimento?.(agendamento)}
+                                  className="text-xs h-6 px-2"
+                                >
+                                  Iniciar
+                                </Button>
+                              )}
+                              {agendamento.status === 'em_atendimento' && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => onFinalizarAtendimento?.(agendamento)}
+                                  className="text-xs h-6 px-2"
+                                >
+                                  Finalizar
+                                </Button>
+                              )}
                             </div>
                           </div>
                         ) : bloqueio ? (

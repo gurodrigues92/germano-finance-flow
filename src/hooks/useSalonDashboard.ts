@@ -1,80 +1,88 @@
 import { useMemo } from 'react';
-import { useComandas } from '@/hooks/salon/useComandas';
-import { useClientes } from '@/hooks/salon/useClientes';
-import { useProfissionais } from '@/hooks/salon/useProfissionais';
-import { useServicos } from '@/hooks/salon/useServicos';
+import { Comanda, Profissional } from '@/types/salon';
+import { startOfMonth, endOfMonth } from 'date-fns';
 
-export const useSalonDashboard = (currentMonth: string) => {
-  const { comandas } = useComandas();
-  const { clientes } = useClientes();
-  const { profissionais } = useProfissionais();
-  const { servicos } = useServicos();
+interface UseSalonDashboardProps {
+  comandas: Comanda[];
+  profissionais: Profissional[];
+}
 
-  // Filter data for current month
+export const useSalonDashboard = ({ comandas, profissionais }: UseSalonDashboardProps) => {
+  const currentMonth = useMemo(() => {
+    const now = new Date();
+    return {
+      start: startOfMonth(now),
+      end: endOfMonth(now)
+    };
+  }, []);
+
+  // Filtrar comandas do mês atual
   const monthlyComandas = useMemo(() => {
     return comandas.filter(comanda => {
-      const comandaMonth = comanda.data_abertura.slice(0, 7);
-      return comandaMonth === currentMonth;
+      const comandaDate = new Date(comanda.data_abertura);
+      return comandaDate >= currentMonth.start && comandaDate <= currentMonth.end;
     });
   }, [comandas, currentMonth]);
 
-  // Salon metrics for current month
+  // Métricas do salão
   const salonMetrics = useMemo(() => {
     const totalComandas = monthlyComandas.length;
     const comandasAbertas = monthlyComandas.filter(c => c.status === 'aberta').length;
     const comandasFechadas = monthlyComandas.filter(c => c.status === 'fechada').length;
-    
-    const totalFaturamento = monthlyComandas
+    const totalReceita = monthlyComandas
       .filter(c => c.status === 'fechada')
-      .reduce((sum, c) => sum + c.total_bruto, 0);
+      .reduce((sum, comanda) => sum + comanda.total_liquido, 0);
 
-    const clientesAtivos = clientes.filter(c => c.ativo).length;
-    const clientesCredito = clientes.filter(c => c.saldo > 0).length;
-    const clientesDebito = clientes.filter(c => c.saldo < 0).length;
+    // Clientes únicos (baseado nas comandas)
+    const clientesAtivos = new Set(
+      monthlyComandas.filter(c => c.cliente_id).map(c => c.cliente_id)
+    ).size;
 
-    const profissionaisAtivos = profissionais.filter(p => p.ativo).length;
-    const servicosAtivos = servicos.filter(s => s.ativo).length;
+    // Profissionais ativos (baseado nas comandas)
+    const profissionaisAtivos = new Set(
+      monthlyComandas.filter(c => c.profissional_principal_id).map(c => c.profissional_principal_id)
+    ).size;
 
     return {
       totalComandas,
       comandasAbertas,
       comandasFechadas,
-      totalFaturamento,
+      totalFaturamento: totalReceita, // usar totalReceita como totalFaturamento
       clientesAtivos,
-      clientesCredito,
-      clientesDebito,
+      clientesCredito: 0, // placeholder
+      clientesDebito: 0,  // placeholder
       profissionaisAtivos,
-      servicosAtivos
+      servicosAtivos: 0   // placeholder
     };
-  }, [monthlyComandas, clientes, profissionais, servicos]);
+  }, [monthlyComandas]);
 
-  // Performance by professional
+  // Performance dos profissionais
   const profissionalPerformance = useMemo(() => {
-    return profissionais.map(prof => {
-      const profComandas = monthlyComandas.filter(c => 
-        c.profissional_principal_id === prof.id && c.status === 'fechada'
+    return profissionais.map(profissional => {
+      const comandasProfissional = monthlyComandas.filter(
+        comanda => comanda.profissional_principal_id === profissional.id && comanda.status === 'fechada'
       );
-      
-      const totalAtendimentos = profComandas.length;
-      const totalFaturamento = profComandas.reduce((sum, c) => sum + c.total_bruto, 0);
-      const comissaoTotal = totalFaturamento * (prof.percentual_comissao / 100);
+
+      const totalAtendimentos = comandasProfissional.length;
+      const totalReceita = comandasProfissional.reduce((sum, comanda) => sum + comanda.total_liquido, 0);
+      const totalComissao = totalReceita * (profissional.percentual_comissao / 100);
 
       return {
-        id: prof.id,
-        nome: prof.nome,
+        id: profissional.id,
+        nome: profissional.nome,
         totalAtendimentos,
-        totalFaturamento,
-        comissaoTotal,
-        cor: prof.cor_agenda
+        totalFaturamento: totalReceita, // usar totalReceita como totalFaturamento  
+        comissaoTotal: totalComissao,   // usar totalComissao como comissaoTotal
+        cor: profissional.cor_agenda || '#8B5CF6'
       };
-    }).filter(p => p.totalAtendimentos > 0);
+    });
   }, [profissionais, monthlyComandas]);
 
-  // Service popularity - we'll implement this when comanda_itens is properly integrated
+  // Popularidade dos serviços (placeholder - seria necessário dados de comanda_itens)
   const servicoPopularidade = useMemo(() => {
-    // For now, return empty array until comanda_itens relationship is established
+    // Retorna array vazio por enquanto, pois não temos dados de comanda_itens aqui
     return [];
-  }, [monthlyComandas]);
+  }, []);
 
   return {
     salonMetrics,
