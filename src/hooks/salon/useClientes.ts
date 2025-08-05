@@ -14,8 +14,7 @@ export const useClientes = () => {
     try {
       let query = supabase
         .from('clientes')
-        .select('*')
-        .order('nome');
+        .select('*');
 
       // Aplicar filtros
       if (filters?.ativo !== undefined) {
@@ -23,7 +22,25 @@ export const useClientes = () => {
       }
 
       if (filters?.search) {
-        query = query.or(`nome.ilike.%${filters.search}%,telefone.ilike.%${filters.search}%`);
+        query = query.or(`nome.ilike.%${filters.search}%,telefone.ilike.%${filters.search}%,email.ilike.%${filters.search}%`);
+      }
+
+      // Ordenação
+      const ordenacao = filters?.ordenacao || 'nome';
+      const direcao = filters?.direcao || 'asc';
+      
+      switch (ordenacao) {
+        case 'nome':
+          query = query.order('nome', { ascending: direcao === 'asc' });
+          break;
+        case 'data_cadastro':
+          query = query.order('created_at', { ascending: direcao === 'asc' });
+          break;
+        case 'saldo':
+          query = query.order('saldo', { ascending: direcao === 'asc' });
+          break;
+        default:
+          query = query.order('nome');
       }
 
       const { data, error } = await query;

@@ -189,8 +189,22 @@ export interface ComandaFormData {
 // Tipos para filtros e busca
 export interface ClienteFilters {
   search?: string;
-  status?: 'todos' | 'agendados' | 'com_credito' | 'em_debito' | 'com_pacote';
+  status?: 'todos' | 'agendados' | 'com_credito' | 'em_debito' | 'com_pacote' | 'aniversariantes' | 'inativos_30_dias' | 'primeira_visita';
   ativo?: boolean;
+  data_nascimento?: {
+    mes?: number;
+    periodo?: 'este_mes' | 'proximo_mes';
+  };
+  ultima_visita?: {
+    periodo?: 'ultimos_7_dias' | 'ultimos_30_dias' | 'mais_de_30_dias' | 'mais_de_90_dias';
+  };
+  valor_gasto?: {
+    min?: number;
+    max?: number;
+    periodo?: 'total' | 'ultimo_mes' | 'ultimo_ano';
+  };
+  ordenacao?: 'nome' | 'ultima_visita' | 'valor_gasto' | 'saldo' | 'data_cadastro';
+  direcao?: 'asc' | 'desc';
 }
 
 export interface AgendaFilters {

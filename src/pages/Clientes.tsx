@@ -1,16 +1,22 @@
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { Users, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useClientes } from '@/hooks/salon/useClientes';
+import { useClienteStats } from '@/hooks/salon/useClienteStats';
 import { ClienteForm } from '@/components/salon/ClienteForm';
 import { ClienteDetailsDialog } from '@/components/salon/ClienteDetailsDialog';
 import { SalonClientFilters } from '@/components/salon/SalonClientFilters';
 import { SalonClientTable } from '@/components/salon/SalonClientTable';
+import { ClienteQuickFilters } from '@/components/salon/ClienteQuickFilters';
+import { ClienteAdvancedFilters } from '@/components/salon/ClienteAdvancedFilters';
+import { ClienteAnalytics } from '@/components/salon/ClienteAnalytics';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Cliente, ClienteFilters as ClienteFiltersType } from '@/types/salon';
 
 export default function Clientes() {
   const { clientes, loading, addCliente, updateCliente } = useClientes();
+  const { stats, loading: statsLoading } = useClienteStats();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -89,6 +95,20 @@ export default function Clientes() {
     setIsEditingCliente(null);
   };
 
+  const handleQuickFilterSelect = (quickFilter: Partial<ClienteFiltersType>) => {
+    // Se o filtro já está ativo, desativa
+    const isCurrentlyActive = JSON.stringify(filters) === JSON.stringify(quickFilter);
+    if (isCurrentlyActive) {
+      setFilters({});
+    } else {
+      setFilters(quickFilter);
+    }
+  };
+
+  const handleClearFilters = () => {
+    setFilters({});
+  };
+
   return (
     <PageLayout
       title="Clients"
@@ -103,23 +123,48 @@ export default function Clientes() {
             <p className="mt-4 text-muted-foreground">Carregando clientes...</p>
           </div>
         ) : (
-          <>
-            {/* SalonSoft Filters */}
-            <SalonClientFilters
-              filters={filters}
-              onFiltersChange={setFilters}
-              totalClientes={clientes.length}
-              filteredCount={filteredClientes.length}
-              onAddClient={handleAddCliente}
-            />
+          <Tabs defaultValue="clientes" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="clientes">Gerenciar Clientes</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics & Insights</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="clientes" className="space-y-6">
+              {/* SalonSoft Filters */}
+              {!statsLoading && (
+                <ClienteQuickFilters
+                  onFilterSelect={handleQuickFilterSelect}
+                  currentFilters={filters}
+                  stats={stats}
+                />
+              )}
 
-            {/* SalonSoft Table */}
-            <SalonClientTable
-              clientes={filteredClientes}
-              onViewCliente={handleViewCliente}
-              onEditCliente={handleEditCliente}
-            />
-          </>
+              <ClienteAdvancedFilters
+                filters={filters}
+                onFiltersChange={setFilters}
+                onClearFilters={handleClearFilters}
+              />
+
+              <SalonClientFilters
+                filters={filters}
+                onFiltersChange={setFilters}
+                totalClientes={clientes.length}
+                filteredCount={filteredClientes.length}
+                onAddClient={handleAddCliente}
+              />
+
+              {/* SalonSoft Table */}
+              <SalonClientTable
+                clientes={filteredClientes}
+                onViewCliente={handleViewCliente}
+                onEditCliente={handleEditCliente}
+              />
+            </TabsContent>
+
+            <TabsContent value="analytics" className="space-y-6">
+              <ClienteAnalytics stats={stats} loading={statsLoading} />
+            </TabsContent>
+          </Tabs>
         )}
 
         {/* Cliente Form */}
