@@ -93,11 +93,11 @@ export function InventoryFilters({
             <div>
               <label className="text-sm font-medium mb-2 block">Categoria</label>
               <Select
-                value={filters.categoria || ''}
+                value={filters.categoria || 'all'}
                 onValueChange={(value) => 
                   onFiltersChange({ 
                     ...filters, 
-                    categoria: value || undefined 
+                    categoria: value === 'all' ? undefined : value 
                   })
                 }
               >
@@ -105,7 +105,7 @@ export function InventoryFilters({
                   <SelectValue placeholder="Todas as categorias" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas as categorias</SelectItem>
+                  <SelectItem value="all">Todas as categorias</SelectItem>
                   {CATEGORIAS_PRODUTOS.map((categoria) => (
                     <SelectItem key={categoria} value={categoria}>
                       {categoria}
@@ -118,11 +118,11 @@ export function InventoryFilters({
             <div>
               <label className="text-sm font-medium mb-2 block">Status do Estoque</label>
               <Select
-                value={filters.status || ''}
+                value={filters.status || 'all'}
                 onValueChange={(value) => 
                   onFiltersChange({ 
                     ...filters, 
-                    status: (value as any) || undefined 
+                    status: value === 'all' ? undefined : (value as any)
                   })
                 }
               >
@@ -130,7 +130,7 @@ export function InventoryFilters({
                   <SelectValue placeholder="Todos os status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos os status</SelectItem>
+                  <SelectItem value="all">Todos os status</SelectItem>
                   <SelectItem value="normal">Normal</SelectItem>
                   <SelectItem value="baixo">Baixo Estoque</SelectItem>
                   <SelectItem value="esgotado">Esgotado</SelectItem>
