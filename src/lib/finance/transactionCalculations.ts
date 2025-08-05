@@ -1,4 +1,4 @@
-import { CustomRates } from './calculations';
+
 
 export interface TransactionCalculationResult {
   totalBruto: number;
@@ -19,8 +19,7 @@ export const calculateTransactionPreview = (
   pix: string,
   debito: string,
   credito: string,
-  useCustomRates: boolean,
-  customRates?: CustomRates
+  temAssistente: boolean = false
 ): TransactionCalculationResult => {
   const dinheiroValue = parseFloat(dinheiro) || 0;
   const pixValue = parseFloat(pix) || 0;
@@ -32,22 +31,16 @@ export const calculateTransactionPreview = (
   const taxaCredito = creditoValue * 0.0351;
   const totalLiquido = totalBruto - taxaDebito - taxaCredito;
   
-  // Usar taxas customizadas se definidas, senão usar padrão
-  const studioRate = useCustomRates && customRates 
-    ? customRates.studioRate / 100 
-    : 0.6;
-  const eduRate = useCustomRates && customRates 
-    ? customRates.eduRate / 100 
-    : 0.4; 
-  const kamRate = useCustomRates && customRates 
-    ? customRates.kamRate / 100 
-    : 0.1;
+  // Usar taxas fixas padrão
+  const studioRate = 0.6; // 60%
+  const eduRate = 0.4; // 40%
+  const kamRate = 0.1; // 10% do valor do profissional
   
   const studioShare = totalLiquido * studioRate;
   const eduShare = totalLiquido * eduRate;
   
-  // Assistente sempre calcula como % do valor do profissional
-  const kamShare = eduShare * kamRate;
+  // Assistente: 10% do valor do profissional (apenas se tem assistente)
+  const kamShare = temAssistente ? eduShare * kamRate : 0;
   
   return {
     totalBruto,

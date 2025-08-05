@@ -15,7 +15,6 @@ interface TransactionFormFieldsProps {
     credito: string;
     profissionalId: string;
     temAssistente: boolean;
-    assistenteTaxa: string;
   };
   setFormData: React.Dispatch<React.SetStateAction<any>>;
 }
@@ -62,8 +61,7 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
             onCheckedChange={(checked) => 
               setFormData((prev: any) => ({ 
                 ...prev, 
-                temAssistente: checked,
-                assistenteTaxa: checked ? prev.assistenteTaxa : '0'
+                temAssistente: checked
               }))
             }
           />
@@ -73,19 +71,9 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
         </div>
         
         {formData.temAssistente && (
-          <div className="space-y-2">
-            <Label htmlFor="assistenteTaxa">Taxa do Assistente (R$)</Label>
-            <Input
-              id="assistenteTaxa"
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder="0,00"
-              value={formData.assistenteTaxa}
-              onChange={(e) => setFormData((prev: any) => ({ ...prev, assistenteTaxa: e.target.value }))}
-              className="text-base sm:text-lg p-2 sm:p-3"
-            />
-          </div>
+          <p className="text-xs text-muted-foreground">
+            ℹ️ Taxa automática: 10% do valor do profissional
+          </p>
         )}
       </div>
       

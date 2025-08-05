@@ -31,12 +31,8 @@ interface TransactionFormData {
   pix: string;
   debito: string;
   credito: string;
-  useCustomRates: boolean;
-  customRates?: {
-    studioRate: number;
-    eduRate: number;
-    kamRate: number;
-  };
+  profissionalId: string;
+  temAssistente: boolean;
 }
 
 export const Transactions = () => {
@@ -143,7 +139,8 @@ export const Transactions = () => {
       pix: parseFloat(formData.pix) || 0,
       debito: parseFloat(formData.debito) || 0,
       credito: parseFloat(formData.credito) || 0,
-      customRates: formData.useCustomRates ? formData.customRates : undefined
+      profissionalId: formData.profissionalId || undefined,
+      temAssistente: formData.temAssistente
     };
 
     console.log('[Transactions] Dados processados:', data);

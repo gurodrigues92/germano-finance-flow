@@ -1,7 +1,7 @@
 import React from 'react';
 import { Transaction } from '@/types/finance';
 import { TransactionFormFields } from './TransactionFormFields';
-import { CustomRatesSection } from './CustomRatesSection';
+
 import { TransactionPreview } from './TransactionPreview';
 import { TransactionFormDialog } from './TransactionFormDialog';
 import { SaveChangesButton } from './SaveChangesButton';
@@ -29,9 +29,7 @@ export const TransactionForm = ({
     setFormData,
     hasValues,
     hasChanges,
-    handleSubmit,
-    handleToggleCustomRates,
-    handleUpdateCustomRates
+    handleSubmit
   } = useTransactionForm({ editingTransaction, onSubmit, onOpenChange });
 
   const calculations = calculateTransactionPreview(
@@ -39,8 +37,7 @@ export const TransactionForm = ({
     formData.pix,
     formData.debito,
     formData.credito,
-    formData.useCustomRates,
-    formData.customRates
+    formData.temAssistente
   );
 
   return (
@@ -54,13 +51,6 @@ export const TransactionForm = ({
       <TransactionFormFields 
         formData={formData}
         setFormData={setFormData}
-      />
-
-      <CustomRatesSection
-        useCustomRates={formData.useCustomRates}
-        customRates={formData.customRates}
-        onToggleCustomRates={handleToggleCustomRates}
-        onUpdateCustomRates={handleUpdateCustomRates}
       />
 
       {hasValues && (

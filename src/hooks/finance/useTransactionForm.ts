@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Transaction } from '@/types/finance';
-import { CustomRates } from '@/lib/finance/calculations';
+
 import { getLocalDateString, formatDateForInput } from '@/lib/dateUtils';
 
 export interface TransactionFormData {
@@ -11,9 +11,6 @@ export interface TransactionFormData {
   credito: string;
   profissionalId: string;
   temAssistente: boolean;
-  assistenteTaxa: string;
-  useCustomRates: boolean;
-  customRates?: CustomRates;
 }
 
 interface UseTransactionFormProps {
@@ -34,9 +31,7 @@ export const useTransactionForm = ({
     debito: '',
     credito: '',
     profissionalId: '',
-    temAssistente: false,
-    assistenteTaxa: '0',
-    useCustomRates: false
+    temAssistente: false
   });
 
   const [initialFormData, setInitialFormData] = useState<TransactionFormData | null>(null);
@@ -49,9 +44,7 @@ export const useTransactionForm = ({
       debito: '',
       credito: '',
       profissionalId: '',
-      temAssistente: false,
-      assistenteTaxa: '0',
-      useCustomRates: false
+      temAssistente: false
     });
   };
 
@@ -94,24 +87,6 @@ export const useTransactionForm = ({
     }
   };
 
-  const handleToggleCustomRates = (checked: boolean) => {
-    setFormData(prev => ({ 
-      ...prev, 
-      useCustomRates: checked,
-      customRates: checked ? { 
-        studioRate: 60, 
-        eduRate: 40, 
-        kamRate: 10
-      } : undefined
-    }));
-  };
-
-  const handleUpdateCustomRates = (rates: CustomRates) => {
-    setFormData(prev => ({
-      ...prev,
-      customRates: rates
-    }));
-  };
 
   // Set form data when editing
   useEffect(() => {
@@ -123,10 +98,7 @@ export const useTransactionForm = ({
         debito: editingTransaction.debito.toString(),
         credito: editingTransaction.credito.toString(),
         profissionalId: editingTransaction.profissionalId || '',
-        temAssistente: editingTransaction.temAssistente || false,
-        assistenteTaxa: editingTransaction.assistenteTaxa?.toString() || '0',
-        useCustomRates: !!editingTransaction.customRates,
-        customRates: editingTransaction.customRates
+        temAssistente: editingTransaction.temAssistente || false
       };
       setFormData(editingData);
       setInitialFormData(editingData);
@@ -138,9 +110,7 @@ export const useTransactionForm = ({
         debito: '',
         credito: '',
         profissionalId: '',
-        temAssistente: false,
-        assistenteTaxa: '0',
-        useCustomRates: false
+        temAssistente: false
       };
       setFormData(defaultData);
       setInitialFormData(defaultData);
@@ -158,8 +128,6 @@ export const useTransactionForm = ({
     hasValues,
     hasChanges: !!hasChanges,
     handleSubmit,
-    handleToggleCustomRates,
-    handleUpdateCustomRates,
     resetForm
   };
 };
