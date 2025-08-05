@@ -54,6 +54,14 @@ export const useFinance = () => {
       eduRate: number;
       kamRate: number;
     };
+    // Novos campos opcionais para unificação
+    tipo?: 'manual' | 'comanda';
+    clienteId?: string;
+    profissionalId?: string;
+    status?: 'aberta' | 'fechada';
+    observacoes?: string;
+    comandaId?: string;
+    totalBruto?: number;
   }) => {
     if (isUsingSupabase) {
       return await addToSupabase(transactionData);
@@ -74,6 +82,13 @@ export const useFinance = () => {
       eduRate: number;
       kamRate: number;
     };
+    // Novos campos opcionais para unificação
+    tipo?: 'manual' | 'comanda';
+    clienteId?: string;
+    profissionalId?: string;
+    status?: 'aberta' | 'fechada';
+    observacoes?: string;
+    comandaId?: string;
   }) => {
     if (isUsingSupabase) {
       return await updateInSupabase(id, transactionData);

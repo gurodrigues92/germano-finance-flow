@@ -25,6 +25,12 @@ export interface Transaction {
     eduRate: number;
     kamRate: number;
   };
+  // === NOVOS CAMPOS PARA UNIFICAÇÃO ===
+  tipo?: 'manual' | 'comanda'; // Tipo da transação
+  clienteId?: string; // ID do cliente quando vem de comanda
+  status?: 'aberta' | 'fechada'; // Status da transação
+  observacoes?: string; // Observações adicionais
+  comandaId?: string; // ID da comanda original
 }
 
 export interface MonthlyData {

@@ -762,6 +762,8 @@ export type Database = {
         Row: {
           ano: number
           assistente_taxa: number | null
+          cliente_id: string | null
+          comanda_id: string | null
           created_at: string
           credito: number
           custom_rates: Json | null
@@ -772,12 +774,15 @@ export type Database = {
           id: string
           kam_share: number
           mes_referencia: string
+          observacoes: string | null
           pix: number
           profissional_id: string | null
+          status: string | null
           studio_share: number
           taxa_credito: number
           taxa_debito: number
           tem_assistente: boolean | null
+          tipo: string | null
           total_bruto: number
           total_liquido: number
           updated_at: string
@@ -785,6 +790,8 @@ export type Database = {
         Insert: {
           ano: number
           assistente_taxa?: number | null
+          cliente_id?: string | null
+          comanda_id?: string | null
           created_at?: string
           credito?: number
           custom_rates?: Json | null
@@ -795,12 +802,15 @@ export type Database = {
           id?: string
           kam_share: number
           mes_referencia: string
+          observacoes?: string | null
           pix?: number
           profissional_id?: string | null
+          status?: string | null
           studio_share: number
           taxa_credito?: number
           taxa_debito?: number
           tem_assistente?: boolean | null
+          tipo?: string | null
           total_bruto: number
           total_liquido: number
           updated_at?: string
@@ -808,6 +818,8 @@ export type Database = {
         Update: {
           ano?: number
           assistente_taxa?: number | null
+          cliente_id?: string | null
+          comanda_id?: string | null
           created_at?: string
           credito?: number
           custom_rates?: Json | null
@@ -818,17 +830,27 @@ export type Database = {
           id?: string
           kam_share?: number
           mes_referencia?: string
+          observacoes?: string | null
           pix?: number
           profissional_id?: string | null
+          status?: string | null
           studio_share?: number
           taxa_credito?: number
           taxa_debito?: number
           tem_assistente?: boolean | null
+          tipo?: string | null
           total_bruto?: number
           total_liquido?: number
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "transacoes_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "clientes"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "transacoes_profissional_id_fkey"
             columns: ["profissional_id"]

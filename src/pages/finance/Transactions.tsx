@@ -18,7 +18,12 @@ import { useTransactionFilters } from '@/hooks/finance/useTransactionFilters';
 import { useBulkSelection } from '@/hooks/finance/useBulkSelection';
 import { CustomDateFilter } from '@/components/finance/CustomDateFilter';
 import { PeriodSummary } from '@/components/finance/PeriodSummary';
-import { Plus } from 'lucide-react';
+import { NovaComandaDialog } from '@/components/finance/NovaComandaDialog';
+import { ComandasAbertasSection } from '@/components/finance/ComandasAbertasSection';
+import { FecharComandaDialog } from '@/components/finance/FecharComandaDialog';
+import { UnifiedTransactionFilters } from '@/components/finance/UnifiedTransactionFilters';
+import { Button } from '@/components/ui/button';
+import { Plus, Receipt } from 'lucide-react';
 
 interface TransactionFormData {
   date: string;
@@ -59,13 +64,43 @@ export const Transactions = () => {
   // Filter transactions to current month being viewed
   const currentMonthTransactions = transactions.filter(t => t.month === currentMonth);
   
+  // Aplicar filtro unificado
+  const getFilteredByType = () => {
+    const hoje = new Date().toISOString().split('T')[0];
+    
+    switch (filtroUnificado) {
+      case 'comandas_abertas':
+        return currentMonthTransactions.filter(t => t.status === 'aberta');
+      case 'transacoes_manuais':
+        return currentMonthTransactions.filter(t => t.tipo === 'manual' || !t.tipo);
+      case 'hoje':
+        return currentMonthTransactions.filter(t => t.date === hoje);
+      default:
+        return currentMonthTransactions;
+    }
+  };
+
+  const transactionsFilteredByType = getFilteredByType();
+  
   // Search and filter functionality
   const {
     filters,
     setFilters,
     filteredTransactions,
     totalFiltered
-  } = useTransactionFilters(currentMonthTransactions);
+  } = useTransactionFilters(transactionsFilteredByType);
+  
+  // Separar comandas abertas para exibição especial
+  const comandasAbertas = currentMonthTransactions.filter(t => t.status === 'aberta');
+  
+  // Contadores para os filtros
+  const hoje = new Date().toISOString().split('T')[0];
+  const filterCounts = {
+    todas: currentMonthTransactions.length,
+    comandas_abertas: comandasAbertas.length,
+    transacoes_manuais: currentMonthTransactions.filter(t => t.tipo === 'manual' || !t.tipo).length,
+    hoje: currentMonthTransactions.filter(t => t.date === hoje).length
+  };
 
   // Bulk selection functionality
   const transactionIds = filteredTransactions.map(t => t.id);
@@ -86,6 +121,14 @@ export const Transactions = () => {
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [pendingDeleteIds, setPendingDeleteIds] = useState<string[]>([]);
+  
+  // Estados para Nova Comanda e Fechar Comanda
+  const [novaComandaOpen, setNovaComandaOpen] = useState(false);
+  const [fecharComandaOpen, setFecharComandaOpen] = useState(false);
+  const [comandaParaFechar, setComandaParaFechar] = useState<Transaction | null>(null);
+  
+  // Filtro unificado
+  const [filtroUnificado, setFiltroUnificado] = useState<'todas' | 'comandas_abertas' | 'transacoes_manuais' | 'hoje'>('todas');
 
   const resetForm = () => {
     setEditingTransaction(null);
@@ -195,6 +238,77 @@ export const Transactions = () => {
     }
   };
 
+  // Função para criar nova comanda
+  const handleNovaComanda = async (comandaData: any) => {
+    try {
+      const transactionData = {
+        date: new Date().toISOString().split('T')[0],
+        dinheiro: 0,
+        pix: 0,
+        debito: 0,
+        credito: 0,
+        // Novos campos para comanda
+        tipo: comandaData.tipo,
+        clienteId: comandaData.clienteId,
+        profissionalId: comandaData.profissionalId,
+        status: comandaData.status,
+        observacoes: comandaData.observacoes,
+        totalBruto: comandaData.totalEstimado
+      };
+
+      await addTransaction(transactionData);
+      
+      toast({
+        title: "Sucesso",
+        description: "Comanda criada com sucesso",
+      });
+    } catch (error) {
+      console.error('Erro ao criar comanda:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao criar comanda",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Função para fechar comanda
+  const handleFecharComanda = (comandaId: string) => {
+    const comanda = currentMonthTransactions.find(t => t.id === comandaId);
+    if (comanda) {
+      setComandaParaFechar(comanda);
+      setFecharComandaOpen(true);
+    }
+  };
+
+  // Função para processar fechamento de comanda
+  const handleProcessarFechamentoComanda = async (comandaId: string, metodosPagamento: any) => {
+    try {
+      const updateData = {
+        date: new Date().toISOString().split('T')[0],
+        ...metodosPagamento,
+        status: 'fechada' as const
+      };
+
+      await updateTransaction(comandaId, updateData);
+      
+      toast({
+        title: "Sucesso",
+        description: "Comanda fechada com sucesso",
+      });
+      
+      setFecharComandaOpen(false);
+      setComandaParaFechar(null);
+    } catch (error) {
+      console.error('Erro ao fechar comanda:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao fechar comanda",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleRefresh = async () => {
     console.log('[Financeiro] Pull to refresh triggered');
     // Add haptic feedback if available
@@ -207,7 +321,7 @@ export const Transactions = () => {
 
   return (
     <PageLayout 
-      title="Transações"
+      title="Transações & Comandas"
       subtitle={`${monthOptions.find(m => m.value === currentMonth)?.label || currentMonth} • ${filteredTransactions.length} transações`}
       onFabClick={() => setIsOpen(true)}
     >
@@ -220,9 +334,27 @@ export const Transactions = () => {
         />
       </div>
 
+      {/* Botões de Ação */}
+      <div className="flex gap-2 mb-4">
+        <Button 
+          onClick={() => setIsOpen(true)}
+          className="bg-finance-income hover:bg-finance-income/90 text-finance-income-foreground flex items-center gap-2"
+        >
+          <Plus className="h-4 w-4" />
+          Nova Transação
+        </Button>
+        <Button 
+          onClick={() => setNovaComandaOpen(true)}
+          className="flex items-center gap-2"
+          variant="outline"
+        >
+          <Receipt className="h-4 w-4" />
+          Nova Comanda
+        </Button>
+      </div>
+
       {/* Action Dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <TransactionActions onNewTransaction={handleNewTransaction} />
         <TransactionForm
           isOpen={isOpen}
           onOpenChange={setIsOpen}
@@ -231,6 +363,22 @@ export const Transactions = () => {
           loading={loading}
         />
       </Dialog>
+
+      {/* Comandas Abertas */}
+      <ComandasAbertasSection
+        comandasAbertas={comandasAbertas}
+        onFecharComanda={handleFecharComanda}
+        loading={loading}
+      />
+
+      {/* Filtros Unificados */}
+      <div className="mb-4">
+        <UnifiedTransactionFilters
+          activeFilter={filtroUnificado}
+          onFilterChange={setFiltroUnificado}
+          counts={filterCounts}
+        />
+      </div>
 
       {/* Filters Section */}
       <div className="space-y-3 mb-4">
@@ -286,6 +434,23 @@ export const Transactions = () => {
         onOpenChange={setDeleteModalOpen}
         onConfirm={confirmDelete}
         count={pendingDeleteIds.length}
+        loading={loading}
+      />
+
+      {/* Nova Comanda Dialog */}
+      <NovaComandaDialog
+        isOpen={novaComandaOpen}
+        onOpenChange={setNovaComandaOpen}
+        onComandaCreated={handleNovaComanda}
+        loading={loading}
+      />
+
+      {/* Fechar Comanda Dialog */}
+      <FecharComandaDialog
+        isOpen={fecharComandaOpen}
+        onOpenChange={setFecharComandaOpen}
+        comanda={comandaParaFechar}
+        onFecharComanda={handleProcessarFechamentoComanda}
         loading={loading}
       />
     </PageLayout>
