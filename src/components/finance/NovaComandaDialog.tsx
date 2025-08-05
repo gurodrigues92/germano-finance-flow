@@ -113,7 +113,7 @@ export const NovaComandaDialog = ({
                   <SelectValue placeholder="Selecione o cliente" />
                 </SelectTrigger>
                 <SelectContent>
-                  {clientes.map((cliente) => (
+                  {clientes.filter(cliente => cliente.id).map((cliente) => (
                     <SelectItem key={cliente.id} value={cliente.id}>
                       {cliente.nome}
                     </SelectItem>
@@ -133,7 +133,7 @@ export const NovaComandaDialog = ({
                   <SelectValue placeholder="Selecione o profissional" />
                 </SelectTrigger>
                 <SelectContent>
-                  {profissionais.filter(p => p.ativo).map((profissional) => (
+                  {profissionais.filter(p => p.ativo && p.id).map((profissional) => (
                     <SelectItem key={profissional.id} value={profissional.id}>
                       {profissional.nome}
                     </SelectItem>
