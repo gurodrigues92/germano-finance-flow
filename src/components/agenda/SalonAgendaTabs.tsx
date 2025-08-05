@@ -11,35 +11,35 @@ export const SalonAgendaTabs = ({ activeTab, onTabChange }: SalonAgendaTabsProps
   const tabs = [
     {
       id: 'calendar' as const,
-      label: 'Calendar',
+      label: 'Agenda',
       icon: Calendar,
       color: '#4CAF50', // Verde
       description: 'Agenda principal'
     },
     {
       id: 'absences' as const,
-      label: 'Absences',
+      label: 'Ausências',
       icon: UserX,
       color: '#FF9800', // Laranja
       description: 'Bloqueios e ausências'
     },
     {
       id: 'holiday' as const,
-      label: 'Holiday',
+      label: 'Feriados',
       icon: Sun,
       color: '#2196F3', // Azul
-      description: 'Feriados'
+      description: 'Feriados e datas especiais'
     },
     {
       id: 'settings' as const,
-      label: 'Settings',
+      label: 'Configurações',
       icon: Settings,
       color: '#607D8B', // Cinza
       description: 'Configurações da agenda'
     },
     {
       id: 'notifications' as const,
-      label: 'Notifications',
+      label: 'Notificações',
       icon: Bell,
       color: '#9C27B0', // Roxo
       description: 'Central de notificações'

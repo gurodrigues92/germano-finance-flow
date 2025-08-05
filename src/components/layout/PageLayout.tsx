@@ -19,10 +19,10 @@ export const PageLayout = ({
   onFabClick,
   fabIcon
 }: PageLayoutProps) => {
-  return <div className="min-h-screen bg-muted/20 pb-24">
+  return <div className="min-h-screen bg-muted/20 pb-20 sm:pb-24">
       {/* Header */}
-      <header className="bg-card shadow-sm p-4 md:p-6 border-b border-border">
-        <div className="max-w-7xl mx-auto">
+      <header className="bg-card shadow-sm border-b border-border">
+        <div className="page-container !pb-0">
           <NavigationEnhancements>
             <h1 className="page-title">{title}</h1>
             <p className="page-subtitle">{subtitle || 'Sistema de Gestão Profissional'}</p>
@@ -31,12 +31,12 @@ export const PageLayout = ({
       </header>
 
       {/* Content */}
-      <main className="max-w-7xl mx-auto page-container">
+      <main className="page-container">
         {/* Greeting Section */}
         {showGreeting && <GreetingHeader />}
 
         {/* Page Content */}
-        <div className="section-spacing">
+        <div className="mobile-spacing">
           {children}
         </div>
       </main>

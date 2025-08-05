@@ -25,7 +25,7 @@ import {
 
 const allMenuItems = [
   {
-    title: 'Calendar',
+    title: 'Agenda',
     url: '/agenda',
     icon: Calendar,
     description: 'Agenda visual de agendamentos',
@@ -33,7 +33,7 @@ const allMenuItems = [
     color: '#4CAF50' // Verde
   },
   {
-    title: 'Cashier',
+    title: 'Caixa',
     url: '/caixa',
     icon: Calculator,
     description: 'Sistema de comandas e vendas',
@@ -41,15 +41,15 @@ const allMenuItems = [
     color: '#2196F3' // Azul
   },
   {
-    title: 'Reports',
+    title: 'Relatórios',
     url: '/analise',
     icon: BarChart3,
-    description: 'Relatórios financeiros e operacionais',
+    description: 'Análises financeiras e operacionais',
     permission: 'view_analysis',
     color: '#9C27B0' // Roxo
   },
   {
-    title: 'Clients',
+    title: 'Clientes',
     url: '/clientes',
     icon: Users,
     description: 'Gestão completa de clientes',
@@ -57,7 +57,7 @@ const allMenuItems = [
     color: '#FF9800' // Laranja
   },
   {
-    title: 'Professionals',
+    title: 'Profissionais',
     url: '/profissionais',
     icon: Scissors,
     description: 'Gestão de profissionais',
@@ -65,7 +65,7 @@ const allMenuItems = [
     color: '#4CAF50' // Verde
   },
   {
-    title: 'Services',
+    title: 'Serviços',
     url: '/servicos',
     icon: Receipt,
     description: 'Catálogo de serviços',
@@ -73,10 +73,10 @@ const allMenuItems = [
     color: '#E91E63' // Rosa
   },
   {
-    title: 'Products',
+    title: 'Produtos',
     url: '/estoque',
     icon: Package,
-    description: 'Gestão de produtos',
+    description: 'Gestão de produtos e estoque',
     permission: 'view_stock',
     color: '#00BCD4' // Ciano
   },
@@ -89,15 +89,15 @@ const allMenuItems = [
     color: '#9C27B0' // Roxo
   },
   {
-    title: 'Expenses',
+    title: 'Despesas',
     url: '/custos-fixos',
     icon: CreditCard,
-    description: 'Controle de despesas',
+    description: 'Controle de gastos fixos',
     permission: 'view_fixed_costs',
     color: '#FF5722' // Vermelho
   },
   {
-    title: 'Settings',
+    title: 'Configurações',
     url: '/configuracoes',
     icon: Settings,
     description: 'Configurações do sistema',

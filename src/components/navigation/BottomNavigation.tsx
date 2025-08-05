@@ -47,22 +47,22 @@ export const BottomNavigation = () => {
   const { hasPermission } = usePermissions();
   
   const allMainNavItems = [
-    { icon: Calendar, label: 'Calendar', href: '/agenda', permission: 'view_appointments', color: '#4CAF50' },
-    { icon: Calculator, label: 'Cashier', href: '/caixa', permission: 'manage_payments', color: '#2196F3' },
-    { icon: BarChart3, label: 'Reports', href: '/analise', permission: 'view_analysis', color: '#9C27B0' },
-    { icon: Users, label: 'Clients', href: '/clientes', permission: 'view_clients', color: '#FF9800' },
+    { icon: Calendar, label: 'Agenda', href: '/agenda', permission: 'view_appointments', color: '#4CAF50' },
+    { icon: Calculator, label: 'Caixa', href: '/caixa', permission: 'manage_payments', color: '#2196F3' },
+    { icon: BarChart3, label: 'Relatórios', href: '/analise', permission: 'view_analysis', color: '#9C27B0' },
+    { icon: Users, label: 'Clientes', href: '/clientes', permission: 'view_clients', color: '#FF9800' },
   ];
 
   // Filtrar itens principais baseado nas permissões
   const mainNavItems = allMainNavItems.filter(item => hasPermission(item.permission));
 
   const allMenuItems = [
-    { label: 'Professionals', href: '/profissionais', icon: Scissors, permission: 'manage_professionals', color: '#4CAF50' },
-    { label: 'Services', href: '/servicos', icon: Receipt, permission: 'manage_services', color: '#E91E63' },
-    { label: 'Products', href: '/estoque', icon: Package, permission: 'view_stock', color: '#00BCD4' },
-    { label: 'Expenses', href: '/custos-fixos', icon: Target, permission: 'view_fixed_costs', color: '#FF5722' },
-    { label: 'Transactions', href: '/transacoes', icon: DollarSign, permission: 'view_transactions', color: '#9C27B0' },
-    { label: 'Archive', href: '/arquivo', icon: Archive, permission: 'view_archive', color: '#607D8B' },
+    { label: 'Profissionais', href: '/profissionais', icon: Scissors, permission: 'manage_professionals', color: '#4CAF50' },
+    { label: 'Serviços', href: '/servicos', icon: Receipt, permission: 'manage_services', color: '#E91E63' },
+    { label: 'Produtos', href: '/estoque', icon: Package, permission: 'view_stock', color: '#00BCD4' },
+    { label: 'Despesas', href: '/custos-fixos', icon: Target, permission: 'view_fixed_costs', color: '#FF5722' },
+    { label: 'Transações', href: '/transacoes', icon: DollarSign, permission: 'view_transactions', color: '#9C27B0' },
+    { label: 'Arquivo', href: '/arquivo', icon: Archive, permission: 'view_archive', color: '#607D8B' },
   ];
 
   // Filtrar itens do menu baseado nas permissões

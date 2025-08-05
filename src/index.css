@@ -311,68 +311,119 @@ button, a, input, [role="button"] {
 
 /* DESIGN SYSTEM - Typography & Layout Standards */
 
-/* Typography Hierarchy */
+/* Typography Hierarchy - Mobile First Responsive */
 .page-title {
-  @apply text-2xl md:text-3xl font-bold text-foreground;
+  @apply text-xl sm:text-2xl lg:text-3xl font-bold text-foreground leading-tight;
 }
 
 .section-title {
-  @apply text-xl md:text-2xl font-semibold text-foreground;
+  @apply text-lg sm:text-xl lg:text-2xl font-semibold text-foreground;
 }
 
 .subsection-title {
-  @apply text-lg md:text-xl font-semibold text-foreground;
+  @apply text-base sm:text-lg lg:text-xl font-semibold text-foreground;
 }
 
 .card-title {
-  @apply text-base md:text-lg font-medium text-foreground;
+  @apply text-sm sm:text-base lg:text-lg font-medium text-foreground;
 }
 
 .page-subtitle {
-  @apply text-sm md:text-base text-muted-foreground;
+  @apply text-sm sm:text-base text-muted-foreground leading-relaxed;
 }
 
 .metric-value {
-  @apply text-xl md:text-2xl font-bold;
+  @apply text-lg sm:text-xl lg:text-2xl font-bold;
 }
 
 .metric-label {
-  @apply text-xs md:text-sm text-muted-foreground;
+  @apply text-xs sm:text-sm text-muted-foreground;
 }
 
 .body-text {
-  @apply text-sm md:text-base text-foreground;
+  @apply text-sm sm:text-base text-foreground;
 }
 
-/* Layout Standards */
+/* Mobile-Optimized Components */
+.mobile-button {
+  @apply min-h-[44px] text-base font-medium px-4 py-2 sm:min-h-[40px] sm:text-sm sm:px-3;
+}
+
+.mobile-input {
+  @apply min-h-[44px] text-base sm:min-h-[40px] sm:text-sm;
+}
+
+.mobile-card {
+  @apply rounded-lg sm:rounded-xl p-4 sm:p-6;
+}
+
+.mobile-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6;
+}
+
+.mobile-grid-2 {
+  @apply grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6;
+}
+
+.mobile-spacing {
+  @apply space-y-3 sm:space-y-4 md:space-y-6;
+}
+
+/* Layout Standards - Enhanced Responsive */
 .page-container {
-  @apply p-4 md:p-6 space-y-6 md:space-y-8 pb-24;
-  padding-bottom: max(6rem, env(safe-area-inset-bottom, 1.5rem));
+  @apply p-3 sm:p-4 md:p-6 lg:p-8 space-y-4 sm:space-y-6 lg:space-y-8 pb-20 sm:pb-24;
+  padding-bottom: max(5rem, env(safe-area-inset-bottom, 1.25rem));
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .section-spacing {
-  @apply space-y-4 md:space-y-6;
+  @apply space-y-3 sm:space-y-4 md:space-y-6;
 }
 
 .card-grid {
-  @apply grid gap-4 md:gap-6;
+  @apply grid gap-3 sm:gap-4 md:gap-6;
+}
+
+.card-grid-1 {
+  @apply grid-cols-1;
 }
 
 .card-grid-2 {
-  @apply grid-cols-1 md:grid-cols-2;
+  @apply grid-cols-1 sm:grid-cols-2;
 }
 
 .card-grid-3 {
-  @apply grid-cols-1 md:grid-cols-2 lg:grid-cols-3;
+  @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
 }
 
 .card-grid-4 {
-  @apply grid-cols-2 lg:grid-cols-4;
+  @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+}
+
+.card-grid-5 {
+  @apply grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5;
 }
 
 /* Component Variants */
 .header-actions {
-  @apply flex flex-col sm:flex-row sm:items-center justify-between gap-4;
+  @apply flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4;
+}
+
+.form-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6;
+}
+
+.button-group {
+  @apply flex flex-col sm:flex-row gap-2 sm:gap-3;
+}
+
+.table-container {
+  @apply overflow-x-auto rounded-lg border border-border shadow-sm;
+}
+
+.responsive-tabs {
+  @apply flex overflow-x-auto gap-1 sm:gap-2 pb-2 scrollbar-hide;
 }
 
 /* PWA Specific Styles */
@@ -425,9 +476,36 @@ body, html {
   animation: slide-down 0.3s ease-out;
 }
 
-/* iOS input zoom prevention */
+/* Enhanced Mobile Optimizations */
 input, select, textarea {
-  font-size: 16px;
+  font-size: 16px !important;
+  @apply min-h-[44px] sm:min-h-[40px];
+}
+
+/* Hide scrollbars on mobile for cleaner look */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Touch-friendly interactions */
+.touch-target {
+  @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+}
+
+/* Mobile-specific animations */
+@media (max-width: 640px) {
+  .mobile-animate {
+    animation-duration: 0.2s;
+  }
+  
+  .hover\:scale-105:hover {
+    transform: scale(1.02);
+  }
 }
 
 /* PWA button styles */
