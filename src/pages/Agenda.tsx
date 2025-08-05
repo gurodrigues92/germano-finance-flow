@@ -10,6 +10,9 @@ import { AgendaGrid } from '@/components/agenda/AgendaGrid';
 import { AgendaSubMenu } from '@/components/agenda/AgendaSubMenu';
 import { AgendamentoDialog } from '@/components/agenda/AgendamentoDialog';
 import { BloqueioDialog } from '@/components/agenda/BloqueioDialog';
+import { AbsencesTab } from '@/components/agenda/AbsencesTab';
+import { HolidayTab } from '@/components/agenda/HolidayTab';
+import { SettingsTab } from '@/components/agenda/SettingsTab';
 import { Agendamento } from '@/types/salon';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -190,21 +193,15 @@ export default function Agenda() {
         )}
 
         {activeTab === 'absences' && (
-          <div className="text-center py-8 text-muted-foreground">
-            Gestão de ausências em desenvolvimento...
-          </div>
+          <AbsencesTab onCreateBloqueio={() => setBloqueioDialogOpen(true)} />
         )}
 
         {activeTab === 'holiday' && (
-          <div className="text-center py-8 text-muted-foreground">
-            Gestão de feriados em desenvolvimento...
-          </div>
+          <HolidayTab />
         )}
 
         {activeTab === 'settings' && (
-          <div className="text-center py-8 text-muted-foreground">
-            Configurações da agenda em desenvolvimento...
-          </div>
+          <SettingsTab />
         )}
       </div>
 
