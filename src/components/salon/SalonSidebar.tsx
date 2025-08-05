@@ -81,6 +81,14 @@ const allMenuItems = [
     color: '#00BCD4' // Ciano
   },
   {
+    title: 'Financeiro',
+    url: '/financeiro',
+    icon: BarChart3,
+    description: 'Dashboard financeiro completo',
+    permission: 'view_financial_metrics',
+    color: '#9C27B0' // Roxo
+  },
+  {
     title: 'Expenses',
     url: '/custos-fixos',
     icon: CreditCard,
