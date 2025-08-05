@@ -1,17 +1,21 @@
 import { useProdutos } from "@/hooks/useProdutos";
 import { useMovimentacaoEstoque } from "@/hooks/useMovimentacaoEstoque";
 import { useEstoqueDialogs } from "@/hooks/useEstoqueDialogs";
+import { useAdvancedInventory } from "@/hooks/useAdvancedInventory";
 import { MovimentacaoTabs } from "@/components/estoque/MovimentacaoTabs";
 import { EstoqueAlerts } from "@/components/estoque/EstoqueAlerts";
-import { ProdutosTable } from "@/components/estoque/ProdutosTable";
-import { EstoqueSummaryCards } from "@/components/estoque/EstoqueSummaryCards";
+import { AdvancedInventoryDashboard } from "@/components/estoque/AdvancedInventoryDashboard";
+import { InventoryFilters } from "@/components/estoque/InventoryFilters";
+import { BulkOperations } from "@/components/estoque/BulkOperations";
+import { AdvancedProdutosTable } from "@/components/estoque/AdvancedProdutosTable";
 import { EstoqueDialogs } from "@/components/estoque/EstoqueDialogs";
 import { PageLayout } from "@/components/layout/PageLayout";
-import { Plus } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, BarChart3, Package } from "lucide-react";
 
 export function Estoque() {
   const {
-    produtos,
+    produtos: allProdutos,
     loading: produtosLoading,
     createProduto,
     updateProduto,
@@ -23,6 +27,18 @@ export function Estoque() {
   const {
     createMovimentacao
   } = useMovimentacaoEstoque();
+
+  const {
+    produtos: filteredProdutos,
+    analytics,
+    loading: analyticsLoading,
+    filters,
+    setFilters,
+    selectedProducts,
+    setSelectedProducts,
+    bulkUpdateMinimumStock,
+    bulkPriceUpdate
+  } = useAdvancedInventory();
 
   const {
     editingProduto,
@@ -55,11 +71,11 @@ export function Estoque() {
     }
   };
 
-  if (produtosLoading) {
+  if (produtosLoading || analyticsLoading) {
     return (
-      <PageLayout title="Estoque" subtitle="Gestão de produtos e movimentação de estoque">
+      <PageLayout title="Estoque Avançado" subtitle="Gestão inteligente de produtos e estoque">
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-studio-gold"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
       </PageLayout>
     );
@@ -67,28 +83,71 @@ export function Estoque() {
 
   return (
     <PageLayout 
-      title="Estoque" 
-      subtitle="Gestão de produtos e movimentação de estoque"
+      title="Estoque Avançado" 
+      subtitle="Gestão inteligente de produtos e estoque"
       onFabClick={handleShowForm}
       fabIcon={<Plus className="h-5 w-5" />}
     >
-      <EstoqueSummaryCards
-        totalProdutos={produtos.length}
-        valorTotalEstoque={valorTotalEstoque}
-        produtosBaixoEstoque={produtosBaixoEstoque.length}
-      />
+      <Tabs defaultValue="dashboard" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="dashboard" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="products" className="flex items-center gap-2">
+            <Package className="h-4 w-4" />
+            Produtos
+          </TabsTrigger>
+          <TabsTrigger value="movements">Movimentações</TabsTrigger>
+          <TabsTrigger value="bulk">Operações em Lote</TabsTrigger>
+        </TabsList>
 
-      <EstoqueAlerts
-        produtosBaixoEstoque={produtosBaixoEstoque}
-        totalProdutos={produtos.length}
-      />
+        <TabsContent value="dashboard" className="space-y-6">
+          <AdvancedInventoryDashboard />
+          
+          <EstoqueAlerts
+            produtosBaixoEstoque={produtosBaixoEstoque}
+            totalProdutos={allProdutos.length}
+          />
+        </TabsContent>
 
-      {produtos.length > 0 && (
-        <MovimentacaoTabs
-          produtos={produtos}
-          onSubmit={createMovimentacao}
-        />
-      )}
+        <TabsContent value="products" className="space-y-6">
+          <InventoryFilters
+            filters={filters}
+            onFiltersChange={setFilters}
+            totalProducts={allProdutos.length}
+            filteredCount={filteredProdutos.length}
+          />
+
+          <AdvancedProdutosTable
+            produtos={filteredProdutos}
+            selectedProducts={selectedProducts}
+            onSelectionChange={setSelectedProducts}
+            onEdit={handleEditProduto}
+            onDelete={handleDeleteId}
+            analytics={analytics}
+          />
+        </TabsContent>
+
+        <TabsContent value="movements" className="space-y-6">
+          {allProdutos.length > 0 && (
+            <MovimentacaoTabs
+              produtos={allProdutos}
+              onSubmit={createMovimentacao}
+            />
+          )}
+        </TabsContent>
+
+        <TabsContent value="bulk" className="space-y-6">
+          <BulkOperations
+            selectedProducts={selectedProducts}
+            onSelectionChange={setSelectedProducts}
+            produtos={allProdutos}
+            onBulkUpdateMinimumStock={bulkUpdateMinimumStock}
+            onBulkPriceUpdate={bulkPriceUpdate}
+          />
+        </TabsContent>
+      </Tabs>
 
       <EstoqueDialogs
         showForm={showForm}
@@ -100,12 +159,6 @@ export function Estoque() {
         onCreateProduto={handleCreateProduto}
         onUpdateProduto={handleUpdateProduto}
         onDeleteProduto={handleDeleteProduto}
-      />
-
-      <ProdutosTable
-        produtos={produtos}
-        onEdit={handleEditProduto}
-        onDelete={handleDeleteId}
       />
     </PageLayout>
   );

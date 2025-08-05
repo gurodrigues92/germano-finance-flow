@@ -29,7 +29,7 @@ export const formatCompactCurrency = (value: number, isMobile: boolean = false, 
   return new Intl.NumberFormat('pt-BR').format(value);
 };
 
-export const formatCurrency = (value: number, showSymbol: boolean = false) => {
+export const formatCurrency = (value: number, showSymbol: boolean = true) => {
   if (showSymbol) {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
@@ -37,6 +37,18 @@ export const formatCurrency = (value: number, showSymbol: boolean = false) => {
     }).format(value);
   }
   return new Intl.NumberFormat('pt-BR').format(value);
+};
+
+export const formatNumber = (value: number): string => {
+  return new Intl.NumberFormat('pt-BR').format(value);
+};
+
+export const formatPercentage = (value: number): string => {
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'percent',
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1
+  }).format(value / 100);
 };
 
 export const formatDate = (dateString: string) => {
