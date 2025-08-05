@@ -81,6 +81,17 @@ All colors MUST be HSL. Based on purple/orange gradient theme.
     --lunch-time: 271 81% 56%;   /* Roxo #6f42c1 */
     --lunch-time-foreground: 0 0% 100%;
 
+    /* SalonSoft Module Colors */
+    --calendar-color: 142 71% 45%;    /* Verde #4CAF50 */
+    --cashier-color: 217 91% 60%;     /* Azul #2196F3 */
+    --reports-color: 271 81% 56%;     /* Roxo #9C27B0 */
+    --clients-color: 39 100% 50%;     /* Laranja #FF9800 */
+    --professionals-color: 142 71% 45%; /* Verde #4CAF50 */
+    --services-color: 340 82% 52%;    /* Rosa #E91E63 */
+    --products-color: 188 100% 42%;   /* Ciano #00BCD4 */
+    --expenses-color: 14 100% 57%;    /* Vermelho #FF5722 */
+    --settings-color: 200 18% 46%;    /* Cinza #607D8B */
+
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;

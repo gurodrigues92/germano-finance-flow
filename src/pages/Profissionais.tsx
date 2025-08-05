@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { PageLayout } from '@/components/layout/PageLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -7,19 +6,19 @@ import { Input } from '@/components/ui/input';
 import { useProfissionais } from '@/hooks/salon/useProfissionais';
 import { ProfissionalForm } from '@/components/salon/ProfissionalForm';
 import { ProfissionalDetailsDialog } from '@/components/salon/ProfissionalDetailsDialog';
-import { Plus, Phone, Mail, Percent, Search, Eye, Edit, Scissors } from 'lucide-react';
+import { Plus, Phone, Mail, Percent, Search, Eye, Edit, UserCheck, Clock, Users } from 'lucide-react';
 import { Profissional, ProfissionalFormData } from '@/types/salon';
 
 const getTipoColor = (tipo: string) => {
   switch (tipo) {
     case 'cabeleireiro':
-      return 'bg-purple-100 text-purple-800 border-purple-200';
+      return 'bg-[hsl(var(--professionals-color))]/10 text-[hsl(var(--professionals-color))] border-[hsl(var(--professionals-color))]/20';
     case 'assistente':
-      return 'bg-blue-100 text-blue-800 border-blue-200';
+      return 'bg-blue-100 text-blue-700 border-blue-200';
     case 'recepcionista':
-      return 'bg-green-100 text-green-800 border-green-200';
+      return 'bg-orange-100 text-orange-700 border-orange-200';
     default:
-      return 'bg-gray-100 text-gray-800 border-gray-200';
+      return 'bg-gray-100 text-gray-700 border-gray-200';
   }
 };
 
@@ -74,114 +73,152 @@ export default function Profissionais() {
   };
 
   return (
-    <PageLayout
-      title="Profissionais"
-      subtitle="Gestão da equipe do salão"
-    >
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Scissors className="w-6 h-6 text-primary" />
-            <h2 className="text-xl font-semibold">Equipe do Salão</h2>
+    <div className="p-6 space-y-6">
+      {/* Header estilo SalonSoft */}
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 bg-[hsl(var(--professionals-color))] rounded-lg flex items-center justify-center">
+            <UserCheck className="w-6 h-6 text-white" />
           </div>
-          <Button onClick={handleNewProfissional}>
-            <Plus className="w-4 h-4 mr-2" />
-            Novo Profissional
-          </Button>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Professionals</h1>
+            <p className="text-muted-foreground">Gestão completa da equipe</p>
+          </div>
         </div>
+        <Button 
+          onClick={handleNewProfissional}
+          className="bg-[hsl(var(--professionals-color))] hover:bg-[hsl(var(--professionals-color))]/90 text-white"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add Professional
+        </Button>
+      </div>
 
-        {/* Barra de Busca */}
-        {profissionais.length > 0 && (
-          <div className="relative">
+      {/* Barra de ferramentas */}
+      {profissionais.length > 0 && (
+        <div className="flex justify-between items-center bg-card border rounded-lg p-4">
+          <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
-              placeholder="Buscar profissionais..."
+              placeholder="Search professionals..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
             />
           </div>
-        )}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Users className="w-4 h-4" />
+              <Badge variant="secondary" className="bg-[hsl(var(--professionals-color))]/10 text-[hsl(var(--professionals-color))]">
+                {filteredProfissionais.length} Team Members
+              </Badge>
+            </div>
+          </div>
+        </div>
+      )}
 
-        {/* Profissionais */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {loading ? (
-            <div className="col-span-full text-center py-8">Carregando profissionais...</div>
-          ) : profissionais.length === 0 ? (
-            <Card className="col-span-full">
-              <CardContent className="text-center py-8">
-                <Scissors className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground mb-4">Nenhum profissional cadastrado</p>
-                <Button onClick={handleNewProfissional}>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Cadastrar primeiro profissional
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            filteredProfissionais.map((profissional) => (
-              <Card key={profissional.id} className="hover:shadow-md transition-shadow">
+      {/* Grid de Profissionais */}
+      <div className="space-y-6">
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="text-muted-foreground">Loading team...</div>
+          </div>
+        ) : profissionais.length === 0 ? (
+          <Card className="border-dashed">
+            <CardContent className="text-center py-12">
+              <div className="w-16 h-16 bg-[hsl(var(--professionals-color))]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <UserCheck className="w-8 h-8 text-[hsl(var(--professionals-color))]" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">No team members yet</h3>
+              <p className="text-muted-foreground mb-6">Start by adding your first professional</p>
+              <Button 
+                onClick={handleNewProfissional}
+                className="bg-[hsl(var(--professionals-color))] hover:bg-[hsl(var(--professionals-color))]/90 text-white"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add First Professional
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {filteredProfissionais.map((profissional) => (
+              <Card key={profissional.id} className="hover:shadow-lg transition-all duration-200 border border-border hover:border-[hsl(var(--professionals-color))]/30">
                 <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div 
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: profissional.cor_agenda }}
-                      />
-                      <span className="truncate">{profissional.nome}</span>
+                  <CardTitle className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="relative">
+                        <div 
+                          className="w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold"
+                          style={{ backgroundColor: profissional.cor_agenda }}
+                        >
+                          {profissional.nome.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-background"></div>
+                      </div>
+                      <div>
+                        <div className="font-semibold text-foreground">{profissional.nome}</div>
+                        <Badge className={`${getTipoColor(profissional.tipo)} text-xs`}>
+                          {getTipoLabel(profissional.tipo)}
+                        </Badge>
+                      </div>
                     </div>
-                    <Badge className={getTipoColor(profissional.tipo)}>
-                      {getTipoLabel(profissional.tipo)}
-                    </Badge>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {profissional.telefone && (
+                  <div className="space-y-2">
+                    {profissional.telefone && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Phone className="w-4 h-4" />
+                        <span>{profissional.telefone}</span>
+                      </div>
+                    )}
+                    
+                    {profissional.email && (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Mail className="w-4 h-4" />
+                        <span className="truncate">{profissional.email}</span>
+                      </div>
+                    )}
+                    
                     <div className="flex items-center gap-2 text-sm">
-                      <Phone className="w-4 h-4 text-muted-foreground" />
-                      <span>{profissional.telefone}</span>
+                      <Percent className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-[hsl(var(--professionals-color))] font-medium">
+                        {profissional.percentual_comissao}% Commission
+                      </span>
                     </div>
-                  )}
-                  
-                  {profissional.email && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <Mail className="w-4 h-4 text-muted-foreground" />
-                      <span className="truncate">{profissional.email}</span>
+
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Clock className="w-4 h-4" />
+                      <span>Active Schedule</span>
                     </div>
-                  )}
-                  
-                  <div className="flex items-center gap-2 text-sm">
-                    <Percent className="w-4 h-4 text-muted-foreground" />
-                    <span>Comissão: {profissional.percentual_comissao}%</span>
                   </div>
 
                   {/* Botões de Ação */}
-                  <div className="flex gap-2 pt-2">
+                  <div className="flex gap-2 pt-3">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => setSelectedProfissional(profissional)}
-                      className="flex-1"
+                      className="flex-1 border-[hsl(var(--professionals-color))]/20 text-[hsl(var(--professionals-color))] hover:bg-[hsl(var(--professionals-color))]/10"
                     >
                       <Eye className="w-4 h-4 mr-2" />
-                      Ver
+                      View
                     </Button>
                     <Button
                       size="sm"
-                      variant="outline"
                       onClick={() => handleEdit(profissional)}
-                      className="flex-1"
+                      className="flex-1 bg-[hsl(var(--professionals-color))] hover:bg-[hsl(var(--professionals-color))]/90 text-white"
                     >
                       <Edit className="w-4 h-4 mr-2" />
-                      Editar
+                      Edit
                     </Button>
                   </div>
                 </CardContent>
               </Card>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Formulário */}
@@ -208,6 +245,6 @@ export default function Profissionais() {
         onOpenChange={(open) => !open && setSelectedProfissional(null)}
         onEdit={handleEdit}
       />
-    </PageLayout>
+    </div>
   );
 }
