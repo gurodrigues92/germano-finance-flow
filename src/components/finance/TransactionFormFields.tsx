@@ -44,7 +44,7 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
             <SelectValue placeholder="Selecione um profissional" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Nenhum profissional</SelectItem>
+            <SelectItem value="none">Nenhum profissional</SelectItem>
             {profissionais.map((prof) => (
               <SelectItem key={prof.id} value={prof.id}>
                 {prof.nome}

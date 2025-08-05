@@ -90,7 +90,7 @@ export const ComandaFormDialog = ({
                 <SelectValue placeholder="Selecione um cliente" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Nenhum cliente</SelectItem>
+                <SelectItem value="none">Nenhum cliente</SelectItem>
                 {clientes.map((cliente) => (
                   <SelectItem key={cliente.id} value={cliente.id}>
                     {cliente.nome}
@@ -111,7 +111,7 @@ export const ComandaFormDialog = ({
                 <SelectValue placeholder="Selecione um profissional" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Nenhum profissional</SelectItem>
+                <SelectItem value="none">Nenhum profissional</SelectItem>
                 {profissionais.map((profissional) => (
                   <SelectItem key={profissional.id} value={profissional.id}>
                     {profissional.nome}
