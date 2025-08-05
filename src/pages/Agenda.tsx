@@ -15,6 +15,7 @@ import { BloqueioDialog } from '@/components/agenda/BloqueioDialog';
 import { AbsencesTab } from '@/components/agenda/AbsencesTab';
 import { HolidayTab } from '@/components/agenda/HolidayTab';
 import { SettingsTab } from '@/components/agenda/SettingsTab';
+import { AgendamentoToComandaButton } from '@/components/agenda/AgendamentoToComandaButton';
 import { Agendamento } from '@/types/salon';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -86,24 +87,39 @@ export default function Agenda() {
       // Mudar status para em_atendimento
       await updateStatusAgendamento(agendamento.id, 'em_atendimento');
       
-      // Criar comanda automaticamente
+      // Criar comanda automaticamente com dados do agendamento
       const comandaData = {
         cliente_id: agendamento.cliente_id,
         profissional_principal_id: agendamento.profissional_id,
-        observacoes: `Comanda criada automaticamente a partir do agendamento ${agendamento.id}`
+        observacoes: `Comanda criada automaticamente - Agendamento: ${agendamento.servico?.nome || 'Serviço'} - ${agendamento.data} às ${agendamento.hora_inicio}`
       };
       
       const comanda = await createComanda(comandaData);
       
+      // TODO: Adicionar serviço como item inicial da comanda
+      // await addItemComanda(comanda.id, {
+      //   item_id: agendamento.servico_id,
+      //   nome_item: agendamento.servico?.nome,
+      //   tipo: 'servico',
+      //   quantidade: 1,
+      //   valor_unitario: agendamento.valor,
+      //   profissional_id: agendamento.profissional_id
+      // });
+      
       toast({
-        title: "Atendimento iniciado",
-        description: `Comanda #${comanda.numero_comanda} criada automaticamente`
+        title: "✅ Atendimento iniciado com sucesso",
+        description: `Comanda #${comanda.numero_comanda} criada automaticamente. Redirecionando...`
       });
       
       // Navegar para o caixa para mostrar a comanda criada
-      navigate('/caixa');
+      setTimeout(() => navigate('/caixa'), 1500);
     } catch (error) {
       console.error('Erro ao iniciar atendimento:', error);
+      toast({
+        title: "Erro ao iniciar atendimento",
+        description: "Não foi possível criar a comanda automaticamente",
+        variant: "destructive"
+      });
     }
   };
 
