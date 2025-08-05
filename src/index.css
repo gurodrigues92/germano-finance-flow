@@ -80,6 +80,18 @@ All colors MUST be HSL. Based on purple/orange gradient theme.
     --critical-foreground: 0 0% 100%;
     --lunch-time: 271 81% 56%;   /* Roxo #6f42c1 */
     --lunch-time-foreground: 0 0% 100%;
+    
+    /* Cores da Agenda SalonSoft */
+    --agenda-scheduled: 220 90% 85%;      /* Azul claro para agendado */
+    --agenda-scheduled-foreground: 220 90% 25%;
+    --agenda-confirmed: 140 85% 85%;      /* Verde claro para confirmado */
+    --agenda-confirmed-foreground: 140 85% 25%;
+    --agenda-in-progress: 35 90% 85%;     /* Laranja claro para em atendimento */
+    --agenda-in-progress-foreground: 35 90% 25%;
+    --agenda-completed: 0 0% 85%;         /* Cinza claro para concluído */
+    --agenda-completed-foreground: 0 0% 25%;
+    --agenda-cancelled: 0 85% 85%;        /* Vermelho claro para cancelado */
+    --agenda-cancelled-foreground: 0 85% 25%;
 
     /* SalonSoft Module Colors */
     --calendar-color: 142 71% 45%;    /* Verde #4CAF50 */
@@ -139,6 +151,18 @@ All colors MUST be HSL. Based on purple/orange gradient theme.
     --border: 217 33% 17%;
     --input: 217 33% 17%;
     --ring: 262 83% 58%;
+    
+    /* Cores da Agenda SalonSoft - Dark Mode */
+    --agenda-scheduled: 220 90% 30%;      /* Azul escuro para agendado */
+    --agenda-scheduled-foreground: 220 90% 85%;
+    --agenda-confirmed: 140 85% 30%;      /* Verde escuro para confirmado */
+    --agenda-confirmed-foreground: 140 85% 85%;
+    --agenda-in-progress: 35 90% 30%;     /* Laranja escuro para em atendimento */
+    --agenda-in-progress-foreground: 35 90% 85%;
+    --agenda-completed: 0 0% 30%;         /* Cinza escuro para concluído */
+    --agenda-completed-foreground: 0 0% 85%;
+    --agenda-cancelled: 0 85% 30%;        /* Vermelho escuro para cancelado */
+    --agenda-cancelled-foreground: 0 85% 85%;
     
     --sidebar-background: 222 84% 5%;
     --sidebar-foreground: 210 40% 98%;

@@ -7,6 +7,7 @@ import { useServicos } from '@/hooks/salon/useServicos';
 import { useBloqueiosAgenda } from '@/hooks/salon/useBloqueiosAgenda';
 import { useComandas } from '@/hooks/salon/useComandas';
 import { SalonAgendaGrid } from '@/components/agenda/SalonAgendaGrid';
+import { AdvancedAgendaGrid } from '@/components/agenda/AdvancedAgendaGrid';
 import { SalonAgendaTabs } from '@/components/agenda/SalonAgendaTabs';
 import { SalonAgendaHeader } from '@/components/agenda/SalonAgendaHeader';
 import { AgendamentoDialog } from '@/components/agenda/AgendamentoDialog';
@@ -187,7 +188,7 @@ export default function Agenda() {
 
         {/* Conteúdo baseado na aba ativa */}
         {activeTab === 'calendar' && (
-          <SalonAgendaGrid
+          <AdvancedAgendaGrid
             agendamentos={agendamentos}
             profissionais={profissionais}
             bloqueios={bloqueios}
@@ -197,6 +198,7 @@ export default function Agenda() {
             onIniciarAtendimento={handleIniciarAtendimento}
             onFinalizarAtendimento={handleFinalizarAtendimento}
             selectedProfissional={selectedProfissional}
+            onDateChange={handleDateChange}
           />
         )}
 

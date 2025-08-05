@@ -154,6 +154,34 @@ export const useAgendamentos = () => {
     }
   };
 
+  // Atualizar agendamento completo
+  const updateAgendamento = async (id: string, updateData: any) => {
+    try {
+      const { data, error } = await supabase
+        .from('agendamentos')
+        .update(updateData)
+        .eq('id', id)
+        .select(`
+          *,
+          cliente:clientes(*),
+          profissional:profissionais(*),
+          servico:servicos(*)
+        `)
+        .single();
+
+      if (error) throw error;
+
+      setAgendamentos(prev => prev.map(agendamento => 
+        agendamento.id === id ? (data as any) : agendamento
+      ));
+
+      return data;
+    } catch (error) {
+      console.error('Erro ao atualizar agendamento:', error);
+      throw error;
+    }
+  };
+
   // Deletar agendamento
   const deleteAgendamento = async (id: string) => {
     try {
@@ -219,6 +247,7 @@ export const useAgendamentos = () => {
     loading,
     loadAgendamentos,
     addAgendamento,
+    updateAgendamento,
     updateStatusAgendamento,
     deleteAgendamento,
     getAgendamentosDoDia,
