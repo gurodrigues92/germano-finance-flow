@@ -18,6 +18,7 @@ import { Transactions } from "./pages/finance/Transactions";
 import { Analysis } from "./pages/finance/Analysis";
 import { Archive } from "./pages/finance/Archive";
 import UnifiedFinance from "./pages/finance/UnifiedFinance";
+import { AdvancedReports } from "./pages/reports/AdvancedReports";
 import { ProtectedPage } from "./components/ProtectedPage";
 import { CustosFixos } from "./pages/CustosFixos";
 import { Estoque } from "./pages/Estoque";
@@ -107,6 +108,11 @@ const App = () => {
               <Route path="financeiro-integrado" element={
                 <ProtectedPage permission="view_financial_metrics">
                   <UnifiedFinance />
+                </ProtectedPage>
+              } />
+              <Route path="relatorios-avancados" element={
+                <ProtectedPage permission="view_analysis">
+                  <AdvancedReports />
                 </ProtectedPage>
               } />
             </Route>
