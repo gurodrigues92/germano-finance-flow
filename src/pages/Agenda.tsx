@@ -1,83 +1,183 @@
+import { useState } from 'react';
 import { PageLayout } from '@/components/layout/PageLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, Plus, User } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 import { useAgendamentos } from '@/hooks/salon/useAgendamentos';
+import { useProfissionais } from '@/hooks/salon/useProfissionais';
+import { useServicos } from '@/hooks/salon/useServicos';
+import { useBloqueiosAgenda } from '@/hooks/salon/useBloqueiosAgenda';
+import { AgendaGrid } from '@/components/agenda/AgendaGrid';
+import { AgendaSubMenu } from '@/components/agenda/AgendaSubMenu';
+import { AgendamentoDialog } from '@/components/agenda/AgendamentoDialog';
+import { BloqueioDialog } from '@/components/agenda/BloqueioDialog';
+import { Agendamento } from '@/types/salon';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Agenda() {
-  const { agendamentos, loading } = useAgendamentos();
+  const { agendamentos, loading, addAgendamento, loadAgendamentos } = useAgendamentos();
+  const { profissionais } = useProfissionais();
+  const { servicos } = useServicos();
+  const { bloqueios, addBloqueio, loadBloqueios } = useBloqueiosAgenda();
+  const { toast } = useToast();
 
-  const hoje = new Date().toISOString().split('T')[0];
-  const agendamentosHoje = agendamentos.filter(a => a.data === hoje);
+  // Estados da interface
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedProfissional, setSelectedProfissional] = useState('todos');
+  const [activeTab, setActiveTab] = useState<'calendar' | 'absences' | 'holiday' | 'settings'>('calendar');
+  
+  // Estados dos dialogs
+  const [agendamentoDialogOpen, setAgendamentoDialogOpen] = useState(false);
+  const [bloqueioDialogOpen, setBloqueioDialogOpen] = useState(false);
+  const [editingAgendamento, setEditingAgendamento] = useState<Agendamento | undefined>();
+  const [newAgendamentoData, setNewAgendamentoData] = useState<{
+    profissional_id?: string;
+    data?: string;
+    hora_inicio?: string;
+  }>({});
+
+  // Handlers
+  const handleDateChange = (date: Date) => {
+    setSelectedDate(date);
+    
+    // Recarregar dados para a nova data (semana)
+    const inicioSemana = new Date(date);
+    inicioSemana.setDate(date.getDate() - date.getDay());
+    const fimSemana = new Date(inicioSemana);
+    fimSemana.setDate(inicioSemana.getDate() + 6);
+
+    loadAgendamentos({
+      data_inicio: inicioSemana.toISOString().split('T')[0],
+      data_fim: fimSemana.toISOString().split('T')[0]
+    });
+
+    loadBloqueios(
+      inicioSemana.toISOString().split('T')[0],
+      fimSemana.toISOString().split('T')[0]
+    );
+  };
+
+  const handleNewAgendamento = (data: string, hora: string, profissionalId?: string) => {
+    setNewAgendamentoData({
+      data,
+      hora_inicio: hora,
+      profissional_id: profissionalId
+    });
+    setEditingAgendamento(undefined);
+    setAgendamentoDialogOpen(true);
+  };
+
+  const handleEditAgendamento = (agendamento: Agendamento) => {
+    setEditingAgendamento(agendamento);
+    setNewAgendamentoData({});
+    setAgendamentoDialogOpen(true);
+  };
+
+  const handleSubmitAgendamento = async (agendamentoData: any) => {
+    try {
+      await addAgendamento(agendamentoData);
+      setAgendamentoDialogOpen(false);
+      toast({
+        title: "Sucesso",
+        description: "Agendamento criado com sucesso"
+      });
+    } catch (error) {
+      console.error('Erro ao criar agendamento:', error);
+    }
+  };
+
+  const handleSubmitBloqueio = async (bloqueioData: any) => {
+    try {
+      await addBloqueio(bloqueioData);
+      setBloqueioDialogOpen(false);
+      toast({
+        title: "Sucesso",
+        description: "Bloqueio adicionado com sucesso"
+      });
+    } catch (error) {
+      console.error('Erro ao criar bloqueio:', error);
+    }
+  };
+
+  const handleFabClick = () => {
+    if (activeTab === 'calendar') {
+      handleNewAgendamento(
+        selectedDate.toISOString().split('T')[0],
+        '09:00'
+      );
+    } else if (activeTab === 'absences') {
+      setBloqueioDialogOpen(true);
+    }
+  };
+
+  if (loading) {
+    return (
+      <PageLayout title="Agenda" subtitle="Carregando...">
+        <div className="text-center py-8">Carregando agenda...</div>
+      </PageLayout>
+    );
+  }
 
   return (
     <PageLayout
       title="Agenda"
-      subtitle="Gestão de agendamentos do salão"
-      onFabClick={() => {}}
+      subtitle="Sistema visual de agendamentos"
+      onFabClick={handleFabClick}
       fabIcon={<Plus className="w-6 h-6" />}
     >
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Calendar className="w-6 h-6 text-primary" />
-            <h2 className="text-xl font-semibold">Agendamentos de Hoje</h2>
-          </div>
-          <Button>
-            <Plus className="w-4 h-4 mr-2" />
-            Novo Agendamento
-          </Button>
-        </div>
+        {/* Submenu */}
+        <AgendaSubMenu activeTab={activeTab} onTabChange={setActiveTab} />
 
-        {/* Agendamentos */}
-        <div className="grid gap-4">
-          {loading ? (
-            <div className="text-center py-8">Carregando agendamentos...</div>
-          ) : agendamentosHoje.length === 0 ? (
-            <Card>
-              <CardContent className="text-center py-8">
-                <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Nenhum agendamento para hoje</p>
-              </CardContent>
-            </Card>
-          ) : (
-            agendamentosHoje.map((agendamento) => (
-              <Card key={agendamento.id}>
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center justify-between">
-                    <span className="flex items-center gap-2">
-                      <User className="w-4 h-4" />
-                      {agendamento.cliente?.nome || 'Cliente não informado'}
-                    </span>
-                    <span className="text-sm font-normal text-muted-foreground">
-                      {agendamento.hora_inicio}
-                    </span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <p><strong>Serviço:</strong> {agendamento.servico?.nome}</p>
-                    <p><strong>Profissional:</strong> {agendamento.profissional?.nome}</p>
-                    <p><strong>Valor:</strong> R$ {agendamento.valor.toFixed(2)}</p>
-                    <p><strong>Status:</strong> 
-                      <span className={`ml-2 px-2 py-1 rounded text-xs ${
-                        agendamento.status === 'agendado' ? 'bg-blue-100 text-blue-800' :
-                        agendamento.status === 'confirmado' ? 'bg-green-100 text-green-800' :
-                        agendamento.status === 'em_atendimento' ? 'bg-orange-100 text-orange-800' :
-                        agendamento.status === 'concluido' ? 'bg-gray-100 text-gray-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
-                        {agendamento.status}
-                      </span>
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
-        </div>
+        {/* Conteúdo baseado na aba ativa */}
+        {activeTab === 'calendar' && (
+          <AgendaGrid
+            agendamentos={agendamentos}
+            profissionais={profissionais}
+            bloqueios={bloqueios}
+            selectedDate={selectedDate}
+            onDateChange={handleDateChange}
+            onNewAgendamento={handleNewAgendamento}
+            onEditAgendamento={handleEditAgendamento}
+            selectedProfissional={selectedProfissional}
+            onProfissionalChange={setSelectedProfissional}
+          />
+        )}
+
+        {activeTab === 'absences' && (
+          <div className="text-center py-8 text-muted-foreground">
+            Gestão de ausências em desenvolvimento...
+          </div>
+        )}
+
+        {activeTab === 'holiday' && (
+          <div className="text-center py-8 text-muted-foreground">
+            Gestão de feriados em desenvolvimento...
+          </div>
+        )}
+
+        {activeTab === 'settings' && (
+          <div className="text-center py-8 text-muted-foreground">
+            Configurações da agenda em desenvolvimento...
+          </div>
+        )}
       </div>
+
+      {/* Dialogs */}
+      <AgendamentoDialog
+        open={agendamentoDialogOpen}
+        onClose={() => setAgendamentoDialogOpen(false)}
+        onSubmit={handleSubmitAgendamento}
+        profissionais={profissionais}
+        servicos={servicos}
+        initialData={newAgendamentoData}
+        editingAgendamento={editingAgendamento}
+      />
+
+      <BloqueioDialog
+        open={bloqueioDialogOpen}
+        onClose={() => setBloqueioDialogOpen(false)}
+        onSubmit={handleSubmitBloqueio}
+        profissionais={profissionais}
+      />
     </PageLayout>
   );
 }
