@@ -14,6 +14,8 @@ interface AgendamentoCardProps {
   compact?: boolean;
   showDate?: boolean;
   draggable?: boolean;
+  showConflictWarning?: boolean;
+  expanded?: boolean;
 }
 
 const getStatusColor = (status: string) => {

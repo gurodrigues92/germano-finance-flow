@@ -1,10 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Calendar, UserX, Sun, Settings } from 'lucide-react';
+import { Calendar, UserX, Sun, Settings, Bell } from 'lucide-react';
 
 interface SalonAgendaTabsProps {
-  activeTab: 'calendar' | 'absences' | 'holiday' | 'settings';
-  onTabChange: (tab: 'calendar' | 'absences' | 'holiday' | 'settings') => void;
+  activeTab: 'calendar' | 'absences' | 'holiday' | 'settings' | 'notifications';
+  onTabChange: (tab: 'calendar' | 'absences' | 'holiday' | 'settings' | 'notifications') => void;
 }
 
 export const SalonAgendaTabs = ({ activeTab, onTabChange }: SalonAgendaTabsProps) => {
@@ -36,6 +36,13 @@ export const SalonAgendaTabs = ({ activeTab, onTabChange }: SalonAgendaTabsProps
       icon: Settings,
       color: '#607D8B', // Cinza
       description: 'Configurações da agenda'
+    },
+    {
+      id: 'notifications' as const,
+      label: 'Notifications',
+      icon: Bell,
+      color: '#9C27B0', // Roxo
+      description: 'Central de notificações'
     }
   ];
 
