@@ -6,8 +6,9 @@ import { useProfissionais } from '@/hooks/salon/useProfissionais';
 import { useServicos } from '@/hooks/salon/useServicos';
 import { useBloqueiosAgenda } from '@/hooks/salon/useBloqueiosAgenda';
 import { useComandas } from '@/hooks/salon/useComandas';
-import { AgendaGrid } from '@/components/agenda/AgendaGrid';
-import { AgendaSubMenu } from '@/components/agenda/AgendaSubMenu';
+import { SalonAgendaGrid } from '@/components/agenda/SalonAgendaGrid';
+import { SalonAgendaTabs } from '@/components/agenda/SalonAgendaTabs';
+import { SalonAgendaHeader } from '@/components/agenda/SalonAgendaHeader';
 import { AgendamentoDialog } from '@/components/agenda/AgendamentoDialog';
 import { BloqueioDialog } from '@/components/agenda/BloqueioDialog';
 import { AbsencesTab } from '@/components/agenda/AbsencesTab';
@@ -172,23 +173,30 @@ export default function Agenda() {
       fabIcon={<Plus className="w-6 h-6" />}
     >
       <div className="space-y-6">
-        {/* Submenu */}
-        <AgendaSubMenu activeTab={activeTab} onTabChange={setActiveTab} />
+        {/* Header da Agenda SalonSoft */}
+        <SalonAgendaHeader
+          selectedDate={selectedDate}
+          onDateChange={handleDateChange}
+          selectedProfissional={selectedProfissional}
+          onProfissionalChange={setSelectedProfissional}
+          profissionais={profissionais}
+        />
+
+        {/* Abas SalonSoft */}
+        <SalonAgendaTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
         {/* Conteúdo baseado na aba ativa */}
         {activeTab === 'calendar' && (
-          <AgendaGrid
+          <SalonAgendaGrid
             agendamentos={agendamentos}
             profissionais={profissionais}
             bloqueios={bloqueios}
             selectedDate={selectedDate}
-            onDateChange={handleDateChange}
-            onNewAgendamento={handleNewAgendamento}
+            onNewAgendamento={(data) => handleNewAgendamento(data.data, data.hora_inicio, data.profissional_id)}
             onEditAgendamento={handleEditAgendamento}
             onIniciarAtendimento={handleIniciarAtendimento}
             onFinalizarAtendimento={handleFinalizarAtendimento}
             selectedProfissional={selectedProfissional}
-            onProfissionalChange={setSelectedProfissional}
           />
         )}
 
