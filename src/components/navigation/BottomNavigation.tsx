@@ -12,21 +12,29 @@ interface NavItemProps {
   active?: boolean;
 }
 
-const NavItem = ({ icon: Icon, label, href, active }: NavItemProps) => (
+const NavItem = ({ icon: Icon, label, href, active, color }: NavItemProps & { color?: string }) => (
   <Link 
     to={href}
       className={`flex flex-col items-center justify-center space-y-1 py-3 px-2 transition-all duration-200 active:scale-95 ${
         active 
-          ? 'text-purple-600' 
-          : 'text-muted-foreground hover:text-purple-600 hover:scale-105'
+          ? 'text-blue-600' 
+          : 'text-muted-foreground hover:text-blue-600 hover:scale-105'
       }`}
     >
-      <div className={`p-1 rounded-lg transition-colors duration-200 ${
-        active ? 'bg-purple-100 shadow-sm' : 'hover:bg-purple-50'
-      }`}>
-        <Icon className={`w-6 h-6 ${active ? 'text-purple-600' : ''}`} />
+      <div 
+        className={`p-1 rounded-lg transition-colors duration-200 ${
+          active ? 'shadow-sm' : 'hover:bg-blue-50'
+        }`}
+        style={{
+          backgroundColor: active && color ? `${color}15` : undefined,
+          color: active && color ? color : undefined
+        }}
+      >
+        <Icon className="w-6 h-6" />
       </div>
-      <span className={`text-xs font-medium ${active ? 'text-purple-600' : ''}`}>
+      <span className={`text-xs font-medium ${active && color ? '' : ''}`} style={{
+        color: active && color ? color : undefined
+      }}>
       {label}
     </span>
   </Link>
@@ -39,23 +47,22 @@ export const BottomNavigation = () => {
   const { hasPermission } = usePermissions();
   
   const allMainNavItems = [
-    { icon: Home, label: 'Dashboard', href: '/', permission: 'view_dashboard' },
-    { icon: Calendar, label: 'Agenda', href: '/agenda', permission: 'view_appointments' },
-    { icon: Calculator, label: 'Caixa', href: '/caixa', permission: 'manage_payments' },
-    { icon: DollarSign, label: 'Transações', href: '/transacoes', permission: 'view_transactions' },
-    { icon: Users, label: 'Clientes', href: '/clientes', permission: 'view_clients' },
+    { icon: Calendar, label: 'Calendar', href: '/agenda', permission: 'view_appointments', color: '#4CAF50' },
+    { icon: Calculator, label: 'Cashier', href: '/caixa', permission: 'manage_payments', color: '#2196F3' },
+    { icon: BarChart3, label: 'Reports', href: '/analise', permission: 'view_analysis', color: '#9C27B0' },
+    { icon: Users, label: 'Clients', href: '/clientes', permission: 'view_clients', color: '#FF9800' },
   ];
 
   // Filtrar itens principais baseado nas permissões
   const mainNavItems = allMainNavItems.filter(item => hasPermission(item.permission));
 
   const allMenuItems = [
-    { label: 'Profissionais', href: '/profissionais', icon: Scissors, permission: 'manage_professionals' },
-    { label: 'Serviços', href: '/servicos', icon: Receipt, permission: 'manage_services' },
-    { label: 'Estoque', href: '/estoque', icon: Package, permission: 'view_stock' },
-    { label: 'Custos Fixos', href: '/custos-fixos', icon: Receipt, permission: 'view_fixed_costs' },
-    { label: 'Análise', href: '/analise', icon: BarChart3, permission: 'view_analysis' },
-    { label: 'Arquivo', href: '/arquivo', icon: Archive, permission: 'view_archive' },
+    { label: 'Professionals', href: '/profissionais', icon: Scissors, permission: 'manage_professionals', color: '#4CAF50' },
+    { label: 'Services', href: '/servicos', icon: Receipt, permission: 'manage_services', color: '#E91E63' },
+    { label: 'Products', href: '/estoque', icon: Package, permission: 'view_stock', color: '#00BCD4' },
+    { label: 'Expenses', href: '/custos-fixos', icon: Target, permission: 'view_fixed_costs', color: '#FF5722' },
+    { label: 'Transactions', href: '/transacoes', icon: DollarSign, permission: 'view_transactions', color: '#9C27B0' },
+    { label: 'Archive', href: '/arquivo', icon: Archive, permission: 'view_archive', color: '#607D8B' },
   ];
 
   // Filtrar itens do menu baseado nas permissões
@@ -124,6 +131,7 @@ export const BottomNavigation = () => {
             icon={item.icon}
             label={item.label}
             href={item.href}
+            color={item.color}
             active={
               item.href === '/' 
                 ? location.pathname === '/' 

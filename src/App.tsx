@@ -11,7 +11,7 @@ import NetworkStatus from "@/components/NetworkStatus";
 import { usePWA } from "@/hooks/usePWA";
 import Login from "@/pages/Login";
 import NotFound from "./pages/NotFound";
-import { FinanceLayout } from "./components/finance/FinanceLayout";
+import { SalonLayout } from "./components/salon/SalonLayout";
 import { Dashboard } from "./pages/finance/Dashboard";
 import { Transactions } from "./pages/finance/Transactions";
 import { Analysis } from "./pages/finance/Analysis";
@@ -45,7 +45,7 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/" element={
               <ProtectedRoute>
-                <FinanceLayout />
+                <SalonLayout />
               </ProtectedRoute>
             }>
               <Route index element={<Dashboard />} />
