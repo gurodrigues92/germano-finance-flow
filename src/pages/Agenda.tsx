@@ -15,6 +15,8 @@ import { BloqueioDialog } from '@/components/agenda/BloqueioDialog';
 import { AbsencesTab } from '@/components/agenda/AbsencesTab';
 import { HolidayTab } from '@/components/agenda/HolidayTab';
 import { SettingsTab } from '@/components/agenda/SettingsTab';
+import { RecurringAgendamentoDialog } from '@/components/agenda/RecurringAgendamentoDialog';
+import { NotificationCenter } from '@/components/agenda/NotificationCenter';
 import { AgendamentoToComandaButton } from '@/components/agenda/AgendamentoToComandaButton';
 import { Agendamento } from '@/types/salon';
 import { useToast } from '@/hooks/use-toast';
@@ -32,10 +34,11 @@ export default function Agenda() {
   // Estados da interface
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedProfissional, setSelectedProfissional] = useState('todos');
-  const [activeTab, setActiveTab] = useState<'calendar' | 'absences' | 'holiday' | 'settings'>('calendar');
+  const [activeTab, setActiveTab] = useState<'calendar' | 'absences' | 'holiday' | 'settings' | 'notifications'>('calendar');
   
   // Estados dos dialogs
   const [agendamentoDialogOpen, setAgendamentoDialogOpen] = useState(false);
+  const [recurringDialogOpen, setRecurringDialogOpen] = useState(false);
   const [bloqueioDialogOpen, setBloqueioDialogOpen] = useState(false);
   const [editingAgendamento, setEditingAgendamento] = useState<Agendamento | undefined>();
   const [newAgendamentoData, setNewAgendamentoData] = useState<{
@@ -163,6 +166,27 @@ export default function Agenda() {
     }
   };
 
+  const handleSubmitRecurring = async (agendamentosList: any[]) => {
+    try {
+      // Criar múltiplos agendamentos
+      for (const agendamentoData of agendamentosList) {
+        await addAgendamento(agendamentoData);
+      }
+      
+      toast({
+        title: "Sucesso",
+        description: `${agendamentosList.length} agendamentos criados com sucesso`
+      });
+    } catch (error) {
+      console.error('Erro ao criar agendamentos recorrentes:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível criar todos os agendamentos",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleFabClick = () => {
     if (activeTab === 'calendar') {
       handleNewAgendamento(
@@ -185,7 +209,7 @@ export default function Agenda() {
   return (
     <PageLayout
       title="Agenda"
-      subtitle="Sistema visual de agendamentos"
+      subtitle="Sistema avançado de agendamentos com notificações automáticas"
       onFabClick={handleFabClick}
       fabIcon={<Plus className="w-6 h-6" />}
     >
@@ -229,6 +253,10 @@ export default function Agenda() {
         {activeTab === 'settings' && (
           <SettingsTab />
         )}
+
+        {activeTab === 'notifications' && (
+          <NotificationCenter />
+        )}
       </div>
 
       {/* Dialogs */}
@@ -240,6 +268,13 @@ export default function Agenda() {
         servicos={servicos}
         initialData={newAgendamentoData}
         editingAgendamento={editingAgendamento}
+      />
+
+      <RecurringAgendamentoDialog
+        open={recurringDialogOpen}
+        onClose={() => setRecurringDialogOpen(false)}
+        onSubmit={handleSubmitRecurring}
+        profissionais={profissionais}
       />
 
       <BloqueioDialog
