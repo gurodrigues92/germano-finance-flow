@@ -38,3 +38,17 @@ export const formatCurrency = (value: number, showSymbol: boolean = false) => {
   }
   return new Intl.NumberFormat('pt-BR').format(value);
 };
+
+export const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('pt-BR');
+};
+
+export const formatDateTime = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString('pt-BR', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
