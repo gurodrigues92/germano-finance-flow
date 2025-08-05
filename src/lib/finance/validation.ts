@@ -81,6 +81,9 @@ export const sanitizeTransactionData = (data: any) => {
     pix: Number(data.pix) || 0,
     debito: Number(data.debito) || 0,
     credito: Number(data.credito) || 0,
+    profissionalId: data.profissionalId ? String(data.profissionalId).trim() : undefined,
+    temAssistente: Boolean(data.temAssistente),
+    assistenteTaxa: Number(data.assistenteTaxa) || 0,
     customRates: data.customRates ? {
       studioRate: Number(data.customRates.studioRate) || 60,
       eduRate: Number(data.customRates.eduRate) || 40,

@@ -761,6 +761,7 @@ export type Database = {
       transacoes: {
         Row: {
           ano: number
+          assistente_taxa: number | null
           created_at: string
           credito: number
           custom_rates: Json | null
@@ -772,15 +773,18 @@ export type Database = {
           kam_share: number
           mes_referencia: string
           pix: number
+          profissional_id: string | null
           studio_share: number
           taxa_credito: number
           taxa_debito: number
+          tem_assistente: boolean | null
           total_bruto: number
           total_liquido: number
           updated_at: string
         }
         Insert: {
           ano: number
+          assistente_taxa?: number | null
           created_at?: string
           credito?: number
           custom_rates?: Json | null
@@ -792,15 +796,18 @@ export type Database = {
           kam_share: number
           mes_referencia: string
           pix?: number
+          profissional_id?: string | null
           studio_share: number
           taxa_credito?: number
           taxa_debito?: number
+          tem_assistente?: boolean | null
           total_bruto: number
           total_liquido: number
           updated_at?: string
         }
         Update: {
           ano?: number
+          assistente_taxa?: number | null
           created_at?: string
           credito?: number
           custom_rates?: Json | null
@@ -812,14 +819,24 @@ export type Database = {
           kam_share?: number
           mes_referencia?: string
           pix?: number
+          profissional_id?: string | null
           studio_share?: number
           taxa_credito?: number
           taxa_debito?: number
+          tem_assistente?: boolean | null
           total_bruto?: number
           total_liquido?: number
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "transacoes_profissional_id_fkey"
+            columns: ["profissional_id"]
+            isOneToOne: false
+            referencedRelation: "profissionais"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

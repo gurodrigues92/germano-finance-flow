@@ -66,6 +66,9 @@ export const useSupabaseTransactions = () => {
     pix: number;
     debito: number;
     credito: number;
+    profissionalId?: string;
+    temAssistente?: boolean;
+    assistenteTaxa?: number;
     customRates?: {
       studioRate: number;
       eduRate: number;
@@ -137,6 +140,9 @@ export const useSupabaseTransactions = () => {
         kam_share: calculations.kamShare,
         mes_referencia: month,
         ano: year,
+        profissional_id: sanitizedData.profissionalId || null,
+        tem_assistente: sanitizedData.temAssistente || false,
+        assistente_taxa: sanitizedData.assistenteTaxa || 0,
         custom_rates: sanitizedData.customRates || null
       };
 
@@ -173,6 +179,9 @@ export const useSupabaseTransactions = () => {
         month: data.mes_referencia,
         year: data.ano,
         createdAt: data.created_at,
+        profissionalId: data.profissional_id,
+        temAssistente: data.tem_assistente,
+        assistenteTaxa: Number(data.assistente_taxa),
         customRates: data.custom_rates as { studioRate: number; eduRate: number; kamRate: number; } | undefined
       };
 

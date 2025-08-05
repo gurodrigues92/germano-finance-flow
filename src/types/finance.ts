@@ -15,6 +15,10 @@ export interface Transaction {
   month: string;
   year: number;
   createdAt: string;
+  // Campos para profissional e assistente
+  profissionalId?: string;
+  temAssistente?: boolean;
+  assistenteTaxa?: number;
   // Taxas personalizadas opcionais (em porcentagem)
   customRates?: {
     studioRate: number;

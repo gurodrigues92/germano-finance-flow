@@ -5,6 +5,7 @@ import { useAnalysisData } from '@/hooks/useAnalysisData';
 import { useAnalyticsKPIs } from '@/hooks/useAnalyticsKPIs';
 import { useAdvancedAnalytics } from '@/hooks/useAdvancedAnalytics';
 import { KPIDashboard } from '@/components/finance/analysis/KPIDashboard';
+import { SalesReportTabs } from '@/components/finance/analysis/SalesReportTabs';
 import { AdvancedEvolutionChart } from '@/components/finance/analysis/AdvancedEvolutionChart';
 import { PaymentMethodsAnalytics } from '@/components/finance/analysis/PaymentMethodsAnalytics';
 import { SharesDistributionChart } from '@/components/finance/analysis/SharesDistributionChart';
@@ -70,6 +71,11 @@ export const Analysis = () => {
 
       {/* KPI Dashboard */}
       <KPIDashboard kpis={kpis} />
+
+      {/* Relatórios de Vendas Detalhados */}
+      <div className="mb-6">
+        <SalesReportTabs transactions={advancedCurrentData} period={currentMonth} />
+      </div>
 
       {/* Comparativo dos Últimos 3 Meses */}
       <div className="mb-6">

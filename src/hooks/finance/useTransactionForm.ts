@@ -9,6 +9,9 @@ export interface TransactionFormData {
   pix: string;
   debito: string;
   credito: string;
+  profissionalId: string;
+  temAssistente: boolean;
+  assistenteTaxa: string;
   useCustomRates: boolean;
   customRates?: CustomRates;
 }
@@ -30,6 +33,9 @@ export const useTransactionForm = ({
     pix: '',
     debito: '',
     credito: '',
+    profissionalId: '',
+    temAssistente: false,
+    assistenteTaxa: '0',
     useCustomRates: false
   });
 
@@ -42,6 +48,9 @@ export const useTransactionForm = ({
       pix: '',
       debito: '',
       credito: '',
+      profissionalId: '',
+      temAssistente: false,
+      assistenteTaxa: '0',
       useCustomRates: false
     });
   };
@@ -113,6 +122,9 @@ export const useTransactionForm = ({
         pix: editingTransaction.pix.toString(),
         debito: editingTransaction.debito.toString(),
         credito: editingTransaction.credito.toString(),
+        profissionalId: editingTransaction.profissionalId || '',
+        temAssistente: editingTransaction.temAssistente || false,
+        assistenteTaxa: editingTransaction.assistenteTaxa?.toString() || '0',
         useCustomRates: !!editingTransaction.customRates,
         customRates: editingTransaction.customRates
       };
@@ -125,6 +137,9 @@ export const useTransactionForm = ({
         pix: '',
         debito: '',
         credito: '',
+        profissionalId: '',
+        temAssistente: false,
+        assistenteTaxa: '0',
         useCustomRates: false
       };
       setFormData(defaultData);
