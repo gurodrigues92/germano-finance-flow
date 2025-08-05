@@ -61,6 +61,9 @@ export const Transactions = () => {
     archivedData
   });
 
+  // Filtro unificado - declarar antes de usar
+  const [filtroUnificado, setFiltroUnificado] = useState<'todas' | 'comandas_abertas' | 'transacoes_manuais' | 'hoje'>('todas');
+
   // Filter transactions to current month being viewed
   const currentMonthTransactions = transactions.filter(t => t.month === currentMonth);
   
@@ -126,9 +129,6 @@ export const Transactions = () => {
   const [novaComandaOpen, setNovaComandaOpen] = useState(false);
   const [fecharComandaOpen, setFecharComandaOpen] = useState(false);
   const [comandaParaFechar, setComandaParaFechar] = useState<Transaction | null>(null);
-  
-  // Filtro unificado
-  const [filtroUnificado, setFiltroUnificado] = useState<'todas' | 'comandas_abertas' | 'transacoes_manuais' | 'hoje'>('todas');
 
   const resetForm = () => {
     setEditingTransaction(null);
