@@ -120,6 +120,7 @@ export const translations = {
     profile: "Perfil",
     logout: "Sair",
     home: "Início",
+    today: "Hoje",
     calendar: "Calendário",
     absences: "Ausências",
     holidays: "Feriados",
