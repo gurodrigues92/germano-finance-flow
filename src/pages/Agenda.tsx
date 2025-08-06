@@ -6,10 +6,7 @@ import { useProfissionais } from '@/hooks/salon/useProfissionais';
 import { useServicos } from '@/hooks/salon/useServicos';
 import { useBloqueiosAgenda } from '@/hooks/salon/useBloqueiosAgenda';
 import { useComandas } from '@/hooks/salon/useComandas';
-import { SalonAgendaGrid } from '@/components/agenda/SalonAgendaGrid';
 import { AdvancedAgendaGrid } from '@/components/agenda/AdvancedAgendaGrid';
-import { SalonAgendaTabs } from '@/components/agenda/SalonAgendaTabs';
-import { SalonAgendaHeader } from '@/components/agenda/SalonAgendaHeader';
 import { AgendamentoDialog } from '@/components/agenda/AgendamentoDialog';
 import { BloqueioDialog } from '@/components/agenda/BloqueioDialog';
 import { AbsencesTab } from '@/components/agenda/AbsencesTab';
@@ -17,10 +14,14 @@ import { HolidayTab } from '@/components/agenda/HolidayTab';
 import { SettingsTab } from '@/components/agenda/SettingsTab';
 import { RecurringAgendamentoDialog } from '@/components/agenda/RecurringAgendamentoDialog';
 import { NotificationCenter } from '@/components/agenda/NotificationCenter';
-import { AgendamentoToComandaButton } from '@/components/agenda/AgendamentoToComandaButton';
+import { MobileAgendaLayout } from '@/components/agenda/MobileAgendaLayout';
+import { ResponsiveHeader } from '@/components/agenda/ResponsiveHeader';
+import { UnifiedTabNavigation } from '@/components/agenda/UnifiedTabNavigation';
+import { ContextualActions } from '@/components/agenda/ContextualActions';
 import { Agendamento } from '@/types/salon';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function Agenda() {
   const { agendamentos, loading, addAgendamento, loadAgendamentos, updateStatusAgendamento } = useAgendamentos();
@@ -198,6 +199,10 @@ export default function Agenda() {
     }
   };
 
+  const handleNewRecurring = () => {
+    setRecurringDialogOpen(true);
+  };
+
   if (loading) {
     return (
       <PageLayout title="Agenda" subtitle="Carregando...">
@@ -206,28 +211,12 @@ export default function Agenda() {
     );
   }
 
-  return (
-    <PageLayout
-      title="Agenda"
-      subtitle="Sistema avançado de agendamentos com notificações automáticas"
-      onFabClick={handleFabClick}
-      fabIcon={<Plus className="w-6 h-6" />}
-    >
-      <div className="space-y-6">
-        {/* Header da Agenda SalonSoft */}
-        <SalonAgendaHeader
-          selectedDate={selectedDate}
-          onDateChange={handleDateChange}
-          selectedProfissional={selectedProfissional}
-          onProfissionalChange={setSelectedProfissional}
-          profissionais={profissionais}
-        />
+  const isMobile = useIsMobile();
 
-        {/* Abas SalonSoft */}
-        <SalonAgendaTabs activeTab={activeTab} onTabChange={setActiveTab} />
-
-        {/* Conteúdo baseado na aba ativa */}
-        {activeTab === 'calendar' && (
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'calendar':
+        return (
           <AdvancedAgendaGrid
             agendamentos={agendamentos}
             profissionais={profissionais}
@@ -240,23 +229,113 @@ export default function Agenda() {
             selectedProfissional={selectedProfissional}
             onDateChange={handleDateChange}
           />
-        )}
+        );
+      case 'absences':
+        return <AbsencesTab onCreateBloqueio={() => setBloqueioDialogOpen(true)} />;
+      case 'holiday':
+        return <HolidayTab />;
+      case 'settings':
+        return <SettingsTab />;
+      case 'notifications':
+        return <NotificationCenter />;
+      default:
+        return null;
+    }
+  };
 
-        {activeTab === 'absences' && (
-          <AbsencesTab onCreateBloqueio={() => setBloqueioDialogOpen(true)} />
-        )}
+  const header = (
+    <ResponsiveHeader
+      selectedDate={selectedDate}
+      onDateChange={handleDateChange}
+      selectedProfissional={selectedProfissional}
+      onProfissionalChange={setSelectedProfissional}
+      profissionais={profissionais}
+    />
+  );
 
-        {activeTab === 'holiday' && (
-          <HolidayTab />
-        )}
+  const tabs = (
+    <UnifiedTabNavigation 
+      activeTab={activeTab} 
+      onTabChange={setActiveTab} 
+    />
+  );
 
-        {activeTab === 'settings' && (
-          <SettingsTab />
-        )}
+  if (isMobile) {
+    return (
+      <PageLayout
+        title="Agenda"
+        subtitle="Sistema avançado de agendamentos"
+      >
+        <MobileAgendaLayout
+          header={header}
+          tabs={tabs}
+          content={renderContent()}
+        />
 
-        {activeTab === 'notifications' && (
-          <NotificationCenter />
-        )}
+        {/* Mobile Contextual Actions */}
+        <ContextualActions
+          activeTab={activeTab}
+          onNewAgendamento={() => handleNewAgendamento(
+            selectedDate.toISOString().split('T')[0],
+            '09:00'
+          )}
+          onNewBloqueio={() => setBloqueioDialogOpen(true)}
+          onNewRecurring={handleNewRecurring}
+        />
+
+        {/* Dialogs */}
+        <AgendamentoDialog
+          open={agendamentoDialogOpen}
+          onClose={() => setAgendamentoDialogOpen(false)}
+          onSubmit={handleSubmitAgendamento}
+          profissionais={profissionais}
+          servicos={servicos}
+          initialData={newAgendamentoData}
+          editingAgendamento={editingAgendamento}
+        />
+
+        <RecurringAgendamentoDialog
+          open={recurringDialogOpen}
+          onClose={() => setRecurringDialogOpen(false)}
+          onSubmit={handleSubmitRecurring}
+          profissionais={profissionais}
+        />
+
+        <BloqueioDialog
+          open={bloqueioDialogOpen}
+          onClose={() => setBloqueioDialogOpen(false)}
+          onSubmit={handleSubmitBloqueio}
+          profissionais={profissionais}
+        />
+      </PageLayout>
+    );
+  }
+
+  // Desktop version
+  return (
+    <PageLayout
+      title="Agenda"
+      subtitle="Sistema avançado de agendamentos com notificações automáticas"
+      onFabClick={handleFabClick}
+      fabIcon={<Plus className="w-6 h-6" />}
+    >
+      <div className="space-y-6">
+        {header}
+        
+        <div className="flex items-center justify-between">
+          {tabs}
+          <ContextualActions
+            activeTab={activeTab}
+            onNewAgendamento={() => handleNewAgendamento(
+              selectedDate.toISOString().split('T')[0],
+              '09:00'
+            )}
+            onNewBloqueio={() => setBloqueioDialogOpen(true)}
+            onNewRecurring={handleNewRecurring}
+          />
+        </div>
+
+        {renderContent()}
       </div>
 
       {/* Dialogs */}
