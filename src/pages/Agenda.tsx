@@ -31,6 +31,7 @@ export default function Agenda() {
   const { createComanda } = useComandas();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   // Estados da interface
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -211,7 +212,6 @@ export default function Agenda() {
     );
   }
 
-  const isMobile = useIsMobile();
 
   const renderContent = () => {
     switch (activeTab) {
