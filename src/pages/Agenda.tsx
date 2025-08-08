@@ -22,6 +22,7 @@ import { Agendamento } from '@/types/salon';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { usePageSEO } from '@/hooks/usePageSEO';
 
 export default function Agenda() {
   const { agendamentos, loading, addAgendamento, loadAgendamentos, updateStatusAgendamento } = useAgendamentos();
@@ -32,6 +33,11 @@ export default function Agenda() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  usePageSEO({
+    title: 'Agenda | App',
+    description: 'Agendamentos móveis com fluxo fluido e design limpo.',
+    canonicalPath: '/agenda'
+  });
 
   // Estados da interface
   const [selectedDate, setSelectedDate] = useState(new Date());

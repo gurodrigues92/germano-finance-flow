@@ -11,6 +11,7 @@ import { PaymentMethodsAnalytics } from '@/components/finance/analysis/PaymentMe
 import { SharesDistributionChart } from '@/components/finance/analysis/SharesDistributionChart';
 import { OperationalChartsGrid } from '@/components/finance/analysis/OperationalChartsGrid';
 import { MonthlyReportCard } from '@/components/finance/analysis/MonthlyReportCard';
+import { usePageSEO } from '@/hooks/usePageSEO';
 
 export const Analysis = () => {
   const { currentMonth, setCurrentMonth } = useFinance();

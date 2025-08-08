@@ -22,8 +22,9 @@ import { NovaComandaDialog } from '@/components/finance/NovaComandaDialog';
 import { ComandasAbertasSection } from '@/components/finance/ComandasAbertasSection';
 import { FecharComandaDialog } from '@/components/finance/FecharComandaDialog';
 import { UnifiedTransactionFilters } from '@/components/finance/UnifiedTransactionFilters';
-import { Button } from '@/components/ui/button';
+import { ResponsiveButton } from '@/components/ui/responsive-button';
 import { Plus, Receipt } from 'lucide-react';
+import { usePageSEO } from '@/hooks/usePageSEO';
 
 interface TransactionFormData {
   date: string;
@@ -333,21 +334,23 @@ export const Transactions = () => {
 
       {/* Botões de Ação */}
       <div className="flex gap-2 mb-4">
-        <Button 
+        <ResponsiveButton 
           onClick={() => setIsOpen(true)}
           className="bg-finance-income hover:bg-finance-income/90 text-finance-income-foreground flex items-center gap-2"
+          mobileSize="lg"
         >
           <Plus className="h-4 w-4" />
           Nova Transação
-        </Button>
-        <Button 
+        </ResponsiveButton>
+        <ResponsiveButton 
           onClick={() => setNovaComandaOpen(true)}
           className="flex items-center gap-2"
           variant="outline"
+          mobileSize="lg"
         >
           <Receipt className="h-4 w-4" />
           Nova Comanda
-        </Button>
+        </ResponsiveButton>
       </div>
 
       {/* Action Dialog */}
