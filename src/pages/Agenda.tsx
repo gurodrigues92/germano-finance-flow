@@ -18,6 +18,7 @@ import { MobileAgendaLayout } from '@/components/agenda/MobileAgendaLayout';
 import { ResponsiveHeader } from '@/components/agenda/ResponsiveHeader';
 import { UnifiedTabNavigation } from '@/components/agenda/UnifiedTabNavigation';
 import { ContextualActions } from '@/components/agenda/ContextualActions';
+import { MobileAgendaView } from '@/components/agenda/MobileAgendaView';
 import { Agendamento } from '@/types/salon';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -74,6 +75,27 @@ export default function Agenda() {
       inicioSemana.toISOString().split('T')[0],
       fimSemana.toISOString().split('T')[0]
     );
+  };
+
+  const handleRefresh = async () => {
+    const date = selectedDate;
+    const inicioSemana = new Date(date);
+    inicioSemana.setDate(date.getDate() - date.getDay());
+    const fimSemana = new Date(inicioSemana);
+    fimSemana.setDate(inicioSemana.getDate() + 6);
+
+    await Promise.all([
+      loadAgendamentos({
+        data_inicio: inicioSemana.toISOString().split('T')[0],
+        data_fim: fimSemana.toISOString().split('T')[0]
+      }),
+      (async () => {
+        await loadBloqueios(
+          inicioSemana.toISOString().split('T')[0],
+          fimSemana.toISOString().split('T')[0]
+        );
+      })()
+    ]);
   };
 
   const handleNewAgendamento = (data: string, hora: string, profissionalId?: string) => {
@@ -223,18 +245,35 @@ export default function Agenda() {
     switch (activeTab) {
       case 'calendar':
         return (
-          <AdvancedAgendaGrid
-            agendamentos={agendamentos}
-            profissionais={profissionais}
-            bloqueios={bloqueios}
-            selectedDate={selectedDate}
-            onNewAgendamento={(data) => handleNewAgendamento(data.data, data.hora_inicio, data.profissional_id)}
-            onEditAgendamento={handleEditAgendamento}
-            onIniciarAtendimento={handleIniciarAtendimento}
-            onFinalizarAtendimento={handleFinalizarAtendimento}
-            selectedProfissional={selectedProfissional}
-            onDateChange={handleDateChange}
-          />
+          isMobile ? (
+            <MobileAgendaView
+              agendamentos={agendamentos}
+              profissionais={profissionais}
+              bloqueios={bloqueios}
+              selectedDate={selectedDate}
+              selectedProfissional={selectedProfissional}
+              onNewAgendamento={({ data, hora_inicio, profissional_id }) =>
+                handleNewAgendamento(data, hora_inicio, profissional_id)
+              }
+              onEditAgendamento={handleEditAgendamento}
+              onIniciarAtendimento={handleIniciarAtendimento}
+              onFinalizarAtendimento={handleFinalizarAtendimento}
+              onRefresh={handleRefresh}
+            />
+          ) : (
+            <AdvancedAgendaGrid
+              agendamentos={agendamentos}
+              profissionais={profissionais}
+              bloqueios={bloqueios}
+              selectedDate={selectedDate}
+              onNewAgendamento={(data) => handleNewAgendamento(data.data, data.hora_inicio, data.profissional_id)}
+              onEditAgendamento={handleEditAgendamento}
+              onIniciarAtendimento={handleIniciarAtendimento}
+              onFinalizarAtendimento={handleFinalizarAtendimento}
+              selectedProfissional={selectedProfissional}
+              onDateChange={handleDateChange}
+            />
+          )
         );
       case 'absences':
         return <AbsencesTab onCreateBloqueio={() => setBloqueioDialogOpen(true)} />;

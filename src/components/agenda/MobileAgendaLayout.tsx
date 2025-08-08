@@ -28,19 +28,19 @@ export const MobileAgendaLayout = ({
   }
 
   return (
-    <div className={cn("h-full flex flex-col bg-background", className)}>
+    <div className={cn("h-full w-full max-w-full flex flex-col bg-background overflow-x-hidden", className)}>
       {/* Sticky Header */}
-      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-md border-b border-border/50">
+      <div className="sticky top-0 z-20 w-full bg-background/95 backdrop-blur-md border-b border-border/50">
         {header}
       </div>
 
       {/* Sticky Tabs */}
-      <div className="sticky top-[72px] z-10 bg-background/95 backdrop-blur-md border-b border-border/20">
+      <div className="sticky top-[72px] z-10 w-full bg-background/95 backdrop-blur-md border-b border-border/20">
         {tabs}
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden overflow-y-auto">
         {content}
       </div>
     </div>

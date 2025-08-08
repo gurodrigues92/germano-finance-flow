@@ -19,7 +19,7 @@ export const PageLayout = ({
   onFabClick,
   fabIcon
 }: PageLayoutProps) => {
-  return <div className="min-h-screen bg-muted/20 pb-20 sm:pb-24">
+  return <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-muted/20 pb-20 sm:pb-24">
       {/* Header */}
       <header className="bg-card shadow-sm border-b border-border">
         <div className="page-container !pb-0">
