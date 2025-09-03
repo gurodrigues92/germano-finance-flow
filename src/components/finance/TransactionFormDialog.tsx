@@ -26,31 +26,36 @@ export const TransactionFormDialog = ({
       open={isOpen}
       onOpenChange={onOpenChange}
       title={editingTransaction ? 'Editar Transação' : 'Nova Transação'}
-      className="max-w-[500px]"
+      className="max-w-[600px]"
     >
-      <ScrollArea className="max-h-[calc(90vh-120px)] px-4 sm:px-6">
-        <form onSubmit={onSubmit} className="space-y-4 sm:space-y-6 pb-4">
-          {children}
-        </form>
-      </ScrollArea>
+      <div className="flex flex-col h-full">
+        <ScrollArea className="flex-1">
+          <form onSubmit={onSubmit} className="space-y-8 p-1">
+            {children}
+          </form>
+        </ScrollArea>
 
-      <div className="flex gap-2 p-4 sm:p-6 pt-2 border-t bg-background">
-        <Button 
-          type="submit"
-          disabled={loading} 
-          className="flex-1 text-base sm:text-lg py-2 sm:py-3"
-        >
-          {loading ? 'Salvando...' : (editingTransaction ? 'Atualizar Transação' : 'Adicionar Transação')}
-        </Button>
-        <Button 
-          type="button" 
-          variant="outline" 
-          onClick={() => onOpenChange(false)}
-          disabled={loading}
-          className="px-4 sm:px-6"
-        >
-          Cancelar
-        </Button>
+        {/* Fixed bottom action bar */}
+        <div className="sticky bottom-0 bg-background border-t p-6 space-y-4">
+          <Button 
+            type="submit"
+            disabled={loading} 
+            size="lg"
+            className="w-full h-14 text-lg font-medium"
+          >
+            {loading ? 'Salvando...' : (editingTransaction ? 'Atualizar Transação' : 'Adicionar Transação')}
+          </Button>
+          <Button 
+            type="button" 
+            variant="outline" 
+            size="lg"
+            onClick={() => onOpenChange(false)}
+            disabled={loading}
+            className="w-full h-12 text-base"
+          >
+            Cancelar
+          </Button>
+        </div>
       </div>
     </ResponsiveDialog>
   );

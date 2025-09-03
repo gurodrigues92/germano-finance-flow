@@ -26,12 +26,12 @@ export function ResponsiveDialog({
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent className={cn("max-h-[90vh]", className)}>
-          <DrawerHeader className="text-left">
-            <DrawerTitle>{title}</DrawerTitle>
-            {description && <p className="text-sm text-muted-foreground">{description}</p>}
+        <DrawerContent className={cn("h-[100vh] max-h-none", className)}>
+          <DrawerHeader className="text-left px-6 py-4 border-b">
+            <DrawerTitle className="text-xl font-semibold">{title}</DrawerTitle>
+            {description && <p className="text-sm text-muted-foreground mt-2">{description}</p>}
           </DrawerHeader>
-          <div className="px-4 pb-4 overflow-y-auto max-h-[calc(90vh-120px)]">
+          <div className="flex-1 overflow-y-auto px-6 py-6">
             {children}
           </div>
         </DrawerContent>
@@ -41,12 +41,12 @@ export function ResponsiveDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn("w-[95vw] max-w-[425px] max-h-[90vh]", className)}>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          {description && <p className="text-sm text-muted-foreground">{description}</p>}
+      <DialogContent className={cn("w-[95vw] max-w-[600px] max-h-[95vh]", className)}>
+        <DialogHeader className="pb-4 border-b">
+          <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
+          {description && <p className="text-sm text-muted-foreground mt-2">{description}</p>}
         </DialogHeader>
-        <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
+        <div className="overflow-y-auto max-h-[calc(95vh-140px)] py-4">
           {children}
         </div>
       </DialogContent>
