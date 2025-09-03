@@ -21,7 +21,7 @@ export const SalonCaixaTabs = ({
   const tabs = [
     {
       id: 'open-tickets',
-      label: 'Open tickets',
+      label: 'Comandas abertas',
       icon: Receipt,
       color: 'bg-[hsl(142,76%,36%)]', // Verde
       count: openTicketsCount,
@@ -29,7 +29,7 @@ export const SalonCaixaTabs = ({
     },
     {
       id: 'closed-tickets',
-      label: 'Closed tickets',
+      label: 'Comandas fechadas',
       icon: FileText,
       color: 'bg-[hsl(217,91%,60%)]', // Azul
       count: closedTicketsCount,
@@ -37,7 +37,7 @@ export const SalonCaixaTabs = ({
     },
     {
       id: 'daily-sales',
-      label: 'Daily sales',
+      label: 'Vendas do dia',
       icon: BarChart3,
       color: 'bg-[hsl(291,64%,42%)]', // Roxo
       count: `R$ ${dailySalesValue.toFixed(0)}`,

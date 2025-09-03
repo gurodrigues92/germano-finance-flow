@@ -22,7 +22,7 @@ export const SalonCaixaTable = ({
   onCloseTicket,
   loading 
 }: SalonCaixaTableProps) => {
-  const title = type === 'open' ? 'Open Tickets' : 'Closed Tickets';
+  const title = type === 'open' ? 'Comandas Abertas' : 'Comandas Fechadas';
   const emptyMessage = type === 'open' ? 'Nenhuma comanda aberta' : 'Nenhuma comanda fechada hoje';
 
   if (loading) {
@@ -69,10 +69,10 @@ export const SalonCaixaTable = ({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[200px]">Client</TableHead>
-              <TableHead className="w-[150px]">Date</TableHead>
-              <TableHead className="w-[120px] text-right">Value</TableHead>
-              <TableHead className="w-[120px] text-center">Action</TableHead>
+              <TableHead className="w-[200px]">Cliente</TableHead>
+              <TableHead className="w-[150px]">Data</TableHead>
+              <TableHead className="w-[120px] text-right">Valor</TableHead>
+              <TableHead className="w-[120px] text-center">Ação</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -117,7 +117,7 @@ export const SalonCaixaTable = ({
                         className="h-8 bg-[hsl(142,76%,36%)] hover:bg-[hsl(142,76%,32%)] text-white"
                       >
                         <CreditCard className="w-4 h-4 mr-1" />
-                        Close ticket
+                        Fechar comanda
                       </Button>
                     )}
                   </div>
