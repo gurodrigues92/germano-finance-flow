@@ -47,8 +47,8 @@ export const UnifiedTabNavigation = ({ activeTab, onTabChange }: UnifiedTabNavig
 
   if (isMobile) {
     return (
-      <div className="px-4 py-3">
-        <div className="flex overflow-x-auto gap-2 scrollbar-hide">
+      <div className="px-3 py-2">
+        <div className="flex overflow-x-auto gap-1 scrollbar-hide -mx-1 px-1">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -60,15 +60,15 @@ export const UnifiedTabNavigation = ({ activeTab, onTabChange }: UnifiedTabNavig
                 onClick={() => onTabChange(tab.id)}
                 size="sm"
                 className={cn(
-                  "flex items-center gap-2 whitespace-nowrap min-h-[40px] px-4",
-                  "transition-all duration-200",
+                  "flex items-center gap-1.5 whitespace-nowrap min-h-[36px] px-3 text-xs",
+                  "transition-all duration-200 flex-shrink-0",
                   isActive 
-                    ? "bg-primary text-primary-foreground shadow-md" 
+                    ? "bg-primary text-primary-foreground shadow-sm" 
                     : "text-muted-foreground hover:text-foreground hover:bg-accent"
                 )}
               >
-                <Icon className="w-4 h-4" />
-                <span className="text-sm font-medium">{tab.shortLabel}</span>
+                <Icon className="w-3.5 h-3.5" />
+                <span className="font-medium">{tab.shortLabel}</span>
               </Button>
             );
           })}

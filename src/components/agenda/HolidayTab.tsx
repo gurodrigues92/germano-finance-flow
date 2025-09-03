@@ -103,11 +103,11 @@ export const HolidayTab = () => {
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <CalendarCheck className="w-5 h-5" />
-              Gestão de Feriados
+              Feriados
             </CardTitle>
             <Button onClick={() => setShowAddForm(!showAddForm)}>
               <Plus className="w-4 h-4 mr-2" />
-              Adicionar Feriado
+              Adicionar
             </Button>
           </div>
         </CardHeader>

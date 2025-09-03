@@ -52,63 +52,59 @@ export const ResponsiveHeader = ({
 
   if (isMobile) {
     return (
-      <div className="px-4 py-3 space-y-3">
-        {/* Date Navigation */}
+      <div className="px-3 py-2">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <ResponsiveButton
               variant="outline"
               size="sm"
               onClick={handlePreviousDay}
-              className="h-9 w-9 p-0"
+              className="h-8 w-8 p-0"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-3.5 h-3.5" />
             </ResponsiveButton>
             
             <ResponsiveButton
               variant="outline"
               size="sm"
               onClick={handleNextDay}
-              className="h-9 w-9 p-0"
+              className="h-8 w-8 p-0"
             >
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-3.5 h-3.5" />
             </ResponsiveButton>
           </div>
 
-          <div className="flex-1 mx-3">
+          <div className="flex-1 mx-2">
             <div className="text-center">
-              <div className="text-sm font-medium text-muted-foreground">
+              <div className="text-sm font-medium">
                 {formatDisplayDate(selectedDate)}
-              </div>
-              <div className="text-xs text-muted-foreground/80 capitalize">
-                {format(selectedDate, "yyyy", { locale: ptBR })}
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             {!isToday(selectedDate) && (
               <ResponsiveButton
                 variant="outline"
                 size="sm"
                 onClick={handleToday}
-                className="text-xs px-3"
+                className="text-xs px-2 h-8"
               >
-                {translations.navigation.today}
+                Hoje
               </ResponsiveButton>
             )}
 
             <Sheet>
               <SheetTrigger asChild>
-                <ResponsiveButton variant="outline" size="sm" className="h-9 w-9 p-0">
-                  <Filter className="w-4 h-4" />
+                <ResponsiveButton variant="outline" size="sm" className="h-8 w-8 p-0">
+                  <Filter className="w-3.5 h-3.5" />
                 </ResponsiveButton>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px]">
+              <SheetContent side="right" className="w-[280px]">
                 <SheetHeader>
                   <SheetTitle className="flex items-center gap-2">
-                    <Users className="w-5 h-5" />
-                    Filtrar Profissional
+                    <Users className="w-4 h-4" />
+                    Filtrar
                   </SheetTitle>
                 </SheetHeader>
                 <div className="mt-6 space-y-4">
@@ -117,7 +113,7 @@ export const ResponsiveHeader = ({
                       <SelectValue placeholder="Selecionar profissional" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="todos">Todos os profissionais</SelectItem>
+                      <SelectItem value="todos">Todos</SelectItem>
                       {profissionais.map((prof) => (
                         <SelectItem key={prof.id} value={prof.id}>
                           <div className="flex items-center gap-3">

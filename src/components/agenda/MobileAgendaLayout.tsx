@@ -35,12 +35,12 @@ export const MobileAgendaLayout = ({
       </div>
 
       {/* Sticky Tabs */}
-      <div className="sticky top-[72px] z-10 w-full bg-background/95 backdrop-blur-md border-b border-border/20">
+      <div className="sticky top-[56px] z-10 w-full bg-background/95 backdrop-blur-md border-b border-border/20">
         {tabs}
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-hidden overflow-y-auto">
+      <div className="flex-1 overflow-hidden overflow-y-auto pb-20">
         {content}
       </div>
     </div>

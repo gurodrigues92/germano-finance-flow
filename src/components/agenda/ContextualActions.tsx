@@ -64,7 +64,7 @@ export const ContextualActions = ({
 
   if (isMobile) {
     return (
-      <div className={cn("fixed bottom-4 right-4 z-30", className)}>
+      <div className={cn("fixed bottom-20 right-3 z-30", className)}>
         <div className="flex flex-col gap-2 items-end">
           {/* Secondary Actions */}
           {secondaryActions.map((action, index) => {
@@ -75,9 +75,9 @@ export const ContextualActions = ({
                 variant="secondary"
                 size="lg"
                 onClick={action.action}
-                className="h-12 w-12 rounded-full shadow-lg"
+                className="h-11 w-11 rounded-full shadow-lg"
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-4 h-4" />
               </ResponsiveButton>
             );
           })}
@@ -87,9 +87,9 @@ export const ContextualActions = ({
             variant="default"
             size="lg"
             onClick={mainAction.action}
-            className="h-14 w-14 rounded-full shadow-xl bg-primary hover:bg-primary/90"
+            className="h-12 w-12 rounded-full shadow-xl bg-primary hover:bg-primary/90"
           >
-            <mainAction.icon className="w-6 h-6" />
+            <mainAction.icon className="w-5 h-5" />
           </ResponsiveButton>
         </div>
       </div>
