@@ -21,6 +21,7 @@ import { AdvancedReports } from "./pages/reports/AdvancedReports";
 import { ProtectedPage } from "./components/ProtectedPage";
 import { CustosFixos } from "./pages/CustosFixos";
 import { Estoque } from "./pages/Estoque";
+import Configuracoes from "./pages/Configuracoes";
 // Salon pages
 import Agenda from "./pages/Agenda";
 import Caixa from "./pages/Caixa";
@@ -102,6 +103,11 @@ const App = () => {
               <Route path="estoque" element={
                 <ProtectedPage permission="view_stock">
                   <Estoque />
+                </ProtectedPage>
+              } />
+              <Route path="configuracoes" element={
+                <ProtectedPage permission="view_dashboard">
+                  <Configuracoes />
                 </ProtectedPage>
               } />
               <Route path="financeiro-integrado" element={
