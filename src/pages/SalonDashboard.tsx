@@ -6,6 +6,8 @@ import { useSalonDashboard } from '@/hooks/useSalonDashboard';
 import { useAgendamentosHoje } from '@/hooks/useAgendamentosHoje';
 import { useComandas } from '@/hooks/salon/useComandas';
 import { useProfissionais } from '@/hooks/salon/useProfissionais';
+import { useClientes } from '@/hooks/salon/useClientes';
+import { useServicos } from '@/hooks/salon/useServicos';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { SalonDashboard } from '@/components/dashboard/SalonDashboard';
 import { SalonQuickActions } from '@/components/dashboard/SalonQuickActions';
@@ -26,7 +28,9 @@ export const Dashboard = () => {
   // Get salon dashboard data
   const { comandas } = useComandas();
   const { profissionais } = useProfissionais();
-  const { salonMetrics, profissionalPerformance, servicoPopularidade } = useSalonDashboard({ comandas, profissionais });
+  const { clientes } = useClientes();
+  const { servicos } = useServicos();
+  const { salonMetrics, profissionalPerformance, servicoPopularidade } = useSalonDashboard({ comandas, profissionais, clientes, servicos });
   const { agendamentosHoje, proximosAgendamentos } = useAgendamentosHoje();
 
   const handleNewAgendamento = () => {
@@ -50,13 +54,6 @@ export const Dashboard = () => {
       {/* Métricas principais do salão */}
       <SalonMetrics metrics={salonMetrics} />
       
-      {/* Dashboard operacional do salão */}
-      <SalonDashboard 
-        metrics={salonMetrics} 
-        agendamentosHoje={agendamentosHoje}
-        proximosAgendamentos={proximosAgendamentos}
-      />
-      
       {/* Quick Actions */}
       <SalonQuickActions 
         onNewAgendamento={handleNewAgendamento}
@@ -64,11 +61,15 @@ export const Dashboard = () => {
         onNewCliente={handleNewCliente}
       />
       
-      {/* Performance dos profissionais e popularidade dos serviços */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        <ProfessionalPerformance performance={profissionalPerformance} />
-        <ServicePopularity services={servicoPopularidade} />
-      </div>
+      {/* Dashboard operacional simplificado */}
+      <SalonDashboard 
+        metrics={salonMetrics} 
+        agendamentosHoje={agendamentosHoje}
+        proximosAgendamentos={proximosAgendamentos}
+      />
+      
+      {/* Performance dos profissionais */}
+      <ProfessionalPerformance performance={profissionalPerformance} />
 
       {/* Acesso ao Dashboard Financeiro (apenas para admins) */}
       {hasPermission('view_financial_metrics') && (

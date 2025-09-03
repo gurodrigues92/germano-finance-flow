@@ -1,13 +1,15 @@
 import { useMemo } from 'react';
-import { Comanda, Profissional } from '@/types/salon';
+import { Comanda, Profissional, Cliente, Servico } from '@/types/salon';
 import { startOfMonth, endOfMonth } from 'date-fns';
 
 interface UseSalonDashboardProps {
   comandas: Comanda[];
   profissionais: Profissional[];
+  clientes: Cliente[];
+  servicos: Servico[];
 }
 
-export const useSalonDashboard = ({ comandas, profissionais }: UseSalonDashboardProps) => {
+export const useSalonDashboard = ({ comandas, profissionais, clientes, servicos }: UseSalonDashboardProps) => {
   const currentMonth = useMemo(() => {
     const now = new Date();
     return {
@@ -33,28 +35,27 @@ export const useSalonDashboard = ({ comandas, profissionais }: UseSalonDashboard
       .filter(c => c.status === 'fechada')
       .reduce((sum, comanda) => sum + comanda.total_liquido, 0);
 
-    // Clientes únicos (baseado nas comandas)
-    const clientesAtivos = new Set(
-      monthlyComandas.filter(c => c.cliente_id).map(c => c.cliente_id)
-    ).size;
+    // Contadores totais do cadastro (não baseado em comandas)
+    const totalClientes = clientes.length;
+    const totalProfissionais = profissionais.length;
+    const totalServicos = servicos.length;
 
-    // Profissionais ativos (baseado nas comandas)
-    const profissionaisAtivos = new Set(
-      monthlyComandas.filter(c => c.profissional_principal_id).map(c => c.profissional_principal_id)
-    ).size;
+    // Clientes com crédito e débito
+    const clientesCredito = clientes.filter(c => c.saldo > 0).length;
+    const clientesDebito = clientes.filter(c => c.saldo < 0).length;
 
     return {
       totalComandas,
       comandasAbertas,
       comandasFechadas,
-      totalFaturamento: totalReceita, // usar totalReceita como totalFaturamento
-      clientesAtivos,
-      clientesCredito: 0, // placeholder
-      clientesDebito: 0,  // placeholder
-      profissionaisAtivos,
-      servicosAtivos: 0   // placeholder
+      totalFaturamento: totalReceita,
+      clientesAtivos: totalClientes,
+      clientesCredito,
+      clientesDebito,
+      profissionaisAtivos: totalProfissionais,
+      servicosAtivos: totalServicos
     };
-  }, [monthlyComandas]);
+  }, [monthlyComandas, clientes, profissionais, servicos]);
 
   // Performance dos profissionais
   const profissionalPerformance = useMemo(() => {
