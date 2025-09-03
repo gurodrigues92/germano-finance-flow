@@ -4,7 +4,6 @@ import { TransactionFormFields } from './TransactionFormFields';
 
 import { TransactionPreview } from './TransactionPreview';
 import { TransactionFormDialog } from './TransactionFormDialog';
-import { SaveChangesButton } from './SaveChangesButton';
 import { TaxaCard } from './TaxaCard';
 import { useTransactionForm, TransactionFormData } from '@/hooks/finance/useTransactionForm';
 import { calculateTransactionPreview } from '@/lib/finance/transactionCalculations';
@@ -28,7 +27,6 @@ export const TransactionForm = ({
     formData,
     setFormData,
     hasValues,
-    hasChanges,
     handleSubmit
   } = useTransactionForm({ editingTransaction, onSubmit, onOpenChange });
 
@@ -76,13 +74,6 @@ export const TransactionForm = ({
           </div>
         </>
       )}
-
-      {/* Floating save button */}
-      <SaveChangesButton
-        hasChanges={hasChanges}
-        onSave={() => handleSubmit({ preventDefault: () => {} } as React.FormEvent)}
-        loading={loading}
-      />
     </TransactionFormDialog>
   );
 };
