@@ -358,9 +358,110 @@ export const useComandas = () => {
     return comandas.filter(comanda => comanda.status === 'aberta');
   };
 
-  // Carregar comandas no mount
+  // Carregar comandas no mount e configurar realtime
   useEffect(() => {
     loadComandas();
+
+    // Setup realtime subscription for comandas
+    const comandasChannel = supabase
+      .channel('comandas-changes')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'comandas',
+        filter: `user_id=eq.${supabase.auth.getUser().then(({ data }) => data.user?.id)}`
+      }, async (payload) => {
+        console.log('Comanda inserida:', payload.new);
+        // Fetch complete data with relationships
+        const { data } = await supabase
+          .from('comandas')
+          .select(`
+            *,
+            cliente:clientes(*),
+            profissional_principal:profissionais(*)
+          `)
+          .eq('id', payload.new.id)
+          .single();
+        
+        if (data) {
+          setComandas(prev => {
+            const exists = prev.find(c => c.id === payload.new.id);
+            if (!exists) {
+              return [data as any, ...prev];
+            }
+            return prev;
+          });
+        }
+      })
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'comandas',
+        filter: `user_id=eq.${supabase.auth.getUser().then(({ data }) => data.user?.id)}`
+      }, async (payload) => {
+        console.log('Comanda atualizada:', payload.new);
+        // Fetch complete updated data
+        const { data } = await supabase
+          .from('comandas')
+          .select(`
+            *,
+            cliente:clientes(*),
+            profissional_principal:profissionais(*)
+          `)
+          .eq('id', payload.new.id)
+          .single();
+        
+        if (data) {
+          setComandas(prev => prev.map(comanda => 
+            comanda.id === payload.new.id ? data as any : comanda
+          ));
+        }
+      })
+      .on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public',
+        table: 'comandas',
+        filter: `user_id=eq.${supabase.auth.getUser().then(({ data }) => data.user?.id)}`
+      }, (payload) => {
+        console.log('Comanda deletada:', payload.old);
+        setComandas(prev => prev.filter(comanda => comanda.id !== payload.old.id));
+      })
+      .subscribe();
+
+    // Setup realtime subscription for comanda_itens
+    const itensChannel = supabase
+      .channel('comanda-itens-changes')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'comanda_itens'
+      }, (payload) => {
+        console.log('Item de comanda inserido:', payload.new);
+        // Refresh totals for affected comanda
+        updateTotaisComanda(payload.new.comanda_id);
+      })
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'comanda_itens'
+      }, (payload) => {
+        console.log('Item de comanda atualizado:', payload.new);
+        updateTotaisComanda(payload.new.comanda_id);
+      })
+      .on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public',
+        table: 'comanda_itens'
+      }, (payload) => {
+        console.log('Item de comanda deletado:', payload.old);
+        updateTotaisComanda(payload.old.comanda_id);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(comandasChannel);
+      supabase.removeChannel(itensChannel);
+    };
   }, []);
 
   return {

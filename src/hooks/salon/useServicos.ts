@@ -147,9 +147,60 @@ export const useServicos = () => {
     return grupos;
   };
 
-  // Carregar serviços no mount
+  // Carregar serviços no mount e configurar realtime
   useEffect(() => {
     loadServicos();
+
+    // Setup realtime subscription
+    const channel = supabase
+      .channel('servicos-changes')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'servicos',
+        filter: `user_id=eq.${supabase.auth.getUser().then(({ data }) => data.user?.id)}`
+      }, (payload) => {
+        console.log('Serviço inserido:', payload.new);
+        if (payload.new.ativo) {
+          setServicos(prev => {
+            const exists = prev.find(s => s.id === payload.new.id);
+            if (!exists) {
+              return [...prev, payload.new as Servico];
+            }
+            return prev;
+          });
+        }
+      })
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'servicos',
+        filter: `user_id=eq.${supabase.auth.getUser().then(({ data }) => data.user?.id)}`
+      }, (payload) => {
+        console.log('Serviço atualizado:', payload.new);
+        if (payload.new.ativo) {
+          setServicos(prev => prev.map(servico => 
+            servico.id === payload.new.id ? payload.new as Servico : servico
+          ));
+        } else {
+          // Remove if deactivated
+          setServicos(prev => prev.filter(servico => servico.id !== payload.new.id));
+        }
+      })
+      .on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public',
+        table: 'servicos',
+        filter: `user_id=eq.${supabase.auth.getUser().then(({ data }) => data.user?.id)}`
+      }, (payload) => {
+        console.log('Serviço deletado:', payload.old);
+        setServicos(prev => prev.filter(servico => servico.id !== payload.old.id));
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return {

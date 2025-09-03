@@ -228,7 +228,7 @@ export const useAgendamentos = () => {
       .slice(0, limite);
   };
 
-  // Carregar agendamentos da semana atual por padrão
+  // Carregar agendamentos da semana atual por padrão e configurar realtime
   useEffect(() => {
     const hoje = new Date();
     const inicioSemana = new Date(hoje);
@@ -240,6 +240,78 @@ export const useAgendamentos = () => {
       data_inicio: inicioSemana.toISOString().split('T')[0],
       data_fim: fimSemana.toISOString().split('T')[0]
     });
+
+    // Setup realtime subscription
+    const channel = supabase
+      .channel('agendamentos-changes')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'agendamentos',
+        filter: `user_id=eq.${supabase.auth.getUser().then(({ data }) => data.user?.id)}`
+      }, async (payload) => {
+        console.log('Agendamento inserido:', payload.new);
+        // Fetch complete data with relationships
+        const { data } = await supabase
+          .from('agendamentos')
+          .select(`
+            *,
+            cliente:clientes(*),
+            profissional:profissionais(*),
+            servico:servicos(*)
+          `)
+          .eq('id', payload.new.id)
+          .single();
+        
+        if (data) {
+          setAgendamentos(prev => {
+            const exists = prev.find(a => a.id === payload.new.id);
+            if (!exists) {
+              return [...prev, data as any];
+            }
+            return prev;
+          });
+        }
+      })
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public', 
+        table: 'agendamentos',
+        filter: `user_id=eq.${supabase.auth.getUser().then(({ data }) => data.user?.id)}`
+      }, async (payload) => {
+        console.log('Agendamento atualizado:', payload.new);
+        // Fetch complete updated data
+        const { data } = await supabase
+          .from('agendamentos')
+          .select(`
+            *,
+            cliente:clientes(*),
+            profissional:profissionais(*),
+            servico:servicos(*)
+          `)
+          .eq('id', payload.new.id)
+          .single();
+        
+        if (data) {
+          setAgendamentos(prev => prev.map(agendamento => 
+            agendamento.id === payload.new.id ? data as any : agendamento
+          ));
+        }
+      })
+      .on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public',
+        table: 'agendamentos', 
+        filter: `user_id=eq.${supabase.auth.getUser().then(({ data }) => data.user?.id)}`
+      }, (payload) => {
+        console.log('Agendamento deletado:', payload.old);
+        setAgendamentos(prev => prev.filter(agendamento => agendamento.id !== payload.old.id));
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return {

@@ -189,9 +189,53 @@ export const useClientes = () => {
     return clientes.find(cliente => cliente.id === id);
   };
 
-  // Carregar clientes no mount
+  // Carregar clientes no mount e configurar realtime
   useEffect(() => {
     loadClientes();
+
+    // Setup realtime subscription
+    const channel = supabase
+      .channel('clientes-changes')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'clientes',
+        filter: `user_id=eq.${supabase.auth.getUser().then(({ data }) => data.user?.id)}`
+      }, (payload) => {
+        console.log('Cliente inserido:', payload.new);
+        setClientes(prev => {
+          const exists = prev.find(c => c.id === payload.new.id);
+          if (!exists) {
+            return [...prev, payload.new as Cliente];
+          }
+          return prev;
+        });
+      })
+      .on('postgres_changes', {
+        event: 'UPDATE', 
+        schema: 'public',
+        table: 'clientes',
+        filter: `user_id=eq.${supabase.auth.getUser().then(({ data }) => data.user?.id)}`
+      }, (payload) => {
+        console.log('Cliente atualizado:', payload.new);
+        setClientes(prev => prev.map(cliente => 
+          cliente.id === payload.new.id ? payload.new as Cliente : cliente
+        ));
+      })
+      .on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public', 
+        table: 'clientes',
+        filter: `user_id=eq.${supabase.auth.getUser().then(({ data }) => data.user?.id)}`
+      }, (payload) => {
+        console.log('Cliente deletado:', payload.old);
+        setClientes(prev => prev.filter(cliente => cliente.id !== payload.old.id));
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return {

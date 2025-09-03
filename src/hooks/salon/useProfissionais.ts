@@ -137,9 +137,60 @@ export const useProfissionais = () => {
     return profissionais.find(profissional => profissional.id === id);
   };
 
-  // Carregar profissionais no mount
+  // Carregar profissionais no mount e configurar realtime
   useEffect(() => {
     loadProfissionais();
+
+    // Setup realtime subscription
+    const channel = supabase
+      .channel('profissionais-changes')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'profissionais',
+        filter: `user_id=eq.${supabase.auth.getUser().then(({ data }) => data.user?.id)}`
+      }, (payload) => {
+        console.log('Profissional inserido:', payload.new);
+        if (payload.new.ativo) {
+          setProfissionais(prev => {
+            const exists = prev.find(p => p.id === payload.new.id);
+            if (!exists) {
+              return [...prev, payload.new as Profissional];
+            }
+            return prev;
+          });
+        }
+      })
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'profissionais', 
+        filter: `user_id=eq.${supabase.auth.getUser().then(({ data }) => data.user?.id)}`
+      }, (payload) => {
+        console.log('Profissional atualizado:', payload.new);
+        if (payload.new.ativo) {
+          setProfissionais(prev => prev.map(profissional => 
+            profissional.id === payload.new.id ? payload.new as Profissional : profissional
+          ));
+        } else {
+          // Remove if deactivated
+          setProfissionais(prev => prev.filter(profissional => profissional.id !== payload.new.id));
+        }
+      })
+      .on('postgres_changes', {
+        event: 'DELETE',
+        schema: 'public',
+        table: 'profissionais',
+        filter: `user_id=eq.${supabase.auth.getUser().then(({ data }) => data.user?.id)}`
+      }, (payload) => {
+        console.log('Profissional deletado:', payload.old);
+        setProfissionais(prev => prev.filter(profissional => profissional.id !== payload.old.id));
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   return {
