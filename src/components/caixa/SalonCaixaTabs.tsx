@@ -21,27 +21,24 @@ export const SalonCaixaTabs = ({
   const tabs = [
     {
       id: 'open-tickets',
-      label: 'Comandas abertas',
+      label: 'Abertas',
       icon: Receipt,
       color: 'bg-[hsl(142,76%,36%)]', // Verde
-      count: openTicketsCount,
-      description: 'comandas abertas'
+      count: openTicketsCount
     },
     {
       id: 'closed-tickets',
-      label: 'Comandas fechadas',
+      label: 'Fechadas',
       icon: FileText,
       color: 'bg-[hsl(217,91%,60%)]', // Azul
-      count: closedTicketsCount,
-      description: 'comandas fechadas'
+      count: closedTicketsCount
     },
     {
       id: 'daily-sales',
-      label: 'Vendas do dia',
+      label: 'Vendas',
       icon: BarChart3,
       color: 'bg-[hsl(291,64%,42%)]', // Roxo
-      count: `R$ ${dailySalesValue.toFixed(0)}`,
-      description: 'vendas do dia'
+      count: `R$ ${dailySalesValue.toFixed(0)}`
     }
   ];
 
@@ -73,7 +70,6 @@ export const SalonCaixaTabs = ({
                     <div className="space-y-1">
                       <div className="text-xl font-bold">{tab.count}</div>
                       <div className="text-sm font-medium">{tab.label}</div>
-                      <div className="text-xs opacity-90">{tab.description}</div>
                     </div>
                   </div>
                 </div>
