@@ -25,6 +25,14 @@ import {
 
 const allMenuItems = [
   {
+    title: 'Financeiro',
+    url: '/financeiro',
+    icon: BarChart3,
+    description: 'Dashboard financeiro completo',
+    permission: 'view_financial_metrics',
+    color: '#9C27B0' // Roxo
+  },
+  {
     title: 'Agenda',
     url: '/agenda',
     icon: Calendar,
@@ -79,14 +87,6 @@ const allMenuItems = [
     description: 'Gestão de produtos e estoque',
     permission: 'view_stock',
     color: '#00BCD4' // Ciano
-  },
-  {
-    title: 'Financeiro',
-    url: '/financeiro',
-    icon: BarChart3,
-    description: 'Dashboard financeiro completo',
-    permission: 'view_financial_metrics',
-    color: '#9C27B0' // Roxo
   },
   {
     title: 'Despesas',
