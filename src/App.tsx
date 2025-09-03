@@ -14,7 +14,6 @@ import NotFound from "./pages/NotFound";
 import { SalonLayout } from "./components/salon/SalonLayout";
 import { Dashboard } from "./pages/SalonDashboard";
 import { FinanceDashboard } from "./pages/finance/FinanceDashboard";
-import { Transactions } from "./pages/finance/Transactions";
 import { Analysis } from "./pages/finance/Analysis";
 import { Archive } from "./pages/finance/Archive";
 import UnifiedFinance from "./pages/finance/UnifiedFinance";
@@ -84,7 +83,7 @@ const App = () => {
                   <FinanceDashboard />
                 </ProtectedPage>
               } />
-              <Route path="transacoes" element={<Transactions />} />
+              
               <Route path="analise" element={
                 <ProtectedPage permission="view_analysis">
                   <Analysis />

@@ -49,7 +49,8 @@ export const BottomNavigation = () => {
   const allMainNavItems = [
     { icon: Calendar, label: 'Agenda', href: '/agenda', permission: 'view_appointments', color: '#4CAF50' },
     { icon: Calculator, label: 'Caixa', href: '/caixa', permission: 'manage_payments', color: '#2196F3' },
-    { icon: BarChart3, label: 'Relatórios', href: '/analise', permission: 'view_analysis', color: '#9C27B0' },
+    { icon: DollarSign, label: 'Financeiro', href: '/financeiro', permission: 'view_financial_metrics', color: '#9C27B0' },
+    { icon: BarChart3, label: 'Relatórios', href: '/analise', permission: 'view_analysis', color: '#FF5722' },
     { icon: Users, label: 'Clientes', href: '/clientes', permission: 'view_clients', color: '#FF9800' },
   ];
 
@@ -61,7 +62,7 @@ export const BottomNavigation = () => {
     { label: 'Serviços', href: '/servicos', icon: Receipt, permission: 'manage_services', color: '#E91E63' },
     { label: 'Produtos', href: '/estoque', icon: Package, permission: 'view_stock', color: '#00BCD4' },
     { label: 'Despesas', href: '/custos-fixos', icon: Target, permission: 'view_fixed_costs', color: '#FF5722' },
-    { label: 'Transações', href: '/transacoes', icon: DollarSign, permission: 'view_transactions', color: '#9C27B0' },
+    
     { label: 'Arquivo', href: '/arquivo', icon: Archive, permission: 'view_archive', color: '#607D8B' },
   ];
 

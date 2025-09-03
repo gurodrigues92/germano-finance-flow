@@ -8,11 +8,11 @@ export const useArchiveData = (transactions: any[]) => {
     );
     
     const grouped = filteredTransactions.reduce((acc, transaction) => {
-      const month = transaction.month;
+      const month = transaction.mes_referencia || transaction.month;
       if (!acc[month]) {
         acc[month] = {
           month,
-          year: transaction.year,
+          year: transaction.ano || transaction.year,
           transactions: [],
           totalBruto: 0,
           totalLiquido: 0,
