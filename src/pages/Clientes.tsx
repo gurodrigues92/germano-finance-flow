@@ -13,8 +13,10 @@ import { ClienteAdvancedFilters } from '@/components/salon/ClienteAdvancedFilter
 import { ClienteAnalytics } from '@/components/salon/ClienteAnalytics';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Cliente, ClienteFilters as ClienteFiltersType } from '@/types/salon';
+import { useTranslations } from '@/lib/translations';
 
 export default function Clientes() {
+  const t = useTranslations();
   const { clientes, loading, addCliente, updateCliente } = useClientes();
   const { stats, loading: statsLoading } = useClienteStats();
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -111,8 +113,8 @@ export default function Clientes() {
 
   return (
     <PageLayout
-      title="Clients"
-      subtitle="Complete client management"
+      title={t.navigation.clients}
+      subtitle="Gestão completa de clientes"
       onFabClick={handleAddCliente}
       fabIcon={<Plus className="w-6 h-6" />}
     >
@@ -120,13 +122,13 @@ export default function Clientes() {
         {loading ? (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-muted-foreground">Carregando clientes...</p>
+            <p className="mt-4 text-muted-foreground">{t.actions.loading}</p>
           </div>
         ) : (
           <Tabs defaultValue="clientes" className="space-y-6">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="clientes">Gerenciar Clientes</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics & Insights</TabsTrigger>
+              <TabsTrigger value="analytics">Análises e Insights</TabsTrigger>
             </TabsList>
             
             <TabsContent value="clientes" className="space-y-6">

@@ -4,6 +4,9 @@ import { Input } from '@/components/ui/input';
 import { Search, Filter, Users, Calendar, DollarSign, CreditCard, Package } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ClienteFilters as ClienteFiltersType } from '@/types/salon';
+import { useTranslations } from '@/lib/translations';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { ResponsiveButton } from '@/components/ui/responsive-button';
 
 interface SalonClientFiltersProps {
   filters: ClienteFiltersType;
@@ -20,10 +23,13 @@ export const SalonClientFilters = ({
   filteredCount,
   onAddClient
 }: SalonClientFiltersProps) => {
+  const t = useTranslations();
+  const isMobile = useIsMobile();
+
   const filterCategories = [
     {
       id: 'all',
-      label: 'All clients',
+      label: 'Todos os clientes',
       icon: Users,
       color: '#2196F3', // Azul
       count: totalClientes,
@@ -32,7 +38,7 @@ export const SalonClientFilters = ({
     },
     {
       id: 'scheduled',
-      label: 'Scheduled',
+      label: 'Agendados',
       icon: Calendar,
       color: '#FF9800', // Laranja
       count: 0, // TODO: Implementar contagem
@@ -41,25 +47,25 @@ export const SalonClientFilters = ({
     },
     {
       id: 'credit',
-      label: 'Clients with credit',
+      label: 'Com crédito',
       icon: DollarSign,
       color: '#4CAF50', // Verde
       count: 0, // TODO: Implementar contagem
-      description: 'Balance > R$ 0,00',
+      description: 'Saldo > R$ 0,00',
       active: filters.status === 'com_credito'
     },
     {
       id: 'debt',
-      label: 'Clients in debt',
+      label: 'Em débito',
       icon: CreditCard,
       color: '#F44336', // Vermelho
       count: 0, // TODO: Implementar contagem
-      description: 'Balance < R$ 0,00',
+      description: 'Saldo < R$ 0,00',
       active: filters.status === 'em_debito'
     },
     {
       id: 'package',
-      label: 'Clients with package',
+      label: 'Com pacote',
       icon: Package,
       color: '#9C27B0', // Roxo
       count: 0, // TODO: Implementar contagem
@@ -98,7 +104,7 @@ export const SalonClientFilters = ({
   return (
     <div className="space-y-4">
       {/* Category Filters */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className={`grid gap-3 ${isMobile ? 'grid-cols-2' : 'grid-cols-1 md:grid-cols-3 lg:grid-cols-5'}`}>
         {filterCategories.map((category) => {
           const Icon = category.icon;
           return (
@@ -112,24 +118,26 @@ export const SalonClientFilters = ({
               }}
               onClick={() => handleCategoryClick(category.id)}
             >
-              <CardContent className="p-4 text-center">
+              <CardContent className={`${isMobile ? 'p-3' : 'p-4'} text-center`}>
                 <div 
-                  className="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center"
+                  className={`${isMobile ? 'w-8 h-8 mb-2' : 'w-12 h-12 mb-3'} mx-auto rounded-full flex items-center justify-center`}
                   style={{
                     backgroundColor: `${category.color}15`,
                     color: category.color
                   }}
                 >
-                  <Icon className="w-6 h-6" />
+                  <Icon className={`${isMobile ? 'w-4 h-4' : 'w-6 h-6'}`} />
                 </div>
-                <h3 className="font-semibold text-sm mb-1">{category.label}</h3>
+                <h3 className={`font-semibold ${isMobile ? 'text-xs' : 'text-sm'} mb-1`}>{category.label}</h3>
                 <div 
-                  className="text-2xl font-bold mb-1"
+                  className={`${isMobile ? 'text-lg' : 'text-2xl'} font-bold mb-1`}
                   style={{ color: category.color }}
                 >
                   {category.id === 'all' ? totalClientes : category.count}
                 </div>
-                <p className="text-xs text-muted-foreground">{category.description}</p>
+                {!isMobile && (
+                  <p className="text-xs text-muted-foreground">{category.description}</p>
+                )}
               </CardContent>
             </Card>
           );
@@ -139,12 +147,12 @@ export const SalonClientFilters = ({
       {/* Search and Actions */}
       <Card>
         <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <div className={`flex gap-4 ${isMobile ? 'flex-col' : 'flex-row items-center justify-between'}`}>
             <div className="flex-1 max-w-md">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
-                  placeholder="Search clients..."
+                  placeholder={t.placeholders.searchClients}
                   value={filters.search || ''}
                   onChange={(e) => handleSearchChange(e.target.value)}
                   className="pl-10"
@@ -152,20 +160,20 @@ export const SalonClientFilters = ({
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
-              <Button 
+            <div className={`flex items-center gap-3 ${isMobile ? 'justify-between' : ''}`}>
+              <ResponsiveButton 
                 variant="outline" 
                 onClick={onAddClient}
                 className="bg-green-500 text-white border-green-500 hover:bg-green-600"
               >
                 <Users className="w-4 h-4 mr-2" />
-                Add Client
-              </Button>
+                {t.actions.add} Cliente
+              </ResponsiveButton>
               
-              <Button variant="outline">
+              <ResponsiveButton variant="outline">
                 <Filter className="w-4 h-4 mr-2" />
-                Print
-              </Button>
+                Imprimir
+              </ResponsiveButton>
             </div>
           </div>
 
@@ -183,14 +191,14 @@ export const SalonClientFilters = ({
                   Status: {filters.status}
                 </Badge>
               )}
-              <Button 
+              <ResponsiveButton 
                 variant="ghost" 
                 size="sm" 
                 onClick={clearFilters}
                 className="text-xs h-6"
               >
                 Limpar filtros
-              </Button>
+              </ResponsiveButton>
             </div>
           )}
 
