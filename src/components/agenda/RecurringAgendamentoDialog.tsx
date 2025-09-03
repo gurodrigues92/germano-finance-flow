@@ -144,269 +144,293 @@ export const RecurringAgendamentoDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+      <DialogContent className="max-w-4xl w-[95vw] max-h-[95vh] overflow-hidden">
+        <DialogHeader className="pb-4 border-b">
+          <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
             <Repeat className="w-5 h-5" />
             Criar Agendamentos Recorrentes
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
-          {/* Informações básicas */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="profissional">Profissional *</Label>
-              <Select 
-                value={formData.profissional_id} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, profissional_id: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Selecionar profissional" />
-                </SelectTrigger>
-                <SelectContent>
-                  {profissionais.map(prof => (
-                    <SelectItem key={prof.id} value={prof.id}>
-                      {prof.nome}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="servico">Nome do Serviço *</Label>
-              <Input
-                id="servico"
-                value={formData.servico_nome}
-                onChange={(e) => setFormData(prev => ({ ...prev, servico_nome: e.target.value }))}
-                placeholder="Ex: Corte + Escova"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="duracao">Duração (minutos)</Label>
-              <Input
-                id="duracao"
-                type="number"
-                min="15"
-                max="480"
-                step="15"
-                value={formData.duracao_minutos}
-                onChange={(e) => setFormData(prev => ({ ...prev, duracao_minutos: Number(e.target.value) }))}
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="valor">Valor (R$)</Label>
-              <Input
-                id="valor"
-                type="number"
-                min="0"
-                step="0.01"
-                value={formData.valor}
-                onChange={(e) => setFormData(prev => ({ ...prev, valor: Number(e.target.value) }))}
-              />
-            </div>
-          </div>
-
-          {/* Data e hora inicial */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Data de Início</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !formData.data_inicio && "text-muted-foreground"
-                    )}
+        <div className="overflow-y-auto max-h-[calc(95vh-140px)] px-1">
+          <div className="space-y-8 p-1">
+            {/* Informações básicas */}
+            <div className="space-y-4">
+              <h4 className="font-medium text-lg">Informações Básicas</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <Label htmlFor="profissional" className="text-sm font-medium">Profissional *</Label>
+                  <Select 
+                    value={formData.profissional_id} 
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, profissional_id: value }))}
                   >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.data_inicio ? format(formData.data_inicio, "PPP", { locale: ptBR }) : "Selecionar data"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={formData.data_inicio}
-                    onSelect={(date) => date && setFormData(prev => ({ ...prev, data_inicio: date }))}
-                    initialFocus
-                    className={cn("p-3 pointer-events-auto")}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="hora">Horário</Label>
-              <Input
-                id="hora"
-                type="time"
-                value={formData.hora_inicio}
-                onChange={(e) => setFormData(prev => ({ ...prev, hora_inicio: e.target.value }))}
-              />
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Configurações de recorrência */}
-          <div className="space-y-4">
-            <h4 className="font-medium flex items-center gap-2">
-              <Repeat className="w-4 h-4" />
-              Recorrência
-            </h4>
-
-            <div className="space-y-2">
-              <Label>Padrão de Repetição</Label>
-              <Select 
-                value={formData.pattern} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, pattern: value as RecurrencePattern }))}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Não repetir</SelectItem>
-                  <SelectItem value="weekly">Semanal</SelectItem>
-                  <SelectItem value="biweekly">Quinzenal</SelectItem>
-                  <SelectItem value="monthly">Mensal</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {formData.pattern !== 'none' && (
-              <>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="occurrences">Número de Ocorrências</Label>
-                    <Input
-                      id="occurrences"
-                      type="number"
-                      min="1"
-                      max="52"
-                      value={formData.occurrences}
-                      onChange={(e) => setFormData(prev => ({ ...prev, occurrences: Number(e.target.value) }))}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Data Limite</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className={cn(
-                            "w-full justify-start text-left font-normal",
-                            !formData.endDate && "text-muted-foreground"
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {formData.endDate ? format(formData.endDate, "PPP", { locale: ptBR }) : "Selecionar data"}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={formData.endDate}
-                          onSelect={(date) => date && setFormData(prev => ({ ...prev, endDate: date }))}
-                          initialFocus
-                          className={cn("p-3 pointer-events-auto")}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
+                    <SelectTrigger className="h-12">
+                      <SelectValue placeholder="Selecionar profissional" />
+                    </SelectTrigger>
+                    <SelectContent className="z-[100] bg-background border border-border shadow-md">
+                      {profissionais.map(prof => (
+                        <SelectItem key={prof.id} value={prof.id}>
+                          {prof.nome}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
-                {/* Seleção de dias da semana (para padrões específicos) */}
-                {formData.pattern === 'weekly' && (
-                  <div className="space-y-2">
-                    <Label>Dias da Semana (opcional)</Label>
-                    <div className="flex flex-wrap gap-2">
-                      {weekdayOptions.map(day => (
-                        <Badge
-                          key={day.value}
-                          variant={formData.weekdays.includes(day.value) ? "default" : "outline"}
-                          className="cursor-pointer"
-                          onClick={() => toggleWeekday(day.value)}
-                        >
-                          {day.label}
-                        </Badge>
-                      ))}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      Se nenhum dia for selecionado, usará o dia da semana da data inicial
-                    </p>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+                <div className="space-y-3">
+                  <Label htmlFor="servico" className="text-sm font-medium">Nome do Serviço *</Label>
+                  <Input
+                    id="servico"
+                    value={formData.servico_nome}
+                    onChange={(e) => setFormData(prev => ({ ...prev, servico_nome: e.target.value }))}
+                    placeholder="Ex: Corte + Escova"
+                    className="h-12"
+                  />
+                </div>
 
-          {/* Observações */}
-          <div className="space-y-2">
-            <Label htmlFor="observacoes">Observações</Label>
-            <Textarea
-              id="observacoes"
-              value={formData.observacoes}
-              onChange={(e) => setFormData(prev => ({ ...prev, observacoes: e.target.value }))}
-              placeholder="Observações adicionais..."
-              rows={3}
-            />
-          </div>
+                <div className="space-y-3">
+                  <Label htmlFor="duracao" className="text-sm font-medium">Duração (minutos)</Label>
+                  <Input
+                    id="duracao"
+                    type="number"
+                    min="15"
+                    max="480"
+                    step="15"
+                    value={formData.duracao_minutos}
+                    onChange={(e) => setFormData(prev => ({ ...prev, duracao_minutos: Number(e.target.value) }))}
+                    className="h-12"
+                  />
+                </div>
 
-          {/* Botão de preview */}
-          <div className="flex justify-center">
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                generatePreviewDates();
-                setShowPreview(true);
-              }}
-              className="flex items-center gap-2"
-            >
-              <Clock className="w-4 h-4" />
-              Visualizar Datas
-            </Button>
-          </div>
+                <div className="space-y-3">
+                  <Label htmlFor="valor" className="text-sm font-medium">Valor (R$)</Label>
+                  <Input
+                    id="valor"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={formData.valor}
+                    onChange={(e) => setFormData(prev => ({ ...prev, valor: Number(e.target.value) }))}
+                    className="h-12"
+                  />
+                </div>
+              </div>
+            </div>
 
-          {/* Preview das datas */}
-          {showPreview && previewDates.length > 0 && (
-            <div className="bg-muted/50 rounded-lg p-4">
-              <h5 className="font-medium mb-3 flex items-center gap-2">
-                <Users className="w-4 h-4" />
-                Preview - {previewDates.length} agendamento(s)
-              </h5>
-              
-              <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
-                {previewDates.map((date, index) => (
-                  <div key={index} className="flex items-center justify-between bg-white p-2 rounded text-sm">
-                    <span>{format(date, "EEE, dd/MM/yyyy", { locale: ptBR })}</span>
-                    <span className="text-muted-foreground">{formData.hora_inicio}</span>
-                  </div>
-                ))}
+            <Separator />
+
+            {/* Data e hora inicial */}
+            <div className="space-y-4">
+              <h4 className="font-medium text-lg">Data e Horário</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">Data de Início</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full h-12 justify-start text-left font-normal",
+                          !formData.data_inicio && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {formData.data_inicio ? format(formData.data_inicio, "PPP", { locale: ptBR }) : "Selecionar data"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0 z-[100] bg-background border border-border shadow-md" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={formData.data_inicio}
+                        onSelect={(date) => date && setFormData(prev => ({ ...prev, data_inicio: date }))}
+                        initialFocus
+                        className="p-3"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                <div className="space-y-3">
+                  <Label htmlFor="hora" className="text-sm font-medium">Horário</Label>
+                  <Input
+                    id="hora"
+                    type="time"
+                    value={formData.hora_inicio}
+                    onChange={(e) => setFormData(prev => ({ ...prev, hora_inicio: e.target.value }))}
+                    className="h-12"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Configurações de recorrência */}
+            <div className="space-y-4">
+              <h4 className="font-medium text-lg flex items-center gap-2">
+                <Repeat className="w-4 h-4" />
+                Configurações de Recorrência
+              </h4>
+
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Padrão de Repetição</Label>
+                <Select 
+                  value={formData.pattern} 
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, pattern: value as RecurrencePattern }))}
+                >
+                  <SelectTrigger className="h-12">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="z-[100] bg-background border border-border shadow-md">
+                    <SelectItem value="none">Não repetir</SelectItem>
+                    <SelectItem value="weekly">Semanal</SelectItem>
+                    <SelectItem value="biweekly">Quinzenal</SelectItem>
+                    <SelectItem value="monthly">Mensal</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
-              {previewDates.length >= formData.occurrences && (
-                <div className="mt-2 text-xs text-amber-600 flex items-center gap-1">
-                  <AlertTriangle className="w-3 h-3" />
-                  Limite de ocorrências atingido
+              {formData.pattern !== 'none' && (
+                <div className="space-y-6 mt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <Label htmlFor="occurrences" className="text-sm font-medium">Número de Ocorrências</Label>
+                      <Input
+                        id="occurrences"
+                        type="number"
+                        min="1"
+                        max="52"
+                        value={formData.occurrences}
+                        onChange={(e) => setFormData(prev => ({ ...prev, occurrences: Number(e.target.value) }))}
+                        className="h-12"
+                      />
+                    </div>
+
+                    <div className="space-y-3">
+                      <Label className="text-sm font-medium">Data Limite</Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-full h-12 justify-start text-left font-normal",
+                              !formData.endDate && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {formData.endDate ? format(formData.endDate, "PPP", { locale: ptBR }) : "Selecionar data"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0 z-[100] bg-background border border-border shadow-md" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={formData.endDate}
+                            onSelect={(date) => date && setFormData(prev => ({ ...prev, endDate: date }))}
+                            initialFocus
+                            className="p-3"
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
+
+                  {/* Seleção de dias da semana (para padrões específicos) */}
+                  {formData.pattern === 'weekly' && (
+                    <div className="space-y-3">
+                      <Label className="text-sm font-medium">Dias da Semana (opcional)</Label>
+                      <div className="flex flex-wrap gap-2">
+                        {weekdayOptions.map(day => (
+                          <Badge
+                            key={day.value}
+                            variant={formData.weekdays.includes(day.value) ? "default" : "outline"}
+                            className="cursor-pointer h-8 px-3 text-sm transition-all hover:scale-105 active:scale-95"
+                            onClick={() => toggleWeekday(day.value)}
+                          >
+                            {day.label}
+                          </Badge>
+                        ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Se nenhum dia for selecionado, usará o dia da semana da data inicial
+                      </p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
-          )}
 
-          {/* Ações */}
-          <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button variant="outline" onClick={onClose}>
+            <Separator />
+
+            {/* Observações */}
+            <div className="space-y-4">
+              <h4 className="font-medium text-lg">Observações</h4>
+              <div className="space-y-3">
+                <Textarea
+                  id="observacoes"
+                  value={formData.observacoes}
+                  onChange={(e) => setFormData(prev => ({ ...prev, observacoes: e.target.value }))}
+                  placeholder="Observações adicionais..."
+                  rows={4}
+                  className="resize-none"
+                />
+              </div>
+            </div>
+
+            {/* Botão de preview */}
+            <div className="flex justify-center py-4">
+              <Button 
+                variant="outline" 
+                size="lg"
+                onClick={() => {
+                  generatePreviewDates();
+                  setShowPreview(true);
+                }}
+                className="flex items-center gap-2 h-12 px-6"
+              >
+                <Clock className="w-4 h-4" />
+                Visualizar Datas
+              </Button>
+            </div>
+
+            {/* Preview das datas */}
+            {showPreview && previewDates.length > 0 && (
+              <div className="bg-muted/30 border border-border rounded-lg p-6 space-y-4">
+                <h5 className="font-medium text-lg flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  Preview - {previewDates.length} agendamento(s)
+                </h5>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-64 overflow-y-auto">
+                  {previewDates.map((date, index) => (
+                    <div key={index} className="flex items-center justify-between bg-background p-4 rounded-md border border-border shadow-sm">
+                      <span className="font-medium">{format(date, "EEE, dd/MM/yyyy", { locale: ptBR })}</span>
+                      <span className="text-muted-foreground font-mono">{formData.hora_inicio}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {previewDates.length >= formData.occurrences && (
+                  <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-md text-sm text-amber-700 flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4" />
+                    Limite de ocorrências atingido
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Fixed bottom action bar */}
+        <div className="sticky bottom-0 bg-background border-t p-6 mt-6">
+          <div className="flex flex-col sm:flex-row justify-end gap-3">
+            <Button variant="outline" onClick={onClose} size="lg" className="h-12">
               Cancelar
             </Button>
             <Button 
               onClick={handleSubmit}
               disabled={!showPreview || previewDates.length === 0}
-              className="flex items-center gap-2"
+              size="lg"
+              className="flex items-center gap-2 h-12 px-6"
             >
               <Repeat className="w-4 h-4" />
               Criar {previewDates.length} Agendamento(s)
