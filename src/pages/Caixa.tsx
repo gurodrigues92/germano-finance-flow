@@ -43,22 +43,10 @@ export default function Caixa() {
   return (
     <PageLayout
       title="Caixa"
-      subtitle="Sistema de comandas SalonSoft"
       onFabClick={activeTab === 'open-tickets' ? handleNovaComanda : undefined}
       fabIcon={<Plus className="w-6 h-6" />}
     >
-      <div className="space-y-6">
-        {/* Header com botão New Sale */}
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Sistema de Caixa</h1>
-          <Button 
-            onClick={handleNovaComanda}
-            className="bg-[hsl(14,100%,57%)] hover:bg-[hsl(14,100%,52%)] text-white"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Nova venda
-          </Button>
-        </div>
+      <div className="space-y-4">
 
         {/* Abas SalonSoft */}
         <SalonCaixaTabs

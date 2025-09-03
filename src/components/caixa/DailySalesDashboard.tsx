@@ -71,22 +71,22 @@ export const DailySalesDashboard = ({ comandas, selectedDate = new Date() }: Dai
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Calendar className="w-5 h-5" />
-            Daily Sales - {format(selectedDate, "EEEE, dd/MM/yyyy", { locale: ptBR })}
+            Vendas Diárias - {format(selectedDate, "EEEE, dd/MM/yyyy", { locale: ptBR })}
           </CardTitle>
         </CardHeader>
       </Card>
 
       {/* Métricas principais */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
               <div className="p-2 bg-primary/10 rounded-lg">
-                <TrendingUp className="w-6 h-6 text-primary" />
+                <TrendingUp className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Total Sales</p>
-                <p className="text-2xl font-bold text-primary">
+                <p className="text-sm text-muted-foreground">Vendas Totais</p>
+                <p className="text-xl font-bold text-primary">
                   {formatCurrency(dailyData.totalVendas, true)}
                 </p>
               </div>
@@ -95,28 +95,28 @@ export const DailySalesDashboard = ({ comandas, selectedDate = new Date() }: Dai
         </Card>
 
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-100 rounded-lg">
-                <Users className="w-6 h-6 text-blue-600" />
+                <Users className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Total Tickets</p>
-                <p className="text-2xl font-bold">{dailyData.totalAtendimentos}</p>
+                <p className="text-sm text-muted-foreground">Total de Comandas</p>
+                <p className="text-xl font-bold">{dailyData.totalAtendimentos}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-4">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
               <div className="p-2 bg-green-100 rounded-lg">
-                <Receipt className="w-6 h-6 text-green-600" />
+                <Receipt className="w-5 h-5 text-green-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Average Ticket</p>
-                <p className="text-2xl font-bold">
+                <p className="text-sm text-muted-foreground">Ticket Médio</p>
+                <p className="text-xl font-bold">
                   {formatCurrency(dailyData.ticketMedio, true)}
                 </p>
               </div>
@@ -128,7 +128,7 @@ export const DailySalesDashboard = ({ comandas, selectedDate = new Date() }: Dai
       {/* Performance por profissional */}
       <Card>
         <CardHeader>
-          <CardTitle>Sales by Professional</CardTitle>
+          <CardTitle>Vendas por Profissional</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -160,17 +160,17 @@ export const DailySalesDashboard = ({ comandas, selectedDate = new Date() }: Dai
       {/* Métodos de pagamento */}
       <Card>
         <CardHeader>
-          <CardTitle>Sales by Payment Method</CardTitle>
+          <CardTitle>Vendas por Método de Pagamento</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {Object.entries(dailyData.pagamentos).map(([metodo, valor]) => (
               <div key={metodo} className="text-center p-3 border rounded-lg">
                 <p className="text-sm text-muted-foreground">
-                  {metodo === 'dinheiro' ? 'Cash' : 
-                   metodo === 'pix' ? 'PIX' : 
-                   metodo === 'debito' ? 'Debit' : 
-                   metodo === 'credito' ? 'Credit' : metodo}
+                   {metodo === 'dinheiro' ? 'Dinheiro' : 
+                    metodo === 'pix' ? 'PIX' : 
+                    metodo === 'debito' ? 'Débito' : 
+                    metodo === 'credito' ? 'Cartão de Crédito' : metodo}
                 </p>
                 <p className="text-lg font-semibold text-primary">
                   {formatCurrency(valor, true)}
@@ -184,7 +184,7 @@ export const DailySalesDashboard = ({ comandas, selectedDate = new Date() }: Dai
       {/* Lista de comandas do dia */}
       <Card>
         <CardHeader>
-          <CardTitle>Today's Closed Tickets</CardTitle>
+          <CardTitle>Comandas Fechadas de Hoje</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">

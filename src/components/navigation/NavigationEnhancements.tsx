@@ -14,9 +14,8 @@ export const NavigationEnhancements = ({ children }: NavigationEnhancementsProps
   const getBackRoute = () => {
     const path = location.pathname;
     
-    if (path.startsWith('/finance/')) return '/';
-    if (path === '/clientes' || path === '/profissionais' || path === '/servicos' || 
-        path === '/agenda' || path === '/caixa' || path === '/estoque') return '/';
+    // Only show back button for sub-pages within finance section
+    if (path.startsWith('/finance/') && path !== '/finance') return '/finance';
     
     return null;
   };
