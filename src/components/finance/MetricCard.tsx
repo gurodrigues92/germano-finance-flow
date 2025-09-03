@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface MetricCardProps {
   title: string;
@@ -22,6 +23,7 @@ export const MetricCard = ({
   format = 'currency',
   trend 
 }: MetricCardProps) => {
+  const isMobile = useIsMobile();
   const formatValue = (val: number) => {
     if (format === 'currency') {
       return new Intl.NumberFormat('pt-BR').format(val);
@@ -58,7 +60,7 @@ export const MetricCard = ({
             "text-xs font-medium",
             trend.isPositive ? "text-finance-income" : "text-finance-fees"
           )}>
-            {formatTrend(trend.value)} em relação ao mês anterior
+            {formatTrend(trend.value)}{!isMobile && ' em relação ao mês anterior'}
           </p>
         )}
       </CardContent>

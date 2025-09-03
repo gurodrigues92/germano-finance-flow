@@ -41,7 +41,7 @@ export const MetricCard = ({ title, value, icon: Icon, colorClass, trend, subtit
           <p className={`text-xs font-medium ${
             trend.isPositive ? 'text-green-600' : 'text-red-600'
           }`}>
-            {formatTrend(trend.value)} vs mês anterior
+            {formatTrend(trend.value)}{!isMobile && ' vs mês anterior'}
           </p>
         )}
         

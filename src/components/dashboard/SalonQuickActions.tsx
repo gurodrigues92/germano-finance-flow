@@ -2,6 +2,7 @@ import { Calendar, Plus, Receipt, Users, Settings } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface SalonQuickActionsProps {
   onNewAgendamento?: () => void;
@@ -15,33 +16,38 @@ export const SalonQuickActions = ({
   onNewCliente
 }: SalonQuickActionsProps) => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const actions = [
     {
       icon: Calendar,
       title: 'Novo Agendamento',
-      description: 'Agendar cliente',
+      description: 'Agendar',
+      mobileDescription: 'Agendar',
       color: 'bg-blue-500 hover:bg-blue-600',
       onClick: onNewAgendamento || (() => navigate('/agenda'))
     },
     {
       icon: Receipt,
       title: 'Nova Comanda',
-      description: 'Iniciar atendimento',
+      description: 'Atender',
+      mobileDescription: 'Atender',
       color: 'bg-green-500 hover:bg-green-600',
       onClick: onNewComanda || (() => navigate('/caixa'))
     },
     {
       icon: Users,
       title: 'Novo Cliente',
-      description: 'Cadastrar cliente',
+      description: 'Cadastrar',
+      mobileDescription: 'Cadastrar',
       color: 'bg-purple-500 hover:bg-purple-600',
       onClick: onNewCliente || (() => navigate('/clientes'))
     },
     {
       icon: Settings,
       title: 'Configurações',
-      description: 'Ajustar sistema',
+      description: 'Config',
+      mobileDescription: 'Config',
       color: 'bg-gray-500 hover:bg-gray-600',
       onClick: () => navigate('/servicos')
     }
@@ -51,9 +57,11 @@ export const SalonQuickActions = ({
     <Card>
       <CardHeader>
         <CardTitle className="text-lg">Ações Rápidas</CardTitle>
-        <CardDescription>
-          Acesso rápido às principais funcionalidades
-        </CardDescription>
+        {!isMobile && (
+          <CardDescription>
+            Ações rápidas
+          </CardDescription>
+        )}
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -70,8 +78,10 @@ export const SalonQuickActions = ({
                   <Icon className="h-5 w-5" />
                 </div>
                 <div className="text-center">
-                  <p className="text-sm font-medium">{action.title}</p>
-                  <p className="text-xs text-muted-foreground">{action.description}</p>
+                  <p className={`font-medium ${isMobile ? 'text-xs' : 'text-sm'}`}>{action.title}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {isMobile ? action.mobileDescription : action.description}
+                  </p>
                 </div>
               </Button>
             );
