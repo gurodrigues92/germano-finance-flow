@@ -786,6 +786,7 @@ export type Database = {
           total_bruto: number
           total_liquido: number
           updated_at: string
+          user_id: string
         }
         Insert: {
           ano: number
@@ -814,6 +815,7 @@ export type Database = {
           total_bruto: number
           total_liquido: number
           updated_at?: string
+          user_id: string
         }
         Update: {
           ano?: number
@@ -842,6 +844,7 @@ export type Database = {
           total_bruto?: number
           total_liquido?: number
           updated_at?: string
+          user_id?: string
         }
         Relationships: [
           {

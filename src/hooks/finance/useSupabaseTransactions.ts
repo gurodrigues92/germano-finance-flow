@@ -140,6 +140,7 @@ export const useSupabaseTransactions = () => {
         kam_share: calculations.kamShare,
         mes_referencia: month,
         ano: year,
+        user_id: user.id,
         profissional_id: sanitizedData.profissionalId || null,
         tem_assistente: sanitizedData.temAssistente || false,
         assistente_taxa: sanitizedData.assistenteTaxa || 0,

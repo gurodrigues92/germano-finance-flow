@@ -303,7 +303,10 @@ export const useComandas = () => {
           edu_share: transactionCalc.eduShare,
           kam_share: transactionCalc.kamShare,
           mes_referencia: mesReferencia,
-          ano: ano
+          ano: ano,
+          user_id: user.id,
+          comanda_id: comandaId,
+          tipo: 'comanda'
         })
         .select()
         .single();
