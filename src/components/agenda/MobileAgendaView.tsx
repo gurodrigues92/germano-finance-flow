@@ -251,33 +251,42 @@ export const MobileAgendaView = ({
       )}
 
       <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as MobileViewMode)} className="flex-1">
-        <div className="sticky top-[72px] z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-          <TabsList className="grid w-full grid-cols-3 h-12 m-2">
-            <TabsTrigger value="timeline" className="flex items-center gap-2">
+        <div className="sticky top-0 z-30 bg-background border-b border-border shadow-sm">
+          <TabsList className="grid w-full grid-cols-3 h-14 mx-3 my-2 bg-muted/80">
+            <TabsTrigger 
+              value="timeline" 
+              className="flex items-center gap-2 h-10 px-4 text-sm font-medium transition-all active:scale-95 hover:bg-accent hover:text-accent-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
               <Clock className="w-4 h-4" />
               <span className="hidden xs:inline">Timeline</span>
             </TabsTrigger>
-            <TabsTrigger value="list" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="list" 
+              className="flex items-center gap-2 h-10 px-4 text-sm font-medium transition-all active:scale-95 hover:bg-accent hover:text-accent-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
               <List className="w-4 h-4" />
               <span className="hidden xs:inline">Lista</span>
             </TabsTrigger>
-            <TabsTrigger value="professional" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="professional" 
+              className="flex items-center gap-2 h-10 px-4 text-sm font-medium transition-all active:scale-95 hover:bg-accent hover:text-accent-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+            >
               <User className="w-4 h-4" />
               <span className="hidden xs:inline">Profissionais</span>
             </TabsTrigger>
           </TabsList>
         </div>
 
-        <div {...bindPullToRefresh} className="flex-1">
-          <ScrollArea className="h-[calc(100vh-144px)]">
-            <div className="p-4">
-              <TabsContent value="timeline" className="mt-0">
+        <div {...bindPullToRefresh} className="flex-1 overflow-hidden">
+          <ScrollArea className="h-[calc(100vh-130px)]">
+            <div className="p-4 pb-24">
+              <TabsContent value="timeline" className="mt-0 space-y-0">
                 {renderTimelineView()}
               </TabsContent>
-              <TabsContent value="list" className="mt-0">
+              <TabsContent value="list" className="mt-0 space-y-0">
                 {renderListView()}
               </TabsContent>
-              <TabsContent value="professional" className="mt-0">
+              <TabsContent value="professional" className="mt-0 space-y-0">
                 {renderProfessionalView()}
               </TabsContent>
             </div>

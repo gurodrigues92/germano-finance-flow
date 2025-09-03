@@ -35,7 +35,7 @@ export const MobileAgendaLayout = ({
       </div>
 
       {/* Sticky Tabs */}
-      <div className="sticky top-[56px] z-10 w-full bg-background/95 backdrop-blur-md border-b border-border/20">
+      <div className="sticky top-[60px] z-20 w-full bg-background border-b border-border/20 shadow-sm">
         {tabs}
       </div>
 
