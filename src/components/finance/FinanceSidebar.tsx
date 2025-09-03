@@ -27,42 +27,48 @@ const allMenuItems = [
     url: '/',
     icon: LayoutDashboard,
     description: 'Visão geral e métricas',
-    permission: 'view_dashboard'
+    permission: 'view_dashboard',
+    color: '#9C27B0'
   },
   {
     title: 'Transações',
     url: '/transacoes',
     icon: PlusCircle,
     description: 'Gerenciar transações',
-    permission: 'view_transactions'
+    permission: 'view_transactions',
+    color: '#2196F3'
   },
   {
     title: 'Análise',
     url: '/analise',
     icon: BarChart3,
     description: 'Relatórios e gráficos',
-    permission: 'view_analysis'
+    permission: 'view_analysis',
+    color: '#4CAF50'
   },
   {
     title: 'Arquivo',
     url: '/arquivo',
     icon: Archive,
     description: 'Histórico mensal',
-    permission: 'view_archive'
+    permission: 'view_archive',
+    color: '#FF9800'
   },
   {
     title: 'Custos Fixos',
     url: '/custos-fixos',
     icon: Receipt,
     description: 'Gastos mensais fixos',
-    permission: 'view_fixed_costs'
+    permission: 'view_fixed_costs',
+    color: '#FF5722'
   },
   {
     title: 'Estoque',
     url: '/estoque',
     icon: Package,
     description: 'Controle de produtos',
-    permission: 'view_stock'
+    permission: 'view_stock',
+    color: '#00BCD4'
   },
 ];
 
@@ -88,11 +94,11 @@ export const FinanceSidebar = () => {
     return location.pathname.startsWith(path);
   };
 
-  const getNavClasses = (path: string) => {
+  const getNavClasses = (path: string, color: string) => {
     const active = isActive(path);
     return active 
-      ? "!bg-gradient-to-r !from-primary !to-secondary !text-primary-foreground font-semibold [&>*]:!text-primary-foreground glass shadow-lg hover:shadow-xl transform hover:scale-[1.02]" 
-      : "!text-gray-900 dark:!text-gray-100 hover:!bg-purple-50 dark:hover:!bg-purple-900/20 [&>*]:!text-gray-900 dark:[&>*]:!text-gray-100 hover:shadow-md transform hover:scale-[1.01]";
+      ? "!bg-gradient-to-r !from-primary !to-secondary !text-primary-foreground font-semibold glass shadow-xl border-l-4 transform scale-[1.02]" 
+      : "!text-gray-900 dark:!text-gray-100 hover:!bg-purple-50/80 dark:hover:!bg-purple-900/30 hover:shadow-lg hover:scale-[1.01] transform transition-all duration-300 ease-in-out";
   };
 
   return (
@@ -113,11 +119,23 @@ export const FinanceSidebar = () => {
                       to={item.url} 
                       end={item.url === '/'}
                       onClick={handleNavClick}
-                      className={`${getNavClasses(item.url)} transition-all duration-300 ease-in-out rounded-xl p-4 min-h-[64px] sm:min-h-[56px]`}
+                      className={`${getNavClasses(item.url, item.color)} rounded-xl p-4 min-h-[64px] sm:min-h-[56px] flex items-center gap-4`}
+                      style={{
+                        borderLeftColor: isActive(item.url) ? item.color : 'transparent'
+                      }}
                     >
-                      <item.icon className="h-6 w-6 sm:h-5 sm:w-5 flex-shrink-0" />
+                      <div 
+                        className="p-2 rounded-lg flex-shrink-0 transition-all duration-300"
+                        style={{
+                          backgroundColor: isActive(item.url) ? `${item.color}20` : 'rgba(156, 39, 176, 0.1)',
+                          color: item.color,
+                          boxShadow: isActive(item.url) ? `0 0 15px ${item.color}25` : 'none'
+                        }}
+                      >
+                        <item.icon className="h-6 w-6 sm:h-5 sm:w-5 transition-transform duration-300" />
+                      </div>
                       {!collapsed && (
-                        <div className="flex flex-col items-start ml-4 sm:ml-3 min-w-0">
+                        <div className="flex flex-col items-start min-w-0">
                           <span className="font-semibold text-sm sm:text-sm truncate w-full">{item.title}</span>
                           <span className="text-xs opacity-80 truncate w-full">{item.description}</span>
                         </div>

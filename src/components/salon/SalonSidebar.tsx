@@ -128,8 +128,8 @@ export const SalonSidebar = () => {
   const getNavClasses = (path: string, color: string) => {
     const active = isActive(path);
     return active 
-      ? `!bg-white !text-foreground font-semibold shadow-lg border-l-4 transform scale-[1.02]` 
-      : `!text-gray-700 hover:!bg-white/50 hover:scale-[1.01] hover:shadow-md transition-all duration-300`;
+      ? `!bg-white !text-foreground font-semibold shadow-xl border-l-4 transform scale-[1.02]` 
+      : `!text-gray-700 hover:!bg-white/60 hover:scale-[1.02] hover:shadow-lg hover:glow transition-all duration-300 ease-in-out`;
   };
 
   return (
@@ -162,13 +162,14 @@ export const SalonSidebar = () => {
                       }}
                     >
                       <div 
-                        className="p-2 rounded-lg flex-shrink-0"
+                        className="p-2 rounded-lg flex-shrink-0 transition-all duration-300"
                         style={{
-                          backgroundColor: isActive(item.url) ? `${item.color}15` : 'rgba(255,255,255,0.1)',
-                          color: isActive(item.url) ? item.color : 'white'
+                          backgroundColor: isActive(item.url) ? `${item.color}20` : 'rgba(255,255,255,0.15)',
+                          color: item.color,
+                          boxShadow: isActive(item.url) ? `0 0 20px ${item.color}30` : 'none'
                         }}
                       >
-                        <item.icon className="h-6 w-6" />
+                        <item.icon className="h-6 w-6 transition-transform duration-300" />
                       </div>
                       {!collapsed && (
                         <div className="flex flex-col items-start min-w-0">
