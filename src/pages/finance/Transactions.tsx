@@ -16,7 +16,7 @@ import { PageLayout } from '@/components/layout/PageLayout';
 import { PullToRefresh } from '@/components/ui/pull-to-refresh';
 import { useTransactionFilters } from '@/hooks/finance/useTransactionFilters';
 import { useBulkSelection } from '@/hooks/finance/useBulkSelection';
-import { CustomDateFilter } from '@/components/finance/CustomDateFilter';
+import { PeriodSelector } from '@/components/finance/PeriodSelector';
 import { PeriodSummary } from '@/components/finance/PeriodSummary';
 import { NovaComandaDialog } from '@/components/finance/NovaComandaDialog';
 import { ComandasAbertasSection } from '@/components/finance/ComandasAbertasSection';
@@ -388,9 +388,10 @@ export const Transactions = () => {
           totalResults={totalFiltered}
         />
         
-        <CustomDateFilter
+        <PeriodSelector
           filters={filters}
           onFiltersChange={setFilters}
+          transactions={filteredTransactions}
         />
       </div>
 
