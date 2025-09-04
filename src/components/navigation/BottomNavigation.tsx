@@ -62,7 +62,7 @@ export const BottomNavigation = () => {
     { label: 'Serviços', href: '/servicos', icon: Receipt, permission: 'manage_services', color: '#E91E63' },
     { label: 'Produtos', href: '/estoque', icon: Package, permission: 'view_stock', color: '#00BCD4' },
     { label: 'Despesas', href: '/custos-fixos', icon: Target, permission: 'view_fixed_costs', color: '#FF5722' },
-    
+    { label: 'Relatórios Avançados', href: '/reports/advanced', icon: TrendingUp, permission: 'view_analysis', color: '#673AB7' },
     { label: 'Arquivo', href: '/arquivo', icon: Archive, permission: 'view_archive', color: '#607D8B' },
   ];
 

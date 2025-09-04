@@ -9,7 +9,8 @@ import {
   Receipt,
   Package,
   CreditCard,
-  Settings
+  Settings,
+  TrendingUp
 } from 'lucide-react';
 import {
   Sidebar,
@@ -55,6 +56,14 @@ const allMenuItems = [
     description: 'Análises financeiras e operacionais',
     permission: 'view_analysis',
     color: '#9C27B0' // Roxo
+  },
+  {
+    title: 'Relatórios Avançados',
+    url: '/reports/advanced',
+    icon: TrendingUp,
+    description: 'Relatórios avançados com filtros',
+    permission: 'view_analysis',
+    color: '#673AB7' // Roxo mais escuro
   },
   {
     title: 'Clientes',
