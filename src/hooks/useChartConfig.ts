@@ -6,16 +6,19 @@ export const useChartConfig = () => {
   
   return {
     pieChart: {
-      height: isMobile ? 250 : 300,
-      outerRadius: isMobile ? 70 : 120,
-      innerRadius: isMobile ? 35 : 60,
-      labelPosition: isMobile ? 'bottom' : 'center'
+      height: isMobile ? 220 : 300,
+      outerRadius: isMobile ? 60 : 120,
+      innerRadius: isMobile ? 30 : 60,
+      labelPosition: isMobile ? 'bottom' : 'center',
+      margin: isMobile ? { top: 10, right: 10, bottom: 40, left: 10 } : { top: 20, right: 20, bottom: 20, left: 20 }
     },
     areaChart: {
-      height: isMobile ? 300 : 400
+      height: isMobile ? 250 : 400,
+      margin: isMobile ? { top: 10, right: 10, bottom: 20, left: 10 } : { top: 20, right: 30, bottom: 20, left: 20 }
     },
     barChart: {
-      height: isMobile ? 250 : 300
+      height: isMobile ? 220 : 300,
+      margin: isMobile ? { top: 10, right: 10, bottom: 20, left: 10 } : { top: 20, right: 30, bottom: 20, left: 20 }
     },
     legend: {
       verticalAlign: isMobile ? 'bottom' : 'middle',

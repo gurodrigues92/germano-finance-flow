@@ -105,24 +105,27 @@ export const TrendAnalysisChart = ({ data }: TrendAnalysisChartProps) => {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
-              <ComposedChart data={data}>
+              <ComposedChart 
+                data={data}
+                margin={isMobile ? { top: 10, right: 20, bottom: 10, left: 10 } : { top: 20, right: 30, bottom: 20, left: 20 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                 <XAxis 
                   dataKey="period" 
-                  tick={{ fontSize: isMobile ? 10 : 12 }}
+                  tick={{ fontSize: isMobile ? 9 : 12 }}
                   axisLine={false}
                 />
                 <YAxis 
                   yAxisId="revenue"
                   orientation="left"
-                  tick={{ fontSize: isMobile ? 10 : 12 }}
+                  tick={{ fontSize: isMobile ? 9 : 12 }}
                   axisLine={false}
                   tickFormatter={(value) => formatCurrency(value, true)}
                 />
                 <YAxis 
                   yAxisId="growth"
                   orientation="right"
-                  tick={{ fontSize: isMobile ? 10 : 12 }}
+                  tick={{ fontSize: isMobile ? 9 : 12 }}
                   axisLine={false}
                   tickFormatter={(value) => `${value}%`}
                 />
@@ -142,7 +145,7 @@ export const TrendAnalysisChart = ({ data }: TrendAnalysisChartProps) => {
                   dataKey="growth" 
                   stroke="hsl(var(--secondary))"
                   strokeWidth={2}
-                  dot={{ fill: "hsl(var(--secondary))", strokeWidth: 2, r: 3 }}
+                  dot={{ fill: "hsl(var(--secondary))", strokeWidth: 2, r: isMobile ? 2 : 3 }}
                 />
               </ComposedChart>
             </ResponsiveContainer>
@@ -158,23 +161,26 @@ export const TrendAnalysisChart = ({ data }: TrendAnalysisChartProps) => {
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={isMobile ? 200 : 300}>
-              <ComposedChart data={data}>
+              <ComposedChart 
+                data={data}
+                margin={isMobile ? { top: 10, right: 20, bottom: 10, left: 10 } : { top: 20, right: 30, bottom: 20, left: 20 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" opacity={0.3} />
                 <XAxis 
                   dataKey="period" 
-                  tick={{ fontSize: isMobile ? 10 : 12 }}
+                  tick={{ fontSize: isMobile ? 9 : 12 }}
                   axisLine={false}
                 />
                 <YAxis 
                   yAxisId="transactions"
                   orientation="left"
-                  tick={{ fontSize: isMobile ? 10 : 12 }}
+                  tick={{ fontSize: isMobile ? 9 : 12 }}
                   axisLine={false}
                 />
                 <YAxis 
                   yAxisId="avgTicket"
                   orientation="right"
-                  tick={{ fontSize: isMobile ? 10 : 12 }}
+                  tick={{ fontSize: isMobile ? 9 : 12 }}
                   axisLine={false}
                   tickFormatter={(value) => formatCurrency(value, true)}
                 />
@@ -192,7 +198,7 @@ export const TrendAnalysisChart = ({ data }: TrendAnalysisChartProps) => {
                   dataKey="avgTicket" 
                   stroke="hsl(var(--chart-2))"
                   strokeWidth={2}
-                  dot={{ fill: "hsl(var(--chart-2))", strokeWidth: 2, r: 3 }}
+                  dot={{ fill: "hsl(var(--chart-2))", strokeWidth: 2, r: isMobile ? 2 : 3 }}
                 />
               </ComposedChart>
             </ResponsiveContainer>

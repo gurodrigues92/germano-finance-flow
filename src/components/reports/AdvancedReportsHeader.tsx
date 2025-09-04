@@ -33,35 +33,35 @@ export const AdvancedReportsHeader = ({
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 max-w-full overflow-hidden">
           <Button
             onClick={onExportTransactions}
             variant="secondary"
             size={isMobile ? "sm" : "default"}
-            className="bg-white/10 hover:bg-white/20 text-primary-foreground border-white/20"
+            className="bg-white/10 hover:bg-white/20 text-primary-foreground border-white/20 shrink-0"
           >
-            <Download className="w-4 h-4 mr-1" />
-            {isMobile ? 'CSV' : 'Exportar CSV'}
+            <Download className="w-4 h-4" />
+            {!isMobile && <span className="ml-1">Exportar CSV</span>}
           </Button>
           
           <Button
             onClick={onExportTrends}
             variant="secondary"
             size={isMobile ? "sm" : "default"}
-            className="bg-white/10 hover:bg-white/20 text-primary-foreground border-white/20"
+            className="bg-white/10 hover:bg-white/20 text-primary-foreground border-white/20 shrink-0"
           >
-            <Calendar className="w-4 h-4 mr-1" />
-            {isMobile ? 'Trends' : 'Exportar Trends'}
+            <Calendar className="w-4 h-4" />
+            {!isMobile && <span className="ml-1">Exportar Trends</span>}
           </Button>
           
           <Button
             onClick={onSaveReport}
             variant="secondary"
             size={isMobile ? "sm" : "default"}
-            className="bg-white/10 hover:bg-white/20 text-primary-foreground border-white/20"
+            className="bg-white/10 hover:bg-white/20 text-primary-foreground border-white/20 shrink-0"
           >
-            <Save className="w-4 h-4 mr-1" />
-            {isMobile ? 'Salvar' : 'Salvar Relatório'}
+            <Save className="w-4 h-4" />
+            {!isMobile && <span className="ml-1">Salvar</span>}
           </Button>
         </div>
       </div>

@@ -27,32 +27,33 @@ export const SharesDistributionChart = ({ sharesData }: SharesDistributionChartP
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={chartConfig.barChart.height}>
-          <BarChart data={sharesData} layout="horizontal">
+          <BarChart 
+            data={sharesData} 
+            layout="horizontal"
+            margin={chartConfig.barChart.margin}
+          >
             <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
             <XAxis 
               type="number"
               className="text-sm"
-              tick={{ fontSize: isMobile ? 10 : 12 }}
-              tickFormatter={(value) => 
-                isMobile ? formatChartCurrency(value) :
-                new Intl.NumberFormat('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL',
-                  minimumFractionDigits: 0
-                }).format(value)
-              }
+              tick={{ fontSize: isMobile ? 9 : 12 }}
+              tickFormatter={(value) => formatChartCurrency(value)}
             />
             <YAxis 
               dataKey="name" 
               type="category"
               className="text-sm"
-              tick={{ fontSize: isMobile ? 10 : 12 }}
-              width={isMobile ? 80 : 100}
+              tick={{ fontSize: isMobile ? 9 : 12 }}
+              width={isMobile ? 60 : 100}
             />
             <Tooltip 
               formatter={(value) => formatChartCurrency(Number(value))}
             />
-            <Bar dataKey="value" fill="hsl(var(--finance-studio))" />
+            <Bar 
+              dataKey="value" 
+              fill="hsl(var(--finance-studio))"
+              radius={[0, 2, 2, 0]}
+            />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>

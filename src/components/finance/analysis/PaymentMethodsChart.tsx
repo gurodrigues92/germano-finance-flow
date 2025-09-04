@@ -29,15 +29,15 @@ export const PaymentMethodsChart = ({ paymentMethodsData }: PaymentMethodsChartP
       <CardContent>
         {paymentMethodsData.length > 0 ? (
           <>
-            <ResponsiveContainer width="100%" height={isMobile ? 280 : chartConfig.pieChart.height}>
-              <PieChart>
+            <ResponsiveContainer width="100%" height={chartConfig.pieChart.height}>
+              <PieChart margin={chartConfig.pieChart.margin}>
                 <Pie
                   data={paymentMethodsData}
                   cx="50%"
-                  cy={isMobile ? "45%" : "50%"}
-                  innerRadius={isMobile ? 45 : chartConfig.pieChart.innerRadius}
-                  outerRadius={isMobile ? 90 : chartConfig.pieChart.outerRadius}
-                  paddingAngle={5}
+                  cy={isMobile ? "40%" : "50%"}
+                  innerRadius={chartConfig.pieChart.innerRadius}
+                  outerRadius={chartConfig.pieChart.outerRadius}
+                  paddingAngle={3}
                   dataKey="value"
                   label={!isMobile ? ({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%` : false}
                 >

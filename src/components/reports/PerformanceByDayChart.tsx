@@ -112,20 +112,20 @@ export const PerformanceByDayChart = ({ data }: PerformanceByDayChartProps) => {
         </div>
 
         {/* Summary Stats */}
-        <div className={`grid gap-3 mt-6 ${isMobile ? 'grid-cols-2' : 'grid-cols-4'}`}>
+        <div className={`grid gap-2 mt-6 ${isMobile ? 'grid-cols-2' : 'grid-cols-4'}`}>
           {data.map((day, index) => (
             <div 
               key={day.day}
-              className="bg-gray-50 rounded-lg p-3 text-center"
+              className="bg-gray-50 rounded-lg p-2 text-center overflow-hidden"
               style={{ borderTop: `3px solid ${dayColors[index]}` }}
             >
-              <div className={`font-semibold ${isMobile ? 'text-xs' : 'text-sm'}`} style={{ color: dayColors[index] }}>
-                {day.day}
+              <div className={`font-semibold ${isMobile ? 'text-xs' : 'text-sm'} truncate`} style={{ color: dayColors[index] }}>
+                {isMobile ? day.day.slice(0, 3) : day.day}
               </div>
               <div className={`${isMobile ? 'text-xs' : 'text-sm'} text-gray-600 space-y-1`}>
-                <div>{formatCurrency(day.revenue, true)}</div>
-                <div>{day.transactions} transações</div>
-                <div className="font-medium">{formatCurrency(day.avgTicket, true)} ticket</div>
+                <div className="truncate">{formatCurrency(day.revenue, true)}</div>
+                <div className="truncate">{day.transactions} trans.</div>
+                <div className="font-medium truncate">{formatCurrency(day.avgTicket, true)}</div>
               </div>
             </div>
           ))}
