@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { SalonSidebar } from './SalonSidebar';
 import { BottomNavigation } from '@/components/navigation/BottomNavigation';
@@ -9,6 +9,11 @@ import { Scissors, User } from 'lucide-react';
 
 export const SalonLayout = () => {
   const { profile, isAdmin } = useUserProfile();
+  const navigate = useNavigate();
+
+  const handleLogoClick = () => {
+    navigate('/');
+  };
 
   return (
     <SidebarProvider>
@@ -20,11 +25,19 @@ export const SalonLayout = () => {
             <div className="flex h-full items-center justify-between px-2 sm:px-4 gap-2 sm:gap-4 min-w-0">
               <div className="flex items-center gap-2 min-w-0 overflow-hidden">
                 <SidebarTrigger />
-                <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <div 
+                  className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-500 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer hover:scale-110 transition-transform"
+                  onClick={handleLogoClick}
+                >
                   <Scissors className="w-5 h-5 text-white" />
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 min-w-0">
-                  <h1 className="text-lg sm:text-xl font-bold text-gray-800 truncate">Studio Germano</h1>
+                  <h1 
+                    className="text-lg sm:text-xl font-bold text-gray-800 truncate cursor-pointer hover:text-purple-600 transition-colors"
+                    onClick={handleLogoClick}
+                  >
+                    Studio Germano
+                  </h1>
                   <span className="hidden lg:inline text-sm text-gray-600">Sistema de Gestão</span>
                 </div>
               </div>
