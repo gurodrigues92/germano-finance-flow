@@ -171,13 +171,18 @@ export const PeriodSelector = ({ filters, onFiltersChange, transactions = [] }: 
   ];
 
   return (
-    <Card className="border-primary/30 bg-gradient-to-r from-primary/5 to-primary/10 shadow-md">
-      <CardContent className="p-4 space-y-4">
+    <Card className="border-2 border-primary/50 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 shadow-lg ring-2 ring-primary/20 backdrop-blur-sm">
+      <CardContent className="p-5 space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-primary" />
-            <h3 className="text-sm font-medium">Filtro por Período</h3>
+            <div className="p-2 bg-primary/20 rounded-lg">
+              <Calendar className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h3 className="text-base font-semibold text-primary">📅 Filtro por Período</h3>
+              <p className="text-xs text-muted-foreground">Selecione datas e dias da semana</p>
+            </div>
           </div>
           {(filters.isCustomDateActive || filters.selectedWeekdays.length > 0) && (
             <Button

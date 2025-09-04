@@ -381,18 +381,24 @@ export const Transactions = () => {
       </div>
 
       {/* Filters Section */}
-      <div className="space-y-3 mb-4">
+      <div className="space-y-4 mb-6">
         <SearchAndFilter
           filters={filters}
           onFiltersChange={setFilters}
           totalResults={totalFiltered}
         />
         
-        <PeriodSelector
-          filters={filters}
-          onFiltersChange={setFilters}
-          transactions={filteredTransactions}
-        />
+        {/* Period Selector with Enhanced Visibility */}
+        <div className="relative">
+          <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary/10 rounded-lg blur opacity-75"></div>
+          <div className="relative">
+            <PeriodSelector
+              filters={filters}
+              onFiltersChange={setFilters}
+              transactions={filteredTransactions}
+            />
+          </div>
+        </div>
       </div>
 
       {/* Smart Summary */}
