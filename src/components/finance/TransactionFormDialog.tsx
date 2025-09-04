@@ -28,11 +28,11 @@ export const TransactionFormDialog = ({
       title={editingTransaction ? 'Editar Transação' : 'Nova Transação'}
       className="max-w-[600px]"
     >
-      <div className="flex flex-col h-full">
+      <form onSubmit={onSubmit} className="flex flex-col h-full">
         <ScrollArea className="flex-1">
-          <form onSubmit={onSubmit} className="space-y-8 p-1">
+          <div className="space-y-8 p-1">
             {children}
-          </form>
+          </div>
         </ScrollArea>
 
         {/* Fixed bottom action bar */}
@@ -56,7 +56,7 @@ export const TransactionFormDialog = ({
             Cancelar
           </Button>
         </div>
-      </div>
+      </form>
     </ResponsiveDialog>
   );
 };

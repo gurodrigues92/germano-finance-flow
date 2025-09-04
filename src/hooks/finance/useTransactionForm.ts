@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Transaction } from '@/types/finance';
-
 import { getLocalDateString, formatDateForInput } from '@/lib/dateUtils';
 
 export interface TransactionFormData {
@@ -63,9 +62,14 @@ export const useTransactionForm = ({
     
     // Validar data usando getCurrentBrazilDate para consistência
     try {
+      if (!formData.date || !formData.date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        console.log('[TransactionForm] Erro: Data inválida');
+        alert('Data inválida. Por favor, selecione uma data válida.');
+        return;
+      }
+      
       const selectedDate = new Date(formData.date + 'T12:00:00'); // Use meio-dia para evitar problemas de timezone
-      const { getCurrentBrazilDate } = require('@/lib/dateUtils');
-      const today = getCurrentBrazilDate();
+      const today = new Date();
       today.setHours(23, 59, 59, 999);
       
       if (selectedDate > today) {
