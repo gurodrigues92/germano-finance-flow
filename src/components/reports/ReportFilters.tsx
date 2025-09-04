@@ -2,11 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useClientes } from '@/hooks/salon/useClientes';
 import { useProfissionais } from '@/hooks/salon/useProfissionais';
 import { ReportFilter } from '@/hooks/useAdvancedReports';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { QuickDateSelector } from './QuickDateSelector';
+import { AdvancedQuickDateSelector } from './AdvancedQuickDateSelector';
+import { CustomPeriodSelector } from './CustomPeriodSelector';
+import { RecentPeriods } from './RecentPeriods';
 
 interface ReportFiltersProps {
   filters: ReportFilter;
@@ -24,15 +27,33 @@ export const ReportFilters = ({ filters, onChange }: ReportFiltersProps) => {
 
   return (
     <>
-      <QuickDateSelector filters={filters} onChange={onChange} />
+      {/* Recent Periods */}
+      <RecentPeriods filters={filters} onChange={onChange} />
       
+      {/* Period Selection Tabs */}
+      <Tabs defaultValue="quick" className="mb-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="quick">Períodos Rápidos</TabsTrigger>
+          <TabsTrigger value="custom">Período Personalizado</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="quick" className="mt-4">
+          <AdvancedQuickDateSelector filters={filters} onChange={onChange} />
+        </TabsContent>
+        
+        <TabsContent value="custom" className="mt-4">
+          <CustomPeriodSelector filters={filters} onChange={onChange} />
+        </TabsContent>
+      </Tabs>
+      
+      {/* Advanced Filters */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle className={`${isMobile ? 'text-lg' : 'text-xl'} text-foreground`}>
             Filtros Detalhados
           </CardTitle>
         </CardHeader>
-      <CardContent>
+        <CardContent>
         <div className={`grid gap-4 ${isMobile ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-3'}`}>
           {/* Date Range */}
           <div className="space-y-2">
