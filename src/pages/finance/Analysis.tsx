@@ -54,7 +54,7 @@ export const Analysis = () => {
       subtitle="Dashboard analítico com insights automatizados e previsões"
     >
       {/* Advanced Period Selector */}
-      <div className={`${isMobile ? 'px-1' : ''}`}>
+      <div className="mb-6">
         <AdvancedPeriodSelector
           currentMonth={currentMonth}
           onMonthChange={setCurrentMonth}
@@ -63,15 +63,17 @@ export const Analysis = () => {
       </div>
 
       {/* KPI Dashboard */}
-      <KPIDashboard kpis={kpis} />
+      <div className={`mb-6 ${isMobile ? 'px-2' : ''}`}>
+        <KPIDashboard kpis={kpis} />
+      </div>
 
       {/* Relatórios de Vendas Detalhados */}
-      <div className="mb-6">
+      <div className={`mb-6 ${isMobile ? 'px-2' : ''}`}>
         <SalesReportTabs transactions={advancedCurrentData} period={currentMonth} />
       </div>
 
       {/* Comparativo dos Últimos 3 Meses */}
-      <div className="mb-6">
+      <div className={`mb-6 ${isMobile ? 'px-2' : ''}`}>
         <MonthlyReportCard
           currentMonth={currentMonth}
           currentData={currentData}
@@ -80,19 +82,25 @@ export const Analysis = () => {
       </div>
 
       {/* Advanced Evolution Chart */}
-      <AdvancedEvolutionChart data={advancedEvolutionData} />
+      <div className={`mb-6 ${isMobile ? 'px-2' : ''}`}>
+        <AdvancedEvolutionChart data={advancedEvolutionData} />
+      </div>
 
       {/* Payment Methods Analytics */}
-      <PaymentMethodsAnalytics data={paymentMethodsAnalytics} />
+      <div className={`mb-6 ${isMobile ? 'px-2' : ''}`}>
+        <PaymentMethodsAnalytics data={paymentMethodsAnalytics} />
+      </div>
 
       {/* Distribuição de Participações */}
-      <div className={`card-grid ${isMobile ? 'grid-cols-1' : 'card-grid-2'} mb-6`}>
-        <SharesDistributionChart sharesData={sharesData} />
+      <div className={`mb-6 ${isMobile ? 'px-2' : ''}`}>
+        <div className={`${isMobile ? 'grid grid-cols-1' : 'card-grid card-grid-2'}`}>
+          <SharesDistributionChart sharesData={sharesData} />
+        </div>
       </div>
 
       {/* Gráficos Operacionais (por último) */}
-      <div className={`mt-8 ${isMobile ? 'px-1' : ''}`}>
-        <h3 className={`${isMobile ? 'text-base' : 'text-lg'} font-semibold mb-4 text-muted-foreground`}>
+      <div className={`mt-8 ${isMobile ? 'px-2' : ''}`}>
+        <h3 className={`${isMobile ? 'text-lg' : 'text-xl'} font-semibold mb-6 text-foreground`}>
           Análise Operacional
         </h3>
         <OperationalChartsGrid

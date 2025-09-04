@@ -137,7 +137,7 @@ export const AdvancedPeriodSelector = ({
           </Button>
         </PopoverTrigger>
 
-        <PopoverContent className="w-[400px] p-0" align="start">
+        <PopoverContent className="w-[95vw] max-w-[400px] p-0" align="start">
           <Card className="border-0 shadow-none">
             <CardHeader className="pb-3">
               <CardTitle className="text-lg flex items-center space-x-2">
@@ -149,7 +149,7 @@ export const AdvancedPeriodSelector = ({
               {/* Quick Periods */}
               <div>
                 <h4 className="font-medium text-sm text-muted-foreground mb-2">Períodos Rápidos</h4>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {quickPeriods.map((period) => {
                     const Icon = period.icon;
                     return (
@@ -157,11 +157,11 @@ export const AdvancedPeriodSelector = ({
                         key={period.value}
                         variant="outline"
                         size="sm"
-                        className="justify-start h-auto p-2"
+                        className="justify-start h-auto p-3 text-left"
                         onClick={() => handleQuickPeriod(period)}
                       >
                         <Icon className="h-3 w-3 mr-2" />
-                        <span className="text-xs">{period.label}</span>
+                        <span className="text-sm">{period.label}</span>
                       </Button>
                     );
                   })}
@@ -173,13 +173,13 @@ export const AdvancedPeriodSelector = ({
               {/* Monthly Options */}
               <div>
                 <h4 className="font-medium text-sm text-muted-foreground mb-2">Por Mês</h4>
-                <div className="max-h-32 overflow-y-auto space-y-1">
+                <div className="max-h-40 overflow-y-auto space-y-1 px-1">
                   {monthOptions.map((option) => (
                     <Button
                       key={option.value}
                       variant={currentMonth === option.value && activeFilter === 'month' ? "default" : "ghost"}
                       size="sm"
-                      className="w-full justify-between h-auto p-2"
+                      className="w-full justify-between h-auto p-3"
                       onClick={() => handleMonthSelect(option.value)}
                     >
                       <span className="text-sm">{option.label}</span>

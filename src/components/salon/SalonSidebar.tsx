@@ -58,14 +58,6 @@ const allMenuItems = [
     color: '#9C27B0' // Roxo
   },
   {
-    title: 'Relatórios Avançados',
-    url: '/reports/advanced',
-    icon: TrendingUp,
-    description: 'Relatórios avançados com filtros',
-    permission: 'view_analysis',
-    color: '#673AB7' // Roxo mais escuro
-  },
-  {
     title: 'Clientes',
     url: '/clientes',
     icon: Users,
