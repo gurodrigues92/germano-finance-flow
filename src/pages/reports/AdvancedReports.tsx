@@ -88,6 +88,8 @@ export const AdvancedReports = () => {
         onExportTrends={exportTrendAnalysis}
         onSaveReport={() => setSaveDialogOpen(true)}
         transactionCount={filteredTransactions.length}
+        startDate={filters.startDate}
+        endDate={filters.endDate}
       />
 
       {/* Filters */}

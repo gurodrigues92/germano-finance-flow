@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Calendar, Filter, Download, Save, BarChart3 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -7,15 +8,31 @@ interface AdvancedReportsHeaderProps {
   onExportTrends: () => void;
   onSaveReport: () => void;
   transactionCount: number;
+  startDate?: string;
+  endDate?: string;
 }
 
 export const AdvancedReportsHeader = ({
   onExportTransactions,
   onExportTrends,
   onSaveReport,
-  transactionCount
+  transactionCount,
+  startDate,
+  endDate
 }: AdvancedReportsHeaderProps) => {
   const isMobile = useIsMobile();
+
+  const getViewTypeLabel = () => {
+    if (startDate && endDate && startDate === endDate) {
+      const date = new Date(startDate).toLocaleDateString('pt-BR', { 
+        day: '2-digit', 
+        month: 'short',
+        year: 'numeric'
+      });
+      return `Visualização do dia ${date}`;
+    }
+    return `${transactionCount} transações encontradas`;
+  };
 
   return (
     <div className="bg-gradient-to-r from-primary to-primary/80 rounded-2xl p-4 sm:p-6 text-primary-foreground mb-6">
@@ -27,9 +44,11 @@ export const AdvancedReportsHeader = ({
           <p className="text-primary-foreground/80 text-sm">
             Análises detalhadas, tendências e previsões baseadas em dados históricos
           </p>
-          <div className="flex items-center gap-2 mt-2 text-sm">
-            <BarChart3 className="w-4 h-4" />
-            <span>{transactionCount} transações analisadas</span>
+          <div className="flex items-center gap-2 mt-2">
+            <Badge variant="secondary" className="bg-white/10 text-primary-foreground border-white/20">
+              <BarChart3 className="w-3 h-3 mr-1" />
+              {getViewTypeLabel()}
+            </Badge>
           </div>
         </div>
 

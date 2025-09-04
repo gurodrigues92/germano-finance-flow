@@ -6,6 +6,7 @@ import { useClientes } from '@/hooks/salon/useClientes';
 import { useProfissionais } from '@/hooks/salon/useProfissionais';
 import { ReportFilter } from '@/hooks/useAdvancedReports';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { QuickDateSelector } from './QuickDateSelector';
 
 interface ReportFiltersProps {
   filters: ReportFilter;
@@ -22,12 +23,15 @@ export const ReportFilters = ({ filters, onChange }: ReportFiltersProps) => {
   };
 
   return (
-    <Card className="mb-6">
-      <CardHeader>
-        <CardTitle className={`${isMobile ? 'text-lg' : 'text-xl'} text-foreground`}>
-          Filtros de Análise
-        </CardTitle>
-      </CardHeader>
+    <>
+      <QuickDateSelector filters={filters} onChange={onChange} />
+      
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className={`${isMobile ? 'text-lg' : 'text-xl'} text-foreground`}>
+            Filtros Detalhados
+          </CardTitle>
+        </CardHeader>
       <CardContent>
         <div className={`grid gap-4 ${isMobile ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-3'}`}>
           {/* Date Range */}
@@ -140,5 +144,6 @@ export const ReportFilters = ({ filters, onChange }: ReportFiltersProps) => {
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };

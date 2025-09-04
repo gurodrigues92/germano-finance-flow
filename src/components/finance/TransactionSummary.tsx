@@ -38,6 +38,16 @@ export const TransactionSummary = ({
   // Context message
   const getContextMessage = () => {
     if (isCustomPeriod && dateStart && dateEnd) {
+      // Check if it's a single day
+      if (dateStart === dateEnd) {
+        const date = new Date(dateStart).toLocaleDateString('pt-BR', { 
+          day: '2-digit', 
+          month: 'short',
+          year: 'numeric'
+        });
+        return `Dia: ${date}`;
+      }
+      
       const start = new Date(dateStart).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
       const end = new Date(dateEnd).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
       return `Período: ${start} - ${end}`;
