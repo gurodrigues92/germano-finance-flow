@@ -107,6 +107,7 @@ export const AdvancedPeriodSelector = ({
         open={isOpen}
         onOpenChange={setIsOpen}
         align="start"
+        className="w-full max-w-sm"
         trigger={
           <Button
             variant="outline"
@@ -148,10 +149,33 @@ export const AdvancedPeriodSelector = ({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 px-4 md:px-6 pb-4 md:pb-6">
+            {/* Custom Range - First on Mobile */}
+            <div>
+              <h4 className="font-medium text-xs md:text-sm text-muted-foreground mb-2">Período Personalizado</h4>
+              <CalendarComponent
+                mode="range"
+                selected={selectedRange}
+                onSelect={setSelectedRange}
+                numberOfMonths={1}
+                className="pointer-events-auto w-full border-0 p-0"
+              />
+              {selectedRange?.from && selectedRange?.to && (
+                <Button
+                  onClick={handleCustomRange}
+                  className="w-full mt-3"
+                  size="sm"
+                >
+                  Aplicar Período Personalizado
+                </Button>
+              )}
+            </div>
+
+            <Separator />
+
             {/* Quick Periods */}
             <div>
               <h4 className="font-medium text-xs md:text-sm text-muted-foreground mb-2">Períodos Rápidos</h4>
-              <div className="grid grid-cols-1 gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 {quickPeriods.map((period) => {
                   const Icon = period.icon;
                   return (
@@ -159,11 +183,11 @@ export const AdvancedPeriodSelector = ({
                       key={period.value}
                       variant="outline"
                       size="sm"
-                      className="justify-start h-auto p-2 md:p-3 text-left"
+                      className="justify-start h-8 p-2 text-left text-xs"
                       onClick={() => handleQuickPeriod(period)}
                     >
-                      <Icon className="h-3 w-3 mr-2 flex-shrink-0" />
-                      <span className="text-xs md:text-sm">{period.label}</span>
+                      <Icon className="h-3 w-3 mr-1 flex-shrink-0" />
+                      <span className="truncate">{period.label}</span>
                     </Button>
                   );
                 })}
@@ -175,16 +199,16 @@ export const AdvancedPeriodSelector = ({
             {/* Monthly Options */}
             <div>
               <h4 className="font-medium text-xs md:text-sm text-muted-foreground mb-2">Por Mês</h4>
-              <div className="max-h-32 md:max-h-40 overflow-y-auto space-y-1 px-1">
+              <div className="max-h-24 md:max-h-32 overflow-y-auto space-y-1">
                 {monthOptions.map((option) => (
                   <Button
                     key={option.value}
                     variant={currentMonth === option.value && activeFilter === 'month' ? "default" : "ghost"}
                     size="sm"
-                    className="w-full justify-between h-auto p-2 md:p-3"
+                    className="w-full justify-between h-8 p-2"
                     onClick={() => handleMonthSelect(option.value)}
                   >
-                    <span className="text-xs md:text-sm text-left flex-1 min-w-0 truncate">{option.label}</span>
+                    <span className="text-xs text-left flex-1 min-w-0 truncate">{option.label}</span>
                     {option.hasData && option.count && (
                       <Badge variant="secondary" className="text-xs ml-2 flex-shrink-0">
                         {option.count}
@@ -193,29 +217,6 @@ export const AdvancedPeriodSelector = ({
                   </Button>
                 ))}
               </div>
-            </div>
-
-            <Separator />
-
-            {/* Custom Range */}
-            <div>
-              <h4 className="font-medium text-xs md:text-sm text-muted-foreground mb-2">Período Personalizado</h4>
-              <CalendarComponent
-                mode="range"
-                selected={selectedRange}
-                onSelect={setSelectedRange}
-                numberOfMonths={1}
-                className="pointer-events-auto w-full"
-              />
-              {selectedRange?.from && selectedRange?.to && (
-                <Button
-                  onClick={handleCustomRange}
-                  className="w-full mt-3"
-                  size="sm"
-                >
-                  Aplicar Período Personalizado
-                </Button>
-              )}
             </div>
           </CardContent>
         </Card>

@@ -2,20 +2,28 @@ import { useMemo } from 'react';
 import { Transaction } from '@/types/finance';
 import { useFinance } from '@/hooks/useFinance';
 import { useCustosFixos } from '@/hooks/useCustosFixos';
-
 import { useProdutos } from '@/hooks/useProdutos';
 
-export const useAdvancedAnalytics = (currentMonth: string) => {
+interface DateRange {
+  from: Date;
+  to: Date;
+}
+
+export const useAdvancedAnalytics = (currentMonth: string, dateRange?: DateRange) => {
   const { transactions, archivedData } = useFinance();
   const { custos } = useCustosFixos();
   
   const { produtos } = useProdutos();
 
-  // Get current month transactions
-  const currentData = useMemo(() => 
-    transactions.filter(t => t.month === currentMonth), 
-    [transactions, currentMonth]
-  );
+  // Get current month or date range transactions
+  const currentData = useMemo(() => {
+    if (dateRange) {
+      const fromStr = dateRange.from.toISOString().slice(0, 10);
+      const toStr = dateRange.to.toISOString().slice(0, 10);
+      return transactions.filter(t => t.date >= fromStr && t.date <= toStr);
+    }
+    return transactions.filter(t => t.month === currentMonth);
+  }, [transactions, currentMonth, dateRange]);
   
   // Get previous month for comparison
   const { previousData, currentDate } = useMemo(() => {

@@ -21,8 +21,8 @@ export const Analysis = () => {
   const [customDateRange, setCustomDateRange] = useState<{ from: Date; to: Date } | null>(null);
   
   // Use all hooks unconditionally
-  const analysisData = useAnalysisData(currentMonth);
-  const advancedAnalytics = useAdvancedAnalytics(currentMonth);
+  const analysisData = useAnalysisData(currentMonth, customDateRange || undefined);
+  const advancedAnalytics = useAdvancedAnalytics(currentMonth, customDateRange || undefined);
   const analyticsKPIs = useAnalyticsKPIs({
     transactions: advancedAnalytics.currentData,
     previousMonthTransactions: advancedAnalytics.previousData

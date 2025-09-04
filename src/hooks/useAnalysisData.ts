@@ -1,16 +1,47 @@
 import { useMemo } from 'react';
 import { useFinance } from '@/hooks/useFinance';
 import { useCustosFixos } from '@/hooks/useCustosFixos';
-
 import { useProdutos } from '@/hooks/useProdutos';
 
-export const useAnalysisData = (currentMonth: string) => {
-  const { getMonthlyData } = useFinance();
+interface DateRange {
+  from: Date;
+  to: Date;
+}
+
+export const useAnalysisData = (currentMonth: string, dateRange?: DateRange) => {
+  const { getMonthlyData, transactions } = useFinance();
   const { totalPorCategoria: totalCustosPorCategoria, totalGeral: totalCustos } = useCustosFixos(currentMonth);
   
   const { produtos, valorTotalEstoque } = useProdutos();
   
-  const currentData = getMonthlyData(currentMonth);
+  // Filter data by date range if provided, otherwise use current month
+  const currentData = useMemo(() => {
+    if (dateRange) {
+      const fromStr = dateRange.from.toISOString().slice(0, 10);
+      const toStr = dateRange.to.toISOString().slice(0, 10);
+      
+      const filteredTransactions = transactions.filter(t => 
+        t.date >= fromStr && t.date <= toStr
+      );
+      
+      return {
+        transactions: filteredTransactions,
+        totalBruto: filteredTransactions.reduce((sum, t) => sum + t.totalBruto, 0),
+        totalLiquido: filteredTransactions.reduce((sum, t) => sum + t.totalLiquido, 0),
+        totalStudio: filteredTransactions.reduce((sum, t) => sum + t.studioShare, 0),
+        totalEdu: filteredTransactions.reduce((sum, t) => sum + t.eduShare, 0),
+        totalKam: filteredTransactions.reduce((sum, t) => sum + t.kamShare, 0),
+        totalTaxas: filteredTransactions.reduce((sum, t) => sum + t.taxaDebito + t.taxaCredito, 0),
+        totalDinheiro: filteredTransactions.reduce((sum, t) => sum + t.dinheiro, 0),
+        totalPix: filteredTransactions.reduce((sum, t) => sum + t.pix, 0),
+        totalDebito: filteredTransactions.reduce((sum, t) => sum + t.debito, 0),
+        totalCredito: filteredTransactions.reduce((sum, t) => sum + t.credito, 0),
+        month: dateRange.from.toISOString().slice(0, 7),
+        year: dateRange.from.getFullYear()
+      };
+    }
+    return getMonthlyData(currentMonth);
+  }, [dateRange, currentMonth, getMonthlyData, transactions]);
 
   // Generate month options - from March 2025 onwards
   const monthOptions = useMemo(() => {
