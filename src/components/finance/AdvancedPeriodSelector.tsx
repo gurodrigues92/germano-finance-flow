@@ -5,7 +5,7 @@ import { Calendar, ChevronDown, Filter, Zap } from 'lucide-react';
 import type { DateRange } from 'react-day-picker';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { ResponsivePopover } from '@/components/ui/responsive-popover';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -103,122 +103,123 @@ export const AdvancedPeriodSelector = ({
 
   return (
     <div className="mb-6">
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverTrigger asChild>
+      <ResponsivePopover
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        align="start"
+        trigger={
           <Button
             variant="outline"
             className={cn(
-              "w-full justify-between h-auto p-4 border-2 hover:border-primary/50 transition-all duration-200",
+              "w-full justify-between h-auto p-3 md:p-4 border-2 hover:border-primary/50 transition-all duration-200",
               isOpen && "border-primary/50 shadow-md"
             )}
           >
-            <div className="flex items-center space-x-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Calendar className="h-5 w-5 text-primary" />
+            <div className="flex items-center space-x-2 md:space-x-3">
+              <div className="p-1.5 md:p-2 rounded-lg bg-primary/10">
+                <Calendar className="h-4 w-4 md:h-5 md:w-5 text-primary" />
               </div>
-              <div className="text-left">
-                <div className="font-semibold text-base">
+              <div className="text-left min-w-0 flex-1">
+                <div className="font-semibold text-sm md:text-base truncate">
                   {getCurrentPeriodText()}
                 </div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-xs md:text-sm text-muted-foreground hidden sm:block">
                   Clique para alterar período de análise
                 </div>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-1 md:space-x-2 ml-2">
               {activeFilter === 'range' && (
-                <Badge variant="secondary" className="bg-primary/10 text-primary">
-                  <Filter className="h-3 w-3 mr-1" />
-                  Personalizado
+                <Badge variant="secondary" className="bg-primary/10 text-primary text-xs">
+                  <Filter className="h-2 w-2 md:h-3 md:w-3 mr-1" />
+                  <span className="hidden sm:inline">Personalizado</span>
                 </Badge>
               )}
-              <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
+              <ChevronDown className={cn("h-3 w-3 md:h-4 md:w-4 transition-transform flex-shrink-0", isOpen && "rotate-180")} />
             </div>
           </Button>
-        </PopoverTrigger>
-
-        <PopoverContent className="w-[95vw] max-w-[400px] p-0" align="start">
-          <Card className="border-0 shadow-none">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg flex items-center space-x-2">
-                <Calendar className="h-5 w-5" />
-                <span>Selecionar Período</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Quick Periods */}
-              <div>
-                <h4 className="font-medium text-sm text-muted-foreground mb-2">Períodos Rápidos</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {quickPeriods.map((period) => {
-                    const Icon = period.icon;
-                    return (
-                      <Button
-                        key={period.value}
-                        variant="outline"
-                        size="sm"
-                        className="justify-start h-auto p-3 text-left"
-                        onClick={() => handleQuickPeriod(period)}
-                      >
-                        <Icon className="h-3 w-3 mr-2" />
-                        <span className="text-sm">{period.label}</span>
-                      </Button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* Monthly Options */}
-              <div>
-                <h4 className="font-medium text-sm text-muted-foreground mb-2">Por Mês</h4>
-                <div className="max-h-40 overflow-y-auto space-y-1 px-1">
-                  {monthOptions.map((option) => (
+        }
+      >
+        <Card className="border-0 shadow-none">
+          <CardHeader className="pb-3 px-4 md:px-6">
+            <CardTitle className="text-base md:text-lg flex items-center space-x-2">
+              <Calendar className="h-4 w-4 md:h-5 md:w-5" />
+              <span>Selecionar Período</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 px-4 md:px-6 pb-4 md:pb-6">
+            {/* Quick Periods */}
+            <div>
+              <h4 className="font-medium text-xs md:text-sm text-muted-foreground mb-2">Períodos Rápidos</h4>
+              <div className="grid grid-cols-1 gap-2">
+                {quickPeriods.map((period) => {
+                  const Icon = period.icon;
+                  return (
                     <Button
-                      key={option.value}
-                      variant={currentMonth === option.value && activeFilter === 'month' ? "default" : "ghost"}
+                      key={period.value}
+                      variant="outline"
                       size="sm"
-                      className="w-full justify-between h-auto p-3"
-                      onClick={() => handleMonthSelect(option.value)}
+                      className="justify-start h-auto p-2 md:p-3 text-left"
+                      onClick={() => handleQuickPeriod(period)}
                     >
-                      <span className="text-sm">{option.label}</span>
-                      {option.hasData && option.count && (
-                        <Badge variant="secondary" className="text-xs">
-                          {option.count}
-                        </Badge>
-                      )}
+                      <Icon className="h-3 w-3 mr-2 flex-shrink-0" />
+                      <span className="text-xs md:text-sm">{period.label}</span>
                     </Button>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
+            </div>
 
-              <Separator />
+            <Separator />
 
-              {/* Custom Range */}
-              <div>
-                <h4 className="font-medium text-sm text-muted-foreground mb-2">Período Personalizado</h4>
-                <CalendarComponent
-                  mode="range"
-                  selected={selectedRange}
-                  onSelect={setSelectedRange}
-                  numberOfMonths={1}
-                  className="pointer-events-auto"
-                />
-                {selectedRange?.from && selectedRange?.to && (
+            {/* Monthly Options */}
+            <div>
+              <h4 className="font-medium text-xs md:text-sm text-muted-foreground mb-2">Por Mês</h4>
+              <div className="max-h-32 md:max-h-40 overflow-y-auto space-y-1 px-1">
+                {monthOptions.map((option) => (
                   <Button
-                    onClick={handleCustomRange}
-                    className="w-full mt-2"
+                    key={option.value}
+                    variant={currentMonth === option.value && activeFilter === 'month' ? "default" : "ghost"}
                     size="sm"
+                    className="w-full justify-between h-auto p-2 md:p-3"
+                    onClick={() => handleMonthSelect(option.value)}
                   >
-                    Aplicar Período Personalizado
+                    <span className="text-xs md:text-sm text-left flex-1 min-w-0 truncate">{option.label}</span>
+                    {option.hasData && option.count && (
+                      <Badge variant="secondary" className="text-xs ml-2 flex-shrink-0">
+                        {option.count}
+                      </Badge>
+                    )}
                   </Button>
-                )}
+                ))}
               </div>
-            </CardContent>
-          </Card>
-        </PopoverContent>
-      </Popover>
+            </div>
+
+            <Separator />
+
+            {/* Custom Range */}
+            <div>
+              <h4 className="font-medium text-xs md:text-sm text-muted-foreground mb-2">Período Personalizado</h4>
+              <CalendarComponent
+                mode="range"
+                selected={selectedRange}
+                onSelect={setSelectedRange}
+                numberOfMonths={1}
+                className="pointer-events-auto w-full"
+              />
+              {selectedRange?.from && selectedRange?.to && (
+                <Button
+                  onClick={handleCustomRange}
+                  className="w-full mt-3"
+                  size="sm"
+                >
+                  Aplicar Período Personalizado
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </ResponsivePopover>
     </div>
   );
 };

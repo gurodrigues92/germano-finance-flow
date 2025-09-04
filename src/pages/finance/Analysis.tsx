@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useFinance } from '@/hooks/useFinance';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -17,6 +18,7 @@ import { usePageSEO } from '@/hooks/usePageSEO';
 export const Analysis = () => {
   const { currentMonth, setCurrentMonth } = useFinance();
   const isMobile = useIsMobile();
+  const [customDateRange, setCustomDateRange] = useState<{ from: Date; to: Date } | null>(null);
   
   // Use all hooks unconditionally
   const analysisData = useAnalysisData(currentMonth);
@@ -48,6 +50,14 @@ export const Analysis = () => {
 
   const { kpis } = analyticsKPIs;
 
+  // Handle custom date range changes
+  const handleDateRangeChange = (startDate: Date, endDate: Date) => {
+    setCustomDateRange({ from: startDate, to: endDate });
+    // You could add logic here to filter data by custom date range
+    // For now, we'll just store the range
+    console.log('Custom date range selected:', { startDate, endDate });
+  };
+
   return (
     <PageLayout 
       title="Análise Financeira Inteligente"
@@ -58,6 +68,7 @@ export const Analysis = () => {
         <AdvancedPeriodSelector
           currentMonth={currentMonth}
           onMonthChange={setCurrentMonth}
+          onDateRangeChange={handleDateRangeChange}
           monthOptions={monthOptions}
         />
       </div>
