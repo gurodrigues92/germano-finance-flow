@@ -3,8 +3,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { DatePicker } from './DatePicker';
-import { X, Calendar, Clock } from 'lucide-react';
+import { X, Calendar, Clock, CalendarDays } from 'lucide-react';
 import { getFirstHalfMonth, getSecondHalfMonth, getLastNDays, getLocalDateString } from '@/lib/dateUtils';
 import { FilterState } from '@/hooks/finance/useTransactionFilters';
 import { formatCurrency } from '@/lib/formatUtils';
@@ -95,7 +96,38 @@ export const PeriodSelector = ({ filters, onFiltersChange, transactions = [] }: 
       customDateStart: '',
       customDateEnd: '',
       isCustomDateActive: false,
-      dateRange: 'all'
+      dateRange: 'all',
+      selectedWeekdays: []
+    }));
+  };
+
+  const handleWeekdayChange = (weekday: number, checked: boolean) => {
+    onFiltersChange(prev => ({
+      ...prev,
+      selectedWeekdays: checked 
+        ? [...prev.selectedWeekdays, weekday]
+        : prev.selectedWeekdays.filter(w => w !== weekday)
+    }));
+  };
+
+  const applyWeekdayPreset = (preset: 'weekdays' | 'weekends' | 'all') => {
+    let weekdays: number[] = [];
+    
+    switch (preset) {
+      case 'weekdays':
+        weekdays = [1, 2, 3, 4, 5]; // Segunda a Sexta
+        break;
+      case 'weekends':
+        weekdays = [0, 6]; // Domingo e Sábado
+        break;
+      case 'all':
+        weekdays = [];
+        break;
+    }
+    
+    onFiltersChange(prev => ({
+      ...prev,
+      selectedWeekdays: weekdays
     }));
   };
 
@@ -105,10 +137,19 @@ export const PeriodSelector = ({ filters, onFiltersChange, transactions = [] }: 
       return 0;
     }
     
-    return transactions
-      .filter(t => t.date >= filters.customDateStart && t.date <= filters.customDateEnd)
-      .reduce((sum, t) => sum + (t.totalBruto || 0), 0);
-  }, [transactions, filters.isCustomDateActive, filters.customDateStart, filters.customDateEnd]);
+    let filtered = transactions
+      .filter(t => t.date >= filters.customDateStart && t.date <= filters.customDateEnd);
+    
+    // Aplicar filtro de dias da semana se selecionado
+    if (filters.selectedWeekdays.length > 0) {
+      filtered = filtered.filter(t => {
+        const date = new Date(t.date);
+        return filters.selectedWeekdays.includes(date.getDay());
+      });
+    }
+    
+    return filtered.reduce((sum, t) => sum + (t.totalBruto || 0), 0);
+  }, [transactions, filters.isCustomDateActive, filters.customDateStart, filters.customDateEnd, filters.selectedWeekdays]);
 
   const quickFilterButtons = [
     { key: 'today', label: 'Hoje', icon: Clock },
@@ -117,6 +158,16 @@ export const PeriodSelector = ({ filters, onFiltersChange, transactions = [] }: 
     { key: 'last-15', label: 'Últimos 15 dias', icon: Calendar },
     { key: 'first-half', label: '1ª Quinzena', icon: Calendar },
     { key: 'second-half', label: '2ª Quinzena', icon: Calendar },
+  ];
+
+  const weekdays = [
+    { value: 0, label: 'Dom', fullLabel: 'Domingo' },
+    { value: 1, label: 'Seg', fullLabel: 'Segunda' },
+    { value: 2, label: 'Ter', fullLabel: 'Terça' },
+    { value: 3, label: 'Qua', fullLabel: 'Quarta' },
+    { value: 4, label: 'Qui', fullLabel: 'Quinta' },
+    { value: 5, label: 'Sex', fullLabel: 'Sexta' },
+    { value: 6, label: 'Sáb', fullLabel: 'Sábado' },
   ];
 
   return (
@@ -128,7 +179,7 @@ export const PeriodSelector = ({ filters, onFiltersChange, transactions = [] }: 
             <Calendar className="w-5 h-5 text-primary" />
             <h3 className="text-sm font-medium">Filtro por Período</h3>
           </div>
-          {filters.isCustomDateActive && (
+          {(filters.isCustomDateActive || filters.selectedWeekdays.length > 0) && (
             <Button
               variant="ghost"
               size="sm"
@@ -197,6 +248,78 @@ export const PeriodSelector = ({ filters, onFiltersChange, transactions = [] }: 
           >
             Aplicar Período Personalizado
           </Button>
+        </div>
+
+        {/* Weekday Selector */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="h-px bg-border flex-1" />
+            <span className="text-xs text-muted-foreground px-2 flex items-center gap-1">
+              <CalendarDays className="w-3 h-3" />
+              Filtrar por Dias da Semana
+            </span>
+            <div className="h-px bg-border flex-1" />
+          </div>
+
+          {/* Quick Weekday Buttons */}
+          <div className="grid grid-cols-3 gap-2">
+            <Button
+              variant={filters.selectedWeekdays.length === 0 ? "default" : "outline"}
+              size="sm"
+              onClick={() => applyWeekdayPreset('all')}
+              className="h-8 text-xs"
+            >
+              Todos os Dias
+            </Button>
+            <Button
+              variant={filters.selectedWeekdays.length === 5 && filters.selectedWeekdays.includes(1) ? "default" : "outline"}
+              size="sm"
+              onClick={() => applyWeekdayPreset('weekdays')}
+              className="h-8 text-xs"
+            >
+              Dias Úteis
+            </Button>
+            <Button
+              variant={filters.selectedWeekdays.length === 2 && filters.selectedWeekdays.includes(0) ? "default" : "outline"}
+              size="sm"
+              onClick={() => applyWeekdayPreset('weekends')}
+              className="h-8 text-xs"
+            >
+              Fins de Semana
+            </Button>
+          </div>
+
+          {/* Individual Weekday Checkboxes */}
+          <div className="grid grid-cols-7 gap-2">
+            {weekdays.map(({ value, label, fullLabel }) => (
+              <div key={value} className="flex flex-col items-center space-y-1">
+                <Checkbox
+                  id={`weekday-${value}`}
+                  checked={filters.selectedWeekdays.includes(value)}
+                  onCheckedChange={(checked) => handleWeekdayChange(value, checked as boolean)}
+                  className="h-4 w-4"
+                />
+                <Label 
+                  htmlFor={`weekday-${value}`} 
+                  className="text-xs font-medium cursor-pointer text-center"
+                  title={fullLabel}
+                >
+                  {label}
+                </Label>
+              </div>
+            ))}
+          </div>
+
+          {/* Selected Weekdays Indicator */}
+          {filters.selectedWeekdays.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {filters.selectedWeekdays.sort().map(weekday => (
+                <Badge key={weekday} variant="secondary" className="text-xs">
+                  {weekdays.find(w => w.value === weekday)?.fullLabel}
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Active Filter Indicator */}

@@ -14,6 +14,7 @@ export interface FilterState {
   customDateStart: string;
   customDateEnd: string;
   isCustomDateActive: boolean;
+  selectedWeekdays: number[]; // 0=Domingo, 1=Segunda, ... 6=Sábado
 }
 
 const BRAZIL_TIMEZONE = 'America/Sao_Paulo';
@@ -26,7 +27,8 @@ export const useTransactionFilters = (transactions: Transaction[]) => {
     valueRange: { min: '', max: '' },
     customDateStart: '',
     customDateEnd: '',
-    isCustomDateActive: false
+    isCustomDateActive: false,
+    selectedWeekdays: []
   });
 
   const filteredTransactions = useMemo(() => {
@@ -121,6 +123,19 @@ export const useTransactionFilters = (transactions: Transaction[]) => {
       filtered = filtered.filter(transaction => {
         const value = transaction.totalBruto;
         return value >= minValue && value <= maxValue;
+      });
+    }
+
+    // Weekday filter
+    if (filters.selectedWeekdays.length > 0) {
+      filtered = filtered.filter(transaction => {
+        try {
+          const transactionDate = parseISO(transaction.date);
+          const weekday = transactionDate.getDay(); // 0=Sunday, 1=Monday, etc.
+          return filters.selectedWeekdays.includes(weekday);
+        } catch {
+          return false;
+        }
       });
     }
 
