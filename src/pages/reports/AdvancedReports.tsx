@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { useAdvancedReports } from '@/hooks/useAdvancedReports';
+import { useRelatorios } from '@/hooks/useRelatorios';
 import { AdvancedReportsHeader } from '@/components/reports/AdvancedReportsHeader';
 import { ReportFilters } from '@/components/reports/ReportFilters';
 import { TrendAnalysisChart } from '@/components/reports/TrendAnalysisChart';
@@ -23,12 +24,15 @@ export const AdvancedReports = () => {
       trendAnalysis,
       predictiveAnalysis,
       performanceByDay,
-      relatorios,
       exportTransactions,
-      exportTrendAnalysis,
-      saveCustomReport,
-      deleteRelatorio
+      exportTrendAnalysis
     } = useAdvancedReports();
+    
+    const {
+      relatorios,
+      saveRelatorio: saveCustomReport,
+      deleteRelatorio
+    } = useRelatorios();
   
     const [saveDialogOpen, setSaveDialogOpen] = useState(false);
     const [reportName, setReportName] = useState('');
@@ -45,7 +49,21 @@ export const AdvancedReports = () => {
         return;
       }
 
-      const result = await saveCustomReport(reportName.trim());
+      const relatorioData = {
+        nome: reportName.trim(),
+        tipo: 'personalizado' as const,
+        configuracao: {
+          filters: filters,
+          dateRange: {
+            start: filters.startDate,
+            end: filters.endDate
+          }
+        },
+        data_inicio: filters.startDate,
+        data_fim: filters.endDate
+      };
+
+      const result = await saveCustomReport(relatorioData);
       if (result.success) {
         toast({
           title: "Relatório salvo",

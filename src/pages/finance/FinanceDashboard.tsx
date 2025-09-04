@@ -5,6 +5,7 @@ import { useDashboardData } from '@/hooks/useDashboardData';
 import { useDashboardCharts } from '@/hooks/useDashboardCharts';
 import { useToast } from '@/hooks/use-toast';
 import { usePermissions } from '@/contexts/UserProfileContext';
+import { useTransactionFilters } from '@/hooks/finance/useTransactionFilters';
 import { StockAlert } from '@/components/alerts/StockAlert';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { HeroMetrics } from '@/components/dashboard/HeroMetrics';
@@ -18,6 +19,8 @@ import { PageLayout } from '@/components/layout/PageLayout';
 import { TransactionForm } from '@/components/finance/TransactionForm';
 import { TransactionTable } from '@/components/finance/TransactionTable';
 import { TransactionSummary } from '@/components/finance/TransactionSummary';
+import { PeriodSelector } from '@/components/finance/PeriodSelector';
+import { SearchAndFilter } from '@/components/finance/SearchAndFilter';
 import { Dialog } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -46,6 +49,14 @@ export const FinanceDashboard = () => {
   } = financeState;
   const { toast } = useToast();
   const { hasPermission } = usePermissions();
+  
+  // Transaction filters
+  const { 
+    filters, 
+    setFilters, 
+    filteredTransactions,
+    totalFiltered 
+  } = useTransactionFilters(transactions);
   
   // Tab navigation
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -277,12 +288,33 @@ export const FinanceDashboard = () => {
             </Button>
           </div>
 
+          {/* Filters Section */}
+          <div className="space-y-4 mb-6">
+            <SearchAndFilter
+              filters={filters}
+              onFiltersChange={setFilters}
+              totalResults={totalFiltered}
+            />
+            
+            {/* Period Selector with Enhanced Visibility */}
+            <div className="relative">
+              <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-primary/10 rounded-lg blur opacity-75"></div>
+              <div className="relative">
+                <PeriodSelector
+                  filters={filters}
+                  onFiltersChange={setFilters}
+                  transactions={filteredTransactions}
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Transaction Summary */}
-          <TransactionSummary transactions={transactions} />
+          <TransactionSummary transactions={filteredTransactions} />
 
           {/* Transaction Table */}
           <TransactionTable
-            transactions={transactions}
+            transactions={filteredTransactions}
             onEdit={handleEditTransaction}
             onDelete={handleDeleteTransaction}
           />
