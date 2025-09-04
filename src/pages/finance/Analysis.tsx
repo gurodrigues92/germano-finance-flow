@@ -11,6 +11,7 @@ import { PaymentMethodsAnalytics } from '@/components/finance/analysis/PaymentMe
 import { SharesDistributionChart } from '@/components/finance/analysis/SharesDistributionChart';
 import { OperationalChartsGrid } from '@/components/finance/analysis/OperationalChartsGrid';
 import { MonthlyReportCard } from '@/components/finance/analysis/MonthlyReportCard';
+import { AdvancedPeriodSelector } from '@/components/finance/AdvancedPeriodSelector';
 import { usePageSEO } from '@/hooks/usePageSEO';
 
 export const Analysis = () => {
@@ -52,22 +53,13 @@ export const Analysis = () => {
       title="Análise Financeira Inteligente"
       subtitle="Dashboard analítico com insights automatizados e previsões"
     >
-      {/* Month Selector */}
-      <div className={`mb-6 ${isMobile ? 'px-1' : ''}`}>
-        <select 
-          value={currentMonth} 
-          onChange={(e) => setCurrentMonth(e.target.value)}
-          className={`border rounded-lg ${isMobile ? 'px-2 py-1 text-sm w-full' : 'px-3 py-2'} bg-background`}
-        >
-          {monthOptions.map(option => (
-            <option key={option.value} value={option.value}>
-              {isMobile ? 
-                `${option.label} ${option.hasData ? `(${option.count})` : ''}` :
-                `${option.label} ${option.hasData ? `(${option.count} transações)` : ''}`
-              }
-            </option>
-          ))}
-        </select>
+      {/* Advanced Period Selector */}
+      <div className={`${isMobile ? 'px-1' : ''}`}>
+        <AdvancedPeriodSelector
+          currentMonth={currentMonth}
+          onMonthChange={setCurrentMonth}
+          monthOptions={monthOptions}
+        />
       </div>
 
       {/* KPI Dashboard */}

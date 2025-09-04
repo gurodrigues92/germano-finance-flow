@@ -20,6 +20,7 @@ import { TransactionForm } from '@/components/finance/TransactionForm';
 import { TransactionTable } from '@/components/finance/TransactionTable';
 import { TransactionSummary } from '@/components/finance/TransactionSummary';
 import { PeriodSelector } from '@/components/finance/PeriodSelector';
+import { PeriodSelectorModal } from '@/components/finance/PeriodSelectorModal';
 import { SearchAndFilter } from '@/components/finance/SearchAndFilter';
 import { Dialog } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -195,6 +196,15 @@ export const FinanceDashboard = () => {
 
         {/* Dashboard Tab */}
         <TabsContent value="dashboard" className="space-y-6">
+          {/* Period Selector for Dashboard */}
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h3 className="text-lg font-semibold">Análise do Período</h3>
+              <p className="text-sm text-muted-foreground">Selecione um período para filtrar os dados</p>
+            </div>
+            <PeriodSelectorModal />
+          </div>
+          
           {/* Empty State or Hero Metrics */}
           {currentData.transactions.length === 0 ? (
             <div className="text-center py-8">
