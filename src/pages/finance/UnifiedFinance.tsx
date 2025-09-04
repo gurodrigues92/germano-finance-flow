@@ -18,6 +18,7 @@ import { ClientFinancialProfileCard } from '@/components/finance/ClientFinancial
 import { useClientFinancialAnalytics } from '@/hooks/useClientFinancialAnalytics';
 import { useProfessionalFinancialAnalytics } from '@/hooks/useProfessionalFinancialAnalytics';
 import { formatCurrency } from '@/lib/formatUtils';
+import { SimpleDateFilter } from '@/components/finance/SimpleDateFilter';
 
 export default function UnifiedFinance() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -79,13 +80,13 @@ export default function UnifiedFinance() {
           </div>
 
           <div className="flex items-center gap-2">
+            <SimpleDateFilter 
+              onDateRangeChange={handleDateRangeChange}
+              className="w-80"
+            />
             <Button variant="outline" size="sm">
               <Download className="w-4 h-4 mr-2" />
               Exportar
-            </Button>
-            <Button variant="outline" size="sm">
-              <Settings className="w-4 h-4 mr-2" />
-              Configurar
             </Button>
           </div>
         </div>

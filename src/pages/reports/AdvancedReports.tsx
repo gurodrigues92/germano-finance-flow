@@ -15,67 +15,69 @@ import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 export const AdvancedReports = () => {
-  const {
-    filters,
-    setFilters,
-    filteredTransactions,
-    trendAnalysis,
-    predictiveAnalysis,
-    performanceByDay,
-    relatorios,
-    exportTransactions,
-    exportTrendAnalysis,
-    saveCustomReport,
-    deleteRelatorio
-  } = useAdvancedReports();
+  try {
+    const {
+      filters,
+      setFilters,
+      filteredTransactions,
+      trendAnalysis,
+      predictiveAnalysis,
+      performanceByDay,
+      relatorios,
+      exportTransactions,
+      exportTrendAnalysis,
+      saveCustomReport,
+      deleteRelatorio
+    } = useAdvancedReports();
+  
+    const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+    const [reportName, setReportName] = useState('');
+    const { toast } = useToast();
+    const isMobile = useIsMobile();
 
-  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
-  const [reportName, setReportName] = useState('');
-  const { toast } = useToast();
-  const isMobile = useIsMobile();
+    const handleSaveReport = async () => {
+      if (!reportName.trim()) {
+        toast({
+          title: "Nome obrigatório",
+          description: "Digite um nome para o relatório",
+          variant: "destructive"
+        });
+        return;
+      }
 
-  const handleSaveReport = async () => {
-    if (!reportName.trim()) {
-      toast({
-        title: "Nome obrigatório",
-        description: "Digite um nome para o relatório",
-        variant: "destructive"
-      });
-      return;
-    }
+      const result = await saveCustomReport(reportName.trim());
+      if (result.success) {
+        toast({
+          title: "Relatório salvo",
+          description: "Relatório personalizado salvo com sucesso",
+        });
+        setReportName('');
+        setSaveDialogOpen(false);
+      } else {
+        toast({
+          title: "Erro ao salvar",
+          description: "Não foi possível salvar o relatório",
+          variant: "destructive"
+        });
+      }
+    };
 
-    const result = await saveCustomReport(reportName.trim());
-    if (result.success) {
-      toast({
-        title: "Relatório salvo",
-        description: "Relatório personalizado salvo com sucesso",
-      });
-      setReportName('');
-      setSaveDialogOpen(false);
-    } else {
-      toast({
-        title: "Erro ao salvar",
-        description: "Não foi possível salvar o relatório",
-        variant: "destructive"
-      });
-    }
-  };
+    const handleDeleteReport = async (id: string) => {
+      const result = await deleteRelatorio(id);
+      if (result.success) {
+        toast({
+          title: "Relatório excluído",
+          description: "Relatório removido com sucesso",
+        });
+      } else {
+        toast({
+          title: "Erro ao excluir",
+          description: "Não foi possível excluir o relatório",
+          variant: "destructive"
+        });
+      }
+    };
 
-  const handleDeleteReport = async (id: string) => {
-    const result = await deleteRelatorio(id);
-    if (result.success) {
-      toast({
-        title: "Relatório excluído",
-        description: "Relatório removido com sucesso",
-      });
-    } else {
-      toast({
-        title: "Erro ao excluir",
-        description: "Não foi possível excluir o relatório",
-        variant: "destructive"
-      });
-    }
-  };
 
   return (
     <PageLayout 
@@ -159,4 +161,27 @@ export const AdvancedReports = () => {
       </Dialog>
     </PageLayout>
   );
+  } catch (error) {
+    console.error('Erro ao carregar página de relatórios:', error);
+    return (
+      <PageLayout 
+        title="Relatórios Avançados"
+        subtitle="Erro ao carregar página"
+      >
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center space-y-4">
+            <p className="text-lg text-muted-foreground">
+              Não foi possível carregar os relatórios.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Verifique se você está logado e tente novamente.
+            </p>
+            <Button onClick={() => window.location.reload()}>
+              Tentar Novamente
+            </Button>
+          </div>
+        </div>
+      </PageLayout>
+    );
+  }
 };

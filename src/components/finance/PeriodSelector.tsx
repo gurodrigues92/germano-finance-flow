@@ -171,7 +171,7 @@ export const PeriodSelector = ({ filters, onFiltersChange, transactions = [] }: 
   ];
 
   return (
-    <Card className="border-primary/20 shadow-sm">
+    <Card className="border-primary/30 bg-gradient-to-r from-primary/5 to-primary/10 shadow-md">
       <CardContent className="p-4 space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
