@@ -10,6 +10,7 @@ import { calculateTransactionPreview } from '@/lib/finance/transactionCalculatio
 import { Receipt, DollarSign, CreditCard, Smartphone, Banknote, TrendingUp } from 'lucide-react';
 import { useClientes } from '@/hooks/salon/useClientes';
 import { useProfissionais } from '@/hooks/salon/useProfissionais';
+import { formatDateDisplay } from '@/lib/dateUtils';
 
 interface FecharComandaDialogProps {
   isOpen: boolean;
@@ -105,7 +106,7 @@ export const FecharComandaDialog = ({
             </div>
             <div className="flex justify-between text-sm">
               <span>Data:</span>
-              <span className="font-medium">{new Date(comanda.date).toLocaleDateString('pt-BR')}</span>
+              <span className="font-medium">{formatDateDisplay(comanda.date)}</span>
             </div>
             <div className="flex justify-between text-lg font-bold border-t pt-2">
               <span>Total da Comanda:</span>

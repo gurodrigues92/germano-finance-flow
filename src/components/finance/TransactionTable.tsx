@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Edit, Trash2, Calendar } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { TransactionMobileCard } from './TransactionMobileCard';
+import { formatDateDisplay } from '@/lib/dateUtils';
 
 interface TransactionTableProps {
   transactions: Transaction[];
@@ -81,7 +82,7 @@ export const TransactionTable = ({
               {transactions.map((transaction) => (
                 <TableRow key={transaction.id} className="hover:bg-muted/50">
                   <TableCell>
-                    {new Date(transaction.date).toLocaleDateString('pt-BR')}
+                    {formatDateDisplay(transaction.date)}
                   </TableCell>
                     <TableCell>
                       {transaction.dinheiro > 0 && (

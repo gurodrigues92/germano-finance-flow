@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Edit, Trash2 } from 'lucide-react';
+import { formatDateDisplay } from '@/lib/dateUtils';
 
 interface TransactionCardProps {
   transaction: any;
@@ -13,7 +14,7 @@ export const TransactionCard = ({ transaction, onEdit, onDelete }: TransactionCa
     <div className="border border-border rounded-lg p-4">
       <div className="flex justify-between items-start mb-3">
         <div className="text-sm font-medium text-foreground">
-          {new Date(transaction.date).toLocaleDateString('pt-BR')}
+          {formatDateDisplay(transaction.date)}
         </div>
         <div className="text-right">
           <div className="text-lg font-bold text-foreground">

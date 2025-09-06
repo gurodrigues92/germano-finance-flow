@@ -7,6 +7,7 @@ import { formatCurrency } from '@/lib/formatUtils';
 import { AlertTriangle, Clock, User, DollarSign } from 'lucide-react';
 import { useClientes } from '@/hooks/salon/useClientes';
 import { useProfissionais } from '@/hooks/salon/useProfissionais';
+import { formatDateDisplay } from '@/lib/dateUtils';
 
 interface ComandasAbertasSectionProps {
   comandasAbertas: Transaction[];
@@ -68,7 +69,7 @@ export const ComandasAbertasSection = ({
                   <div className="flex items-center gap-4 text-sm">
                     <div className="flex items-center gap-1">
                       <Clock className="h-4 w-4 text-muted-foreground" />
-                      {new Date(comanda.date).toLocaleDateString('pt-BR')}
+                      {formatDateDisplay(comanda.date)}
                     </div>
                     <div className="flex items-center gap-1 font-medium">
                       <DollarSign className="h-4 w-4 text-green-600" />

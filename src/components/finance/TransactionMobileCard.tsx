@@ -9,6 +9,7 @@ import { Edit, Trash2, ChevronDown, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { formatCompactCurrency } from '@/lib/formatUtils';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { formatDateDisplay } from '@/lib/dateUtils';
 
 interface TransactionMobileCardProps {
   transaction: Transaction;
@@ -104,10 +105,7 @@ export const TransactionMobileCard = ({
             )}
             <div>
               <p className="text-xs text-muted-foreground">
-                {new Date(transaction.date).toLocaleDateString('pt-BR', { 
-                  day: '2-digit', 
-                  month: 'short' 
-                })}
+                {formatDateDisplay(transaction.date)}
               </p>
               <p className="text-base font-semibold" title={formatCompactCurrency(transaction.totalBruto, false)}>
                 {formatCurrency(transaction.totalBruto)}
