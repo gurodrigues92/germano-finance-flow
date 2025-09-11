@@ -47,6 +47,9 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
     }, 100);
   };
 
+  // Helper function to check if field has value
+  const hasValue = (value: string) => value && parseFloat(value) > 0;
+
   return (
     <div className={cn("space-y-4", isMobile && "space-y-3")}>
       {/* Data e Profissional */}
@@ -123,12 +126,27 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
-            {/* Dinheiro e PIX */}
-            <div className={cn("grid gap-4", isMobile ? "grid-cols-1 gap-3" : "grid-cols-2")}>
-              <div className={cn("space-y-2", isMobile && "space-y-1")}>
-                <Label htmlFor="dinheiro" className={cn("flex items-center gap-2 font-medium", isMobile ? "text-sm" : "text-base")}>
-                  <Banknote className="h-4 w-4" />
+            {/* Dinheiro e PIX - Enhanced Visual Prominence */}
+            <div className={cn("grid gap-4", isMobile ? "grid-cols-1 gap-4" : "grid-cols-2")}>
+              {/* Dinheiro Field */}
+              <div className={cn(
+                "relative p-4 rounded-xl border-2 transition-all duration-300 bg-gradient-to-br",
+                hasValue(formData.dinheiro) 
+                  ? "from-finance-income/10 to-finance-income/5 border-finance-income/30 shadow-lg shadow-finance-income/10" 
+                  : "from-background to-muted/20 border-border hover:border-finance-income/20 hover:shadow-md",
+                isMobile && "p-3"
+              )}>
+                <Label htmlFor="dinheiro" className={cn(
+                  "flex items-center gap-2 font-semibold text-finance-income mb-3",
+                  isMobile ? "text-sm" : "text-base"
+                )}>
+                  <Banknote className={cn("h-5 w-5", hasValue(formData.dinheiro) && "text-finance-income")} />
                   Dinheiro (R$)
+                  {hasValue(formData.dinheiro) && (
+                    <span className="ml-auto text-xs bg-finance-income/20 text-finance-income px-2 py-1 rounded-full">
+                      ✓ Preenchido
+                    </span>
+                  )}
                 </Label>
                 <Input
                   id="dinheiro"
@@ -142,14 +160,35 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
                   onChange={(e) => setFormData((prev: any) => ({ ...prev, dinheiro: e.target.value }))}
                   onKeyPress={(e) => handleKeyPress(e, pixRef)}
                   onFocus={(e) => isMobile && focusAndScroll(e.target)}
-                  className={cn("text-lg", isMobile ? "h-10 text-base" : "h-12")}
+                  className={cn(
+                    "text-xl font-semibold bg-background/50 backdrop-blur-sm border-2 transition-all duration-300",
+                    "focus:ring-4 focus:ring-finance-income/20 focus:border-finance-income focus:shadow-lg",
+                    "placeholder:text-muted-foreground/60",
+                    isMobile ? "h-12 text-lg" : "h-14",
+                    hasValue(formData.dinheiro) && "text-finance-income border-finance-income/50"
+                  )}
                 />
               </div>
               
-              <div className={cn("space-y-2", isMobile && "space-y-1")}>
-                <Label htmlFor="pix" className={cn("flex items-center gap-2 font-medium", isMobile ? "text-sm" : "text-base")}>
-                  <CreditCard className="h-4 w-4" />
+              {/* PIX Field */}
+              <div className={cn(
+                "relative p-4 rounded-xl border-2 transition-all duration-300 bg-gradient-to-br",
+                hasValue(formData.pix) 
+                  ? "from-finance-net/10 to-finance-net/5 border-finance-net/30 shadow-lg shadow-finance-net/10" 
+                  : "from-background to-muted/20 border-border hover:border-finance-net/20 hover:shadow-md",
+                isMobile && "p-3"
+              )}>
+                <Label htmlFor="pix" className={cn(
+                  "flex items-center gap-2 font-semibold text-finance-net mb-3",
+                  isMobile ? "text-sm" : "text-base"
+                )}>
+                  <CreditCard className={cn("h-5 w-5", hasValue(formData.pix) && "text-finance-net")} />
                   PIX (R$)
+                  {hasValue(formData.pix) && (
+                    <span className="ml-auto text-xs bg-finance-net/20 text-finance-net px-2 py-1 rounded-full">
+                      ✓ Preenchido
+                    </span>
+                  )}
                 </Label>
                 <Input
                   ref={pixRef}
@@ -164,17 +203,38 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
                   onChange={(e) => setFormData((prev: any) => ({ ...prev, pix: e.target.value }))}
                   onKeyPress={(e) => handleKeyPress(e, debitoRef)}
                   onFocus={(e) => isMobile && focusAndScroll(e.target)}
-                  className={cn("text-lg", isMobile ? "h-10 text-base" : "h-12")}
+                  className={cn(
+                    "text-xl font-semibold bg-background/50 backdrop-blur-sm border-2 transition-all duration-300",
+                    "focus:ring-4 focus:ring-finance-net/20 focus:border-finance-net focus:shadow-lg",
+                    "placeholder:text-muted-foreground/60",
+                    isMobile ? "h-12 text-lg" : "h-14",
+                    hasValue(formData.pix) && "text-finance-net border-finance-net/50"
+                  )}
                 />
               </div>
             </div>
             
-            {/* Cartões */}
-            <div className={cn("grid gap-4", isMobile ? "grid-cols-1 gap-3" : "grid-cols-2")}>
-              <div className={cn("space-y-2", isMobile && "space-y-1")}>
-                <Label htmlFor="debito" className={cn("flex items-center gap-2 font-medium", isMobile ? "text-sm" : "text-base")}>
-                  <CreditCard className="h-4 w-4" />
+            {/* Cartões - Enhanced Visual Prominence */}
+            <div className={cn("grid gap-4", isMobile ? "grid-cols-1 gap-4" : "grid-cols-2")}>
+              {/* Cartão Débito */}
+              <div className={cn(
+                "relative p-4 rounded-xl border-2 transition-all duration-300 bg-gradient-to-br",
+                hasValue(formData.debito) 
+                  ? "from-finance-profissional/10 to-finance-profissional/5 border-finance-profissional/30 shadow-lg shadow-finance-profissional/10" 
+                  : "from-background to-muted/20 border-border hover:border-finance-profissional/20 hover:shadow-md",
+                isMobile && "p-3"
+              )}>
+                <Label htmlFor="debito" className={cn(
+                  "flex items-center gap-2 font-semibold text-finance-profissional mb-3",
+                  isMobile ? "text-sm" : "text-base"
+                )}>
+                  <CreditCard className={cn("h-5 w-5", hasValue(formData.debito) && "text-finance-profissional")} />
                   Cartão Débito (R$)
+                  {hasValue(formData.debito) && (
+                    <span className="ml-auto text-xs bg-finance-profissional/20 text-finance-profissional px-2 py-1 rounded-full">
+                      ✓ Preenchido
+                    </span>
+                  )}
                 </Label>
                 <Input
                   ref={debitoRef}
@@ -189,15 +249,41 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
                   onChange={(e) => setFormData((prev: any) => ({ ...prev, debito: e.target.value }))}
                   onKeyPress={(e) => handleKeyPress(e, creditoRef)}
                   onFocus={(e) => isMobile && focusAndScroll(e.target)}
-                  className={cn("text-lg", isMobile ? "h-10 text-base" : "h-12")}
+                  className={cn(
+                    "text-xl font-semibold bg-background/50 backdrop-blur-sm border-2 transition-all duration-300",
+                    "focus:ring-4 focus:ring-finance-profissional/20 focus:border-finance-profissional focus:shadow-lg",
+                    "placeholder:text-muted-foreground/60",
+                    isMobile ? "h-12 text-lg" : "h-14",
+                    hasValue(formData.debito) && "text-finance-profissional border-finance-profissional/50"
+                  )}
                 />
-                <p className={cn("text-muted-foreground", isMobile ? "text-xs" : "text-sm")}>Taxa: 1,61%</p>
+                <p className={cn(
+                  "text-finance-profissional/70 font-medium mt-2",
+                  isMobile ? "text-xs" : "text-sm"
+                )}>
+                  💳 Taxa: 1,61%
+                </p>
               </div>
               
-              <div className={cn("space-y-2", isMobile && "space-y-1")}>
-                <Label htmlFor="credito" className={cn("flex items-center gap-2 font-medium", isMobile ? "text-sm" : "text-base")}>
-                  <CreditCard className="h-4 w-4" />
+              {/* Cartão Crédito */}
+              <div className={cn(
+                "relative p-4 rounded-xl border-2 transition-all duration-300 bg-gradient-to-br",
+                hasValue(formData.credito) 
+                  ? "from-finance-assistente/10 to-finance-assistente/5 border-finance-assistente/30 shadow-lg shadow-finance-assistente/10" 
+                  : "from-background to-muted/20 border-border hover:border-finance-assistente/20 hover:shadow-md",
+                isMobile && "p-3"
+              )}>
+                <Label htmlFor="credito" className={cn(
+                  "flex items-center gap-2 font-semibold text-finance-assistente mb-3",
+                  isMobile ? "text-sm" : "text-base"
+                )}>
+                  <CreditCard className={cn("h-5 w-5", hasValue(formData.credito) && "text-finance-assistente")} />
                   Cartão Crédito (R$)
+                  {hasValue(formData.credito) && (
+                    <span className="ml-auto text-xs bg-finance-assistente/20 text-finance-assistente px-2 py-1 rounded-full">
+                      ✓ Preenchido
+                    </span>
+                  )}
                 </Label>
                 <Input
                   ref={creditoRef}
@@ -211,9 +297,20 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
                   value={formData.credito}
                   onChange={(e) => setFormData((prev: any) => ({ ...prev, credito: e.target.value }))}
                   onFocus={(e) => isMobile && focusAndScroll(e.target)}
-                  className={cn("text-lg", isMobile ? "h-10 text-base" : "h-12")}
+                  className={cn(
+                    "text-xl font-semibold bg-background/50 backdrop-blur-sm border-2 transition-all duration-300",
+                    "focus:ring-4 focus:ring-finance-assistente/20 focus:border-finance-assistente focus:shadow-lg",
+                    "placeholder:text-muted-foreground/60",
+                    isMobile ? "h-12 text-lg" : "h-14",
+                    hasValue(formData.credito) && "text-finance-assistente border-finance-assistente/50"
+                  )}
                 />
-                <p className={cn("text-muted-foreground", isMobile ? "text-xs" : "text-sm")}>Taxa: 3,51%</p>
+                <p className={cn(
+                  "text-finance-assistente/70 font-medium mt-2",
+                  isMobile ? "text-xs" : "text-sm"
+                )}>
+                  💳 Taxa: 3,51%
+                </p>
               </div>
             </div>
           </div>
