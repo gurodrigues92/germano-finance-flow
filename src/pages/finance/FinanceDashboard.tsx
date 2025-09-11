@@ -240,6 +240,13 @@ export const FinanceDashboard = () => {
                 trends={{ bruto: trends.bruto, liquido: trends.liquido }}
               />
 
+              {/* Recent Transactions - Moved up for better visibility */}
+              <DashboardFooter 
+                transactions={currentData.transactions}
+                onEdit={handleEditTransaction}
+                onDelete={handleDeleteTransaction}
+              />
+
               {/* Payment Methods */}
               <PaymentMethodsGrid
                 totalBruto={currentData.totalBruto}
@@ -284,8 +291,6 @@ export const FinanceDashboard = () => {
             </>
           )}
 
-          {/* Recent transactions */}
-          <DashboardFooter transactions={currentData.transactions} />
         </TabsContent>
 
         {/* Transactions Tab */}
