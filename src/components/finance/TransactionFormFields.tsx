@@ -141,7 +141,7 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
                   isMobile ? "text-sm" : "text-base"
                 )}>
                   <Banknote className={cn("h-5 w-5", hasValue(formData.dinheiro) && "text-finance-income")} />
-                  Dinheiro (R$)
+                  Dinheiro
                   {hasValue(formData.dinheiro) && (
                     <span className="ml-auto text-xs bg-finance-income/20 text-finance-income px-2 py-1 rounded-full">
                       ✓ Preenchido
@@ -155,7 +155,7 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
                   enterKeyHint="next"
                   step="0.01"
                   min="0"
-                  placeholder="0,00"
+                  placeholder="R$ 0,00"
                   value={formData.dinheiro}
                   onChange={(e) => setFormData((prev: any) => ({ ...prev, dinheiro: e.target.value }))}
                   onKeyPress={(e) => handleKeyPress(e, pixRef)}
@@ -183,7 +183,7 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
                   isMobile ? "text-sm" : "text-base"
                 )}>
                   <CreditCard className={cn("h-5 w-5", hasValue(formData.pix) && "text-finance-net")} />
-                  PIX (R$)
+                  PIX
                   {hasValue(formData.pix) && (
                     <span className="ml-auto text-xs bg-finance-net/20 text-finance-net px-2 py-1 rounded-full">
                       ✓ Preenchido
@@ -198,7 +198,7 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
                   enterKeyHint="next"
                   step="0.01"
                   min="0"
-                  placeholder="0,00"
+                  placeholder="R$ 0,00"
                   value={formData.pix}
                   onChange={(e) => setFormData((prev: any) => ({ ...prev, pix: e.target.value }))}
                   onKeyPress={(e) => handleKeyPress(e, debitoRef)}
@@ -229,7 +229,7 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
                   isMobile ? "text-sm" : "text-base"
                 )}>
                   <CreditCard className={cn("h-5 w-5", hasValue(formData.debito) && "text-finance-profissional")} />
-                  Cartão Débito (R$)
+                  {isMobile ? 'Débito' : 'Cartão Débito'}
                   {hasValue(formData.debito) && (
                     <span className="ml-auto text-xs bg-finance-profissional/20 text-finance-profissional px-2 py-1 rounded-full">
                       ✓ Preenchido
@@ -244,7 +244,7 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
                   enterKeyHint="next"
                   step="0.01"
                   min="0"
-                  placeholder="0,00"
+                  placeholder="R$ 0,00"
                   value={formData.debito}
                   onChange={(e) => setFormData((prev: any) => ({ ...prev, debito: e.target.value }))}
                   onKeyPress={(e) => handleKeyPress(e, creditoRef)}
@@ -278,7 +278,7 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
                   isMobile ? "text-sm" : "text-base"
                 )}>
                   <CreditCard className={cn("h-5 w-5", hasValue(formData.credito) && "text-finance-assistente")} />
-                  Cartão Crédito (R$)
+                  {isMobile ? 'Crédito' : 'Cartão Crédito'}
                   {hasValue(formData.credito) && (
                     <span className="ml-auto text-xs bg-finance-assistente/20 text-finance-assistente px-2 py-1 rounded-full">
                       ✓ Preenchido
@@ -293,7 +293,7 @@ export const TransactionFormFields = ({ formData, setFormData }: TransactionForm
                   enterKeyHint="done"
                   step="0.01"
                   min="0"
-                  placeholder="0,00"
+                  placeholder="R$ 0,00"
                   value={formData.credito}
                   onChange={(e) => setFormData((prev: any) => ({ ...prev, credito: e.target.value }))}
                   onFocus={(e) => isMobile && focusAndScroll(e.target)}

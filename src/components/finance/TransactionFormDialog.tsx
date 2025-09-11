@@ -2,9 +2,11 @@ import React from 'react';
 import { ResponsiveDialog } from '@/components/ui/responsive-dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Transaction } from '@/types/finance';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { Trash2 } from 'lucide-react';
 
 interface TransactionFormDialogProps {
   isOpen: boolean;
@@ -12,6 +14,7 @@ interface TransactionFormDialogProps {
   editingTransaction: Transaction | null;
   loading: boolean;
   onSubmit: (e: React.FormEvent) => void;
+  onDelete?: (id: string) => void;
   children: React.ReactNode;
 }
 
@@ -21,9 +24,17 @@ export const TransactionFormDialog = ({
   editingTransaction,
   loading,
   onSubmit,
+  onDelete,
   children
 }: TransactionFormDialogProps) => {
   const isMobile = useIsMobile();
+  
+  const formatCurrency = (value: number) => 
+    new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value);
+  
   return (
     <ResponsiveDialog
       open={isOpen}
@@ -53,17 +64,61 @@ export const TransactionFormDialog = ({
           "sticky bottom-0 bg-background border-t space-y-4 shrink-0",
           isMobile ? "p-4 space-y-3" : "p-6 space-y-4"
         )}>
-          <Button 
-            type="submit"
-            disabled={loading} 
-            size="lg"
-            className={cn(
-              "w-full font-medium",
-              isMobile ? "h-12 text-base" : "h-14 text-lg"
+          <div className={cn("flex gap-3", isMobile && "flex-col gap-2")}>
+            <Button 
+              type="submit"
+              disabled={loading} 
+              size="lg"
+              className={cn(
+                "font-medium flex-1",
+                isMobile ? "h-12 text-base w-full" : "h-14 text-lg"
+              )}
+            >
+              {loading ? 'Salvando...' : (editingTransaction ? 'Atualizar Transação' : 'Adicionar Transação')}
+            </Button>
+            
+            {editingTransaction && onDelete && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="lg"
+                    disabled={loading}
+                    className={cn(
+                      "font-medium",
+                      isMobile ? "h-12 text-base w-full" : "h-14 text-lg px-6"
+                    )}
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Excluir
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Excluir Transação</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Tem certeza que deseja excluir esta transação de {formatCurrency(editingTransaction.totalBruto)}? 
+                      Esta ação não pode ser desfeita.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => {
+                        onDelete(editingTransaction.id);
+                        onOpenChange(false);
+                      }}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Excluir
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             )}
-          >
-            {loading ? 'Salvando...' : (editingTransaction ? 'Atualizar Transação' : 'Adicionar Transação')}
-          </Button>
+          </div>
+          
           <Button 
             type="button" 
             variant="outline" 

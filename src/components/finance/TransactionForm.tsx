@@ -13,6 +13,7 @@ interface TransactionFormProps {
   onOpenChange: (open: boolean) => void;
   editingTransaction: Transaction | null;
   onSubmit: (data: TransactionFormData, isEditing: boolean) => void;
+  onDelete?: (id: string) => void;
   loading: boolean;
 }
 
@@ -21,6 +22,7 @@ export const TransactionForm = ({
   onOpenChange, 
   editingTransaction, 
   onSubmit, 
+  onDelete,
   loading 
 }: TransactionFormProps) => {
   const {
@@ -45,6 +47,7 @@ export const TransactionForm = ({
       editingTransaction={editingTransaction}
       loading={loading}
       onSubmit={handleSubmit}
+      onDelete={onDelete}
     >
       <TransactionFormFields 
         formData={formData}

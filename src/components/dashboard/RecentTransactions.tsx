@@ -1,8 +1,5 @@
 import { Transaction } from '@/types/finance';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Edit, Trash2, Plus } from 'lucide-react';
 
 interface RecentTransactionsProps {
   transactions: Transaction[];
@@ -51,9 +48,10 @@ export const RecentTransactions = ({ transactions, onEdit, onDelete }: RecentTra
         ) : (
           <div className="space-y-3">
             {recentTransactions.map((transaction) => (
-              <div 
+                <div 
                 key={transaction.id}
-                className="group relative flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-card via-card to-primary/5 hover:from-primary/5 hover:via-primary/10 hover:to-primary/15 transition-all duration-300 border border-border/50 hover:border-primary/30 hover:shadow-md"
+                onClick={() => onEdit?.(transaction)}
+                className="group relative flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-card via-card to-primary/5 hover:from-primary/5 hover:via-primary/10 hover:to-primary/15 transition-all duration-300 border border-border/50 hover:border-primary/30 hover:shadow-md cursor-pointer active:scale-[0.98]"
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
@@ -85,51 +83,9 @@ export const RecentTransactions = ({ transactions, onEdit, onDelete }: RecentTra
                     </p>
                   </div>
                   
-                  {(onEdit || onDelete) && (
-                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                      {onEdit && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onEdit(transaction)}
-                          className="h-8 w-8 p-0 hover:bg-primary/20 hover:text-primary"
-                        >
-                          <Edit className="h-3 w-3" />
-                        </Button>
-                      )}
-                      {onDelete && (
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-8 w-8 p-0 hover:bg-destructive/20 hover:text-destructive"
-                            >
-                              <Trash2 className="h-3 w-3" />
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Excluir Transação</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Tem certeza que deseja excluir esta transação de {formatCurrency(transaction.totalBruto)}? 
-                                Esta ação não pode ser desfeita.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                              <AlertDialogAction
-                                onClick={() => onDelete(transaction.id)}
-                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                              >
-                                Excluir
-                              </AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      )}
-                    </div>
-                  )}
+                  <div className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    Editar →
+                  </div>
                 </div>
               </div>
             ))}

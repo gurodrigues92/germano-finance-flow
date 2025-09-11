@@ -243,8 +243,19 @@ export const FinanceDashboard = () => {
               {/* Recent Transactions - Moved up for better visibility */}
               <DashboardFooter 
                 transactions={currentData.transactions}
-                onEdit={handleEditTransaction}
-                onDelete={handleDeleteTransaction}
+                onAddTransaction={handleFormSubmit}
+                onUpdateTransaction={(id, data) => {
+                  const convertedData = {
+                    date: data.date,
+                    dinheiro: parseFloat(data.dinheiro) || 0,
+                    pix: parseFloat(data.pix) || 0,
+                    debito: parseFloat(data.debito) || 0,
+                    credito: parseFloat(data.credito) || 0
+                  };
+                  updateTransaction(id, convertedData);
+                }}
+                onDeleteTransaction={handleDeleteTransaction}
+                loading={loading}
               />
 
               {/* Payment Methods */}
