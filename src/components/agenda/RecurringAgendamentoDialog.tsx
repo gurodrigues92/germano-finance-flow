@@ -423,14 +423,19 @@ export const RecurringAgendamentoDialog = ({
         {/* Fixed bottom action bar */}
         <div className="sticky bottom-0 bg-background border-t p-6 mt-6">
           <div className="flex flex-col sm:flex-row justify-end gap-3">
-            <Button variant="outline" onClick={onClose} size="lg" className="h-12">
+            <Button 
+              variant="secondary" 
+              onClick={onClose} 
+              size="xl"
+              className="font-medium"
+            >
               Cancelar
             </Button>
             <Button 
               onClick={handleSubmit}
               disabled={!showPreview || previewDates.length === 0}
-              size="lg"
-              className="flex items-center gap-2 h-12 px-6"
+              size="xl"
+              className="flex items-center gap-2 font-semibold shadow-md hover:shadow-lg"
             >
               <Repeat className="w-4 h-4" />
               Criar {previewDates.length} Agendamento(s)

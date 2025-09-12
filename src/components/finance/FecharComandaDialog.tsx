@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Transaction } from '@/types/finance';
 import { formatCurrency } from '@/lib/formatUtils';
 import { calculateTransactionPreview } from '@/lib/finance/transactionCalculations';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 import { Receipt, DollarSign, CreditCard, Smartphone, Banknote, TrendingUp } from 'lucide-react';
 import { useClientes } from '@/hooks/salon/useClientes';
 import { useProfissionais } from '@/hooks/salon/useProfissionais';
@@ -27,6 +29,7 @@ export const FecharComandaDialog = ({
   onFecharComanda,
   loading = false 
 }: FecharComandaDialogProps) => {
+  const isMobile = useIsMobile();
   const [dinheiro, setDinheiro] = useState('');
   const [pix, setPix] = useState('');
   const [debito, setDebito] = useState('');
@@ -252,23 +255,37 @@ export const FecharComandaDialog = ({
         )}
       </div>
 
-      <div className="flex gap-2 p-4 sm:p-6 pt-2 border-t bg-background">
-        <Button 
-          onClick={handleSubmit}
-          disabled={loading || !isFormValid} 
-          className="flex-1 text-base sm:text-lg py-2 sm:py-3"
-        >
-          {loading ? 'Fechando...' : 'Fechar Comanda'}
-        </Button>
-        <Button 
-          type="button" 
-          variant="outline" 
-          onClick={() => onOpenChange(false)}
-          disabled={loading}
-          className="px-4 sm:px-6"
-        >
-          Cancelar
-        </Button>
+      <div className={cn(
+        "sticky bottom-0 bg-background border-t space-y-4 shrink-0",
+        isMobile ? "p-4 space-y-3" : "p-6 space-y-4"
+      )}>
+        <div className={cn("flex gap-3", isMobile ? "flex-col gap-3" : "items-center")}>
+          <Button 
+            onClick={handleSubmit}
+            disabled={loading || !isFormValid}
+            size={isMobile ? "xl" : "lg"}
+            className={cn(
+              "flex-1 font-semibold shadow-md hover:shadow-lg",
+              isMobile && "order-1"
+            )}
+          >
+            {loading ? 'Fechando...' : 'Fechar Comanda'}
+          </Button>
+          
+          <Button 
+            type="button" 
+            variant="secondary" 
+            onClick={() => onOpenChange(false)}
+            disabled={loading}
+            size={isMobile ? "xl" : "lg"}
+            className={cn(
+              "font-medium",
+              isMobile ? "order-2" : "min-w-[120px]"
+            )}
+          >
+            Cancelar
+          </Button>
+        </div>
       </div>
     </ResponsiveDialog>
   );

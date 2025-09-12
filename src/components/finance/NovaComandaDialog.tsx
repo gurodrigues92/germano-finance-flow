@@ -10,6 +10,8 @@ import { useServicos } from '@/hooks/salon/useServicos';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatCurrency } from '@/lib/formatUtils';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 import { User, Scissors, Receipt } from 'lucide-react';
 
 interface NovaComandaDialogProps {
@@ -32,6 +34,7 @@ export const NovaComandaDialog = ({
   onComandaCreated,
   loading = false 
 }: NovaComandaDialogProps) => {
+  const isMobile = useIsMobile();
   const [clienteId, setClienteId] = useState('');
   const [profissionalPrincipalId, setProfissionalPrincipalId] = useState('');
   const [servicosSelecionados, setServicosSelecionados] = useState<ServicoSelecionado[]>([]);
@@ -197,24 +200,38 @@ export const NovaComandaDialog = ({
         </div>
       </ScrollArea>
 
-      <div className="flex gap-2 p-4 sm:p-6 pt-2 border-t bg-background">
-        <Button 
-          type="button"
-          onClick={handleSubmit}
-          disabled={loading || !clienteId || !profissionalPrincipalId || servicosSelecionados.length === 0} 
-          className="flex-1 text-base sm:text-lg py-2 sm:py-3"
-        >
-          {loading ? 'Criando...' : 'Criar Comanda'}
-        </Button>
-        <Button 
-          type="button" 
-          variant="outline" 
-          onClick={() => handleClose(false)}
-          disabled={loading}
-          className="px-4 sm:px-6"
-        >
-          Cancelar
-        </Button>
+      <div className={cn(
+        "sticky bottom-0 bg-background border-t space-y-4 shrink-0",
+        isMobile ? "p-4 space-y-3" : "p-6 space-y-4"
+      )}>
+        <div className={cn("flex gap-3", isMobile ? "flex-col gap-3" : "items-center")}>
+          <Button 
+            type="button"
+            onClick={handleSubmit}
+            disabled={loading || !clienteId || !profissionalPrincipalId || servicosSelecionados.length === 0}
+            size={isMobile ? "xl" : "lg"}
+            className={cn(
+              "flex-1 font-semibold shadow-md hover:shadow-lg",
+              isMobile && "order-1"
+            )}
+          >
+            {loading ? 'Criando...' : 'Criar Comanda'}
+          </Button>
+          
+          <Button 
+            type="button" 
+            variant="secondary" 
+            onClick={() => handleClose(false)}
+            disabled={loading}
+            size={isMobile ? "xl" : "lg"}
+            className={cn(
+              "font-medium",
+              isMobile ? "order-2" : "min-w-[120px]"
+            )}
+          >
+            Cancelar
+          </Button>
+        </div>
       </div>
     </ResponsiveDialog>
   );
