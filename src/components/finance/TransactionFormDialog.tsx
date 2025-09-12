@@ -96,11 +96,11 @@ export const TransactionFormDialog = ({
                   <Button
                     type="button"
                     variant="outline"
-                    size={isMobile ? "default" : "lg"}
+                    size={isMobile ? "xl" : "lg"}
                     disabled={loading}
                     className={cn(
                       "text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground shrink-0 font-medium",
-                      isMobile ? "order-2 h-11" : "h-12 min-w-[100px]"
+                      isMobile ? "order-2" : "min-w-[120px]"
                     )}
                   >
                     <Trash2 className={cn("h-4 w-4", !isMobile && "mr-2")} />
