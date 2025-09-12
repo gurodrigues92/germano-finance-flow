@@ -64,30 +64,43 @@ export const TransactionFormDialog = ({
           "sticky bottom-0 bg-background border-t space-y-4 shrink-0",
           isMobile ? "p-4 space-y-3" : "p-6 space-y-4"
         )}>
-          <div className={cn("flex gap-3", isMobile ? "flex-col gap-2" : "items-center")}>
+          <div className={cn("flex gap-3", isMobile ? "flex-col gap-3" : "items-center")}>
             <Button 
               type="submit"
-              disabled={loading} 
-              size="lg"
+              disabled={loading}
+              size={isMobile ? "xl" : "lg"}
               className={cn(
-                "font-medium flex-1",
-                isMobile ? "h-12 text-base w-full" : "h-14 text-lg"
+                "flex-1 font-semibold shadow-md hover:shadow-lg",
+                isMobile && "order-1"
               )}
             >
-              {loading ? 'Salvando...' : (editingTransaction ? 'Atualizar Transação' : 'Adicionar Transação')}
+              {loading ? "Salvando..." : editingTransaction ? "Atualizar Transação" : "Adicionar Transação"}
             </Button>
             
+            <Button 
+              variant="secondary" 
+              onClick={() => onOpenChange(false)}
+              disabled={loading}
+              size={isMobile ? "xl" : "lg"}
+              className={cn(
+                "font-medium",
+                isMobile ? "order-3" : "min-w-[120px]"
+              )}
+            >
+              Cancelar
+            </Button>
+
             {editingTransaction && onDelete && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button
                     type="button"
                     variant="outline"
-                    size={isMobile ? "sm" : "default"}
+                    size={isMobile ? "default" : "lg"}
                     disabled={loading}
                     className={cn(
-                      "text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground shrink-0",
-                      isMobile ? "h-10 px-3" : "h-12 px-4"
+                      "text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground shrink-0 font-medium",
+                      isMobile ? "order-2 h-11" : "h-12 min-w-[100px]"
                     )}
                   >
                     <Trash2 className={cn("h-4 w-4", !isMobile && "mr-2")} />
@@ -118,20 +131,6 @@ export const TransactionFormDialog = ({
               </AlertDialog>
             )}
           </div>
-          
-          <Button 
-            type="button" 
-            variant="outline" 
-            size="lg"
-            onClick={() => onOpenChange(false)}
-            disabled={loading}
-            className={cn(
-              "w-full",
-              isMobile ? "h-10 text-sm" : "h-12 text-base"
-            )}
-          >
-            Cancelar
-          </Button>
         </div>
       </form>
     </ResponsiveDialog>
