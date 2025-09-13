@@ -70,7 +70,7 @@ export const TransactionFormDialog = ({
               disabled={loading}
               size={isMobile ? "xl" : "lg"}
               className={cn(
-                "flex-1 font-semibold shadow-md hover:shadow-lg",
+                "flex-1 font-semibold shadow-md hover:shadow-lg mobile-button",
                 isMobile && "order-1"
               )}
             >
@@ -83,7 +83,7 @@ export const TransactionFormDialog = ({
               disabled={loading}
               size={isMobile ? "xl" : "lg"}
               className={cn(
-                "font-medium",
+                "font-medium mobile-button",
                 isMobile ? "order-3" : "min-w-[120px]"
               )}
             >
