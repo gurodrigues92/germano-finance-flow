@@ -1,5 +1,6 @@
 import { Transaction } from '@/types/finance';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { formatDateDisplay } from '@/lib/dateUtils';
 
 interface RecentTransactionsProps {
   transactions: Transaction[];
@@ -14,11 +15,6 @@ export const RecentTransactions = ({ transactions, onEdit, onDelete }: RecentTra
       currency: 'BRL'
     }).format(value);
 
-  const formatDate = (date: string) => 
-    new Date(date).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit'
-    });
 
   // Ordenar transações por data decrescente (mais recentes primeiro) e pegar as 15 primeiras
   const recentTransactions = transactions
@@ -55,9 +51,9 @@ export const RecentTransactions = ({ transactions, onEdit, onDelete }: RecentTra
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <p className="font-semibold text-sm text-foreground">
-                      {formatDate(transaction.date)}
-                    </p>
+                     <p className="font-semibold text-sm text-foreground">
+                       {formatDateDisplay(transaction.date).replace(/\/\d{4}$/, '')}
+                     </p>
                     <div className="w-1 h-1 bg-muted-foreground/50 rounded-full"></div>
                     <p className="text-xs text-muted-foreground">
                       {new Date(transaction.date).toLocaleDateString('pt-BR', { weekday: 'short' })}
