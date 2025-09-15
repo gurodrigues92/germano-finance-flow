@@ -18,7 +18,9 @@ import { ClientFinancialProfileCard } from '@/components/finance/ClientFinancial
 import { useClientFinancialAnalytics } from '@/hooks/useClientFinancialAnalytics';
 import { useProfessionalFinancialAnalytics } from '@/hooks/useProfessionalFinancialAnalytics';
 import { formatCurrency } from '@/lib/formatUtils';
-import { SimpleDateFilter } from '@/components/finance/SimpleDateFilter';
+import { AdvancedPeriodSelector } from '@/components/finance/AdvancedPeriodSelector';
+import { useFinance } from '@/hooks/useFinance';
+import { useDashboardData } from '@/hooks/useDashboardData';
 
 export default function UnifiedFinance() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -26,6 +28,17 @@ export default function UnifiedFinance() {
     start?: string;
     end?: string;
   }>({});
+
+  // Use finance hook for month management
+  const { currentMonth, setCurrentMonth, transactions, archivedData, currentYear } = useFinance();
+  
+  // Generate month options
+  const { monthOptions } = useDashboardData({ 
+    transactions, 
+    currentMonth, 
+    currentYear, 
+    archivedData 
+  });
 
   const { 
     clientProfiles, 
@@ -55,6 +68,19 @@ export default function UnifiedFinance() {
     loadProfessionalFinancialProfiles(start, end);
   };
 
+  const handleDateRangeChangeFromSelector = (startDate: Date, endDate: Date) => {
+    const start = startDate.toISOString().split('T')[0];
+    const end = endDate.toISOString().split('T')[0];
+    handleDateRangeChange(start, end);
+  };
+
+  const handleMonthChange = (month: string) => {
+    setCurrentMonth(month);
+    setSelectedDateRange({}); // Clear date range when switching to month view
+    loadClientFinancialProfiles(); // Load data for the selected month
+    loadProfessionalFinancialProfiles();
+  };
+
   const topClients = getTopClients(6);
   const totalRevenue = getTotalRevenue();
   const totalCommissions = getTotalCommissions();
@@ -65,8 +91,8 @@ export default function UnifiedFinance() {
       subtitle="Análise completa de performance financeira - SalonSoft"
     >
       <div className="space-y-6">
-        {/* Header com filtros e ações */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[hsl(var(--primary))] to-[hsl(var(--primary-glow))] flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-white" />
@@ -80,16 +106,20 @@ export default function UnifiedFinance() {
           </div>
 
           <div className="flex items-center gap-2">
-            <SimpleDateFilter 
-              onDateRangeChange={handleDateRangeChange}
-              className="w-80"
-            />
             <Button variant="outline" size="sm">
               <Download className="w-4 h-4 mr-2" />
               Exportar
             </Button>
           </div>
         </div>
+
+        {/* Period Selector */}
+        <AdvancedPeriodSelector
+          currentMonth={currentMonth}
+          onMonthChange={handleMonthChange}
+          onDateRangeChange={handleDateRangeChangeFromSelector}
+          monthOptions={monthOptions}
+        />
 
         {/* Indicadores Rápidos */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
