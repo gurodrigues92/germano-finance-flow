@@ -1,15 +1,15 @@
 import React, { useState, useMemo } from 'react';
 import { PageLayout } from '@/components/layout/PageLayout';
-import { Users, Plus } from 'lucide-react';
+import { Users, Plus, Search, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
 import { useClientes } from '@/hooks/salon/useClientes';
 import { useClienteStats } from '@/hooks/salon/useClienteStats';
+import { useExcelImport } from '@/hooks/salon/useExcelImport';
 import { ClienteForm } from '@/components/salon/ClienteForm';
 import { ClienteDetailsDialog } from '@/components/salon/ClienteDetailsDialog';
-import { SalonClientFilters } from '@/components/salon/SalonClientFilters';
 import { SalonClientTable } from '@/components/salon/SalonClientTable';
-import { ClienteQuickFilters } from '@/components/salon/ClienteQuickFilters';
-import { ClienteAdvancedFilters } from '@/components/salon/ClienteAdvancedFilters';
 import { ClienteAnalytics } from '@/components/salon/ClienteAnalytics';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Cliente, ClienteFilters as ClienteFiltersType } from '@/types/salon';
@@ -17,13 +17,15 @@ import { useTranslations } from '@/lib/translations';
 
 export default function Clientes() {
   const t = useTranslations();
-  const { clientes, loading, addCliente, updateCliente } = useClientes();
+  const { clientes, loading, addCliente, updateCliente, loadClientes } = useClientes();
   const { stats, loading: statsLoading } = useClienteStats();
+  const { importing, importClientesFromExcel } = useExcelImport();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isEditingCliente, setIsEditingCliente] = useState<Cliente | null>(null);
   const [filters, setFilters] = useState<ClienteFiltersType>({});
+  const [activeFilter, setActiveFilter] = useState<string>('all');
 
   // Filtrar clientes
   const filteredClientes = useMemo(() => {
@@ -109,12 +111,51 @@ export default function Clientes() {
 
   const handleClearFilters = () => {
     setFilters({});
+    setActiveFilter('all');
   };
+
+  const handleFilterClick = (filterId: string) => {
+    setActiveFilter(filterId);
+    
+    switch (filterId) {
+      case 'all':
+        setFilters({});
+        break;
+      case 'agendados':
+        setFilters({ status: 'agendados' });
+        break;
+      case 'credito':
+        setFilters({ status: 'com_credito' });
+        break;
+      case 'debito':
+        setFilters({ status: 'em_debito' });
+        break;
+      case 'pacote':
+        setFilters({ status: 'com_pacote' });
+        break;
+    }
+  };
+
+  const handleImportExcel = async () => {
+    await importClientesFromExcel();
+    loadClientes(); // Recarregar clientes após importação
+  };
+
+  const clientesComCredito = clientes.filter(c => c.saldo > 0).length;
+  const clientesEmDebito = clientes.filter(c => c.saldo < 0).length;
+
+  const filterButtons = [
+    { id: 'all', label: 'Todos os clientes', count: clientes.length },
+    { id: 'agendados', label: 'Agendados', count: 0 },
+    { id: 'credito', label: 'Clientes com crédito', count: clientesComCredito },
+    { id: 'debito', label: 'Clientes em débito', count: clientesEmDebito },
+    { id: 'pacote', label: 'Clientes com pacote', count: 0 }
+  ];
 
   return (
     <PageLayout
-      title={t.navigation.clients}
-      subtitle="Gestão completa de clientes"
+      title="Clientes"
+      subtitle="Gestão de clientes - SalonSoft"
       onFabClick={handleAddCliente}
       fabIcon={<Plus className="w-6 h-6" />}
     >
@@ -132,28 +173,65 @@ export default function Clientes() {
             </TabsList>
             
             <TabsContent value="clientes" className="space-y-6">
-              {/* SalonSoft Filters */}
-              {!statsLoading && (
-                <ClienteQuickFilters
-                  onFilterSelect={handleQuickFilterSelect}
-                  currentFilters={filters}
-                  stats={stats}
-                />
-              )}
+              {/* SalonSoft Style Filters */}
+              <div className="flex flex-wrap gap-2">
+                {filterButtons.map((filter) => (
+                  <Button
+                    key={filter.id}
+                    variant={activeFilter === filter.id ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handleFilterClick(filter.id)}
+                    className="text-sm"
+                  >
+                    {filter.label} ({filter.count})
+                  </Button>
+                ))}
+              </div>
 
-              <ClienteAdvancedFilters
-                filters={filters}
-                onFiltersChange={setFilters}
-                onClearFilters={handleClearFilters}
-              />
+              {/* Search Bar and Actions */}
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                    <div className="flex-1 max-w-md">
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                        <Input
+                          placeholder="Buscar clientes..."
+                          value={filters.search || ''}
+                          onChange={(e) => setFilters({ ...filters, search: e.target.value || undefined })}
+                          className="pl-10"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <Button 
+                        variant="outline"
+                        onClick={handleImportExcel}
+                        disabled={importing}
+                        size="sm"
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        {importing ? 'Importando...' : 'Importar Excel'}
+                      </Button>
+                      
+                      <Button 
+                        onClick={handleAddCliente}
+                        className="bg-green-500 hover:bg-green-600 text-white"
+                        size="sm"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Adicionar cliente
+                      </Button>
+                    </div>
+                  </div>
 
-              <SalonClientFilters
-                filters={filters}
-                onFiltersChange={setFilters}
-                totalClientes={clientes.length}
-                filteredCount={filteredClientes.length}
-                onAddClient={handleAddCliente}
-              />
+                  {/* Results Count */}
+                  <div className="mt-4 pt-4 border-t text-sm text-muted-foreground">
+                    Mostrando {filteredClientes.length} de {clientes.length} clientes
+                  </div>
+                </CardContent>
+              </Card>
 
               {/* SalonSoft Table */}
               <SalonClientTable

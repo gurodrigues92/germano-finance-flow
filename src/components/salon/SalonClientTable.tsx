@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Eye, Edit, User, Phone, Mail } from 'lucide-react';
+import { Eye, Edit, User, Phone, Mail, MessageCircle } from 'lucide-react';
 import { Cliente } from '@/types/salon';
 import { formatCurrency } from '@/lib/formatUtils';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -195,16 +195,23 @@ export const SalonClientTable = ({
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => onViewCliente(cliente)}
+                        onClick={() => {
+                          if (cliente.telefone) {
+                            window.open(`https://wa.me/55${cliente.telefone.replace(/\D/g, '')}`, '_blank');
+                          }
+                        }}
+                        disabled={!cliente.telefone}
+                        title="WhatsApp"
                       >
-                        <Eye className="w-4 h-4" />
+                        <MessageCircle className="w-4 h-4" />
                       </Button>
                       <Button
-                        variant="default"
+                        variant="outline"
                         size="sm"
-                        onClick={() => onEditCliente(cliente)}
+                        onClick={() => onViewCliente(cliente)}
+                        title="Ver perfil"
                       >
-                        <Edit className="w-4 h-4" />
+                        <User className="w-4 h-4" />
                       </Button>
                     </div>
                   </td>
